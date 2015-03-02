@@ -6,8 +6,8 @@
 #include "core/ui.h"
 #include "core/simulation.h"
 
-UI ui(720, 480);
 Simulation sim;
+UI ui(720, 480, sim);
 
 int main(int, char **);
 void initGlut(int, char **);
