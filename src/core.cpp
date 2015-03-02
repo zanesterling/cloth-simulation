@@ -13,7 +13,7 @@ void initGlut(int argc, char **argv) {
 	
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowSize(ui.width, ui.height);
-	glutCreateWindow("Dimensions");
+	glutCreateWindow("Cloth simulation");
 
 	glutDisplayFunc(display);
 	glutIdleFunc(idle);
