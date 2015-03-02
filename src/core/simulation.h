@@ -3,8 +3,8 @@
 #include "cloth.h"
 
 class Simulation {
-	Cloth cloth;
 public:
+	Cloth cloth;
 	GLfloat *triVerts;
 
 	Simulation(int, int);
