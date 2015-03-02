@@ -3,10 +3,12 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
+#include <stdio.h>
+
 #include "core/ui.h"
 #include "core/simulation.h"
 
-Simulation sim;
+Simulation sim(10, 10);
 UI ui(720, 480, sim);
 
 int main(int, char **);
