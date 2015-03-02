@@ -14,5 +14,6 @@ void initGlut(int, char **);
 void initLights();
 
 void display();
-void keyboard(unsigned char, int, int);
 void idle();
+void resize(int, int);
+void keyboard(unsigned char, int, int);

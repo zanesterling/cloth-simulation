@@ -17,6 +17,7 @@ void initGlut(int argc, char **argv) {
 
 	glutDisplayFunc(display);
 	glutIdleFunc(idle);
+	glutReshapeFunc(resize);
 	glutKeyboardFunc(keyboard);
 
 	glEnable(GL_DEPTH_TEST);
@@ -46,6 +47,10 @@ void idle() {
 
 	// mark dirty frame
 	glutPostRedisplay();
+}
+
+void resize(int w, int h) {
+	ui.resize(w, h);
 }
 
 void keyboard(unsigned char key, int x, int y) {}

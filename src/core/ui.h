@@ -7,4 +7,5 @@ public:
 	UI(int w, int h) : width(w), height(h) {}
 
 	void render();
+	void resize(int, int);
 };
