@@ -15,6 +15,6 @@ Cloth::Cloth(int w, int h)
 }
 
 // NOTE: doesn't check bounds!
-GLfloat Cloth::worldPoint(int x, int y) {
-	return worldPoints[y * w + x];
+GLfloat *Cloth::worldPoint(int x, int y) {
+	return worldPoints + y * w + x;
 }

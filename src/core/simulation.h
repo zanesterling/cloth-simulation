@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string.h>
+
 #include "cloth.h"
 
 class Simulation {
@@ -10,6 +12,7 @@ public:
 	Simulation(int, int);
 
 	void update();
-	int getNumTris();
 	GLfloat *genTrisFromMesh();
+	int getNumTris();
+	void copyPoint(GLfloat *, GLfloat *, int);
 };
