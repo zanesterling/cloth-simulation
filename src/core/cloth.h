@@ -9,5 +9,10 @@ struct Cloth {
 
 	Cloth(int, int);
 
-	GLfloat *worldPoint(int, int);
+	void initUvPoints();
+	void initWorldPoints();
+
+	GLfloat *getUvPoint(int, int);
+	GLfloat *getWorldPoint(int, int);
+	void setWorldPoint(int, int, GLfloat, GLfloat, GLfloat);
 };

@@ -13,18 +13,18 @@ GLfloat *Simulation::genTrisFromMesh() {
 	for (int i = 0; i < cloth.h - 1; i++) {
 		for (int j = 0 ; j < cloth.w - 1; j++) {
 			copyPoint(tris + 18 * (i*cloth.w + j),
-			          cloth.worldPoint(j, i), 3);
+			          cloth.getWorldPoint(j, i), 3);
 			copyPoint(tris + 18 * (i*cloth.w + j) + 3,
-			          cloth.worldPoint(j, i+1), 3);
+			          cloth.getWorldPoint(j, i+1), 3);
 			copyPoint(tris + 18 * (i*cloth.w + j) + 6,
-			          cloth.worldPoint(j+1, i), 3);
+			          cloth.getWorldPoint(j+1, i), 3);
 
 			copyPoint(tris + 18 * (i*cloth.w + j) + 9,
-			          cloth.worldPoint(j+1, i), 3);
+			          cloth.getWorldPoint(j+1, i), 3);
 			copyPoint(tris + 18 * (i*cloth.w + j) + 12,
-			          cloth.worldPoint(j, i+1), 3);
+			          cloth.getWorldPoint(j, i+1), 3);
 			copyPoint(tris + 18 * (i*cloth.w + j) + 15,
-			          cloth.worldPoint(j+1, i+1), 3);
+			          cloth.getWorldPoint(j+1, i+1), 3);
 		}
 	}
 
