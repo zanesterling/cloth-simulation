@@ -53,4 +53,15 @@ void resize(int w, int h) {
 	ui.resize(w, h);
 }
 
-void keyboard(unsigned char key, int x, int y) {}
+void keyboard(unsigned char key, int x, int y) {
+	switch (key) {
+		case 'q':
+			quit();
+			break;
+	}
+}
+
+void quit() {
+	printf("quitting; cheers!\n");
+	exit(0);
+}
