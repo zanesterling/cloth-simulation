@@ -3,11 +3,14 @@
 #include <GL/freeglut.h>
 
 struct Cloth {
-	int w, h;
+	int xRes, yRes;
+	GLfloat w, h;
 	GLfloat *uvPoints;
 	GLfloat *worldPoints;
+	GLfloat *worldVels;
 
 	Cloth(int, int);
+	Cloth(int, int, GLfloat, GLfloat);
 
 	void initUvPoints();
 	void initWorldPoints();
