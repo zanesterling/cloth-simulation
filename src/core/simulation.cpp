@@ -16,12 +16,12 @@ GLfloat *Simulation::genTrisFromMesh() {
 		for (int j = 0 ; j < cloth.xRes - 1; j++) {
 			GLfloat *triPairStart = tris + 18 * (i*(cloth.xRes-1) + j);
 
-			copyPoint(triPairStart,     cloth.getWorldPoint(j, i),   3);
-			copyPoint(triPairStart + 3, cloth.getWorldPoint(j, i+1), 3);
-			copyPoint(triPairStart + 6, cloth.getWorldPoint(j+1, i), 3);
+			copyPoint(triPairStart,      cloth.getWorldPoint(j,   i),   3);
+			copyPoint(triPairStart + 3,  cloth.getWorldPoint(j,   i+1), 3);
+			copyPoint(triPairStart + 6,  cloth.getWorldPoint(j+1, i),   3);
 
 			copyPoint(triPairStart + 9,  cloth.getWorldPoint(j+1, i),   3);
-			copyPoint(triPairStart + 12, cloth.getWorldPoint(j, i+1),   3);
+			copyPoint(triPairStart + 12, cloth.getWorldPoint(j,   i+1), 3);
 			copyPoint(triPairStart + 15, cloth.getWorldPoint(j+1, i+1), 3);
 		}
 	}
