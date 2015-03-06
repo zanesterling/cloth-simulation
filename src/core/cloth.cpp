@@ -19,8 +19,8 @@ void Cloth::initUvPoints() {
 	uvPoints = new GLfloat[2 * xRes * yRes];
 	for (int i = 0; i < yRes; i++) {
 		for (int j = 0; j < xRes; j++) {
-			uvPoints[2 * (i*xRes + j)]     = j * w / xRes;
-			uvPoints[2 * (i*xRes + j) + 1] = i * h / yRes;
+			uvPoints[2 * (i*xRes + j)]     = j * w / (xRes-1);
+			uvPoints[2 * (i*xRes + j) + 1] = i * h / (yRes-1);
 		}
 	}
 }
@@ -32,7 +32,7 @@ void Cloth::initWorldPoints() {
 	for (int i = 0; i < yRes; i++) {
 		for (int j = 0; j < xRes; j++) {
 			GLfloat *point = getUvPoint(j, i);
-			setWorldPoint(j, i, point[0], point[1], 0);
+			setWorldPoint(j, i, point[0] - w/2, point[1] - h/2, 0);
 		}
 	}
 
