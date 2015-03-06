@@ -4,6 +4,8 @@
 
 #include "simulation.h"
 
+#define FOV_Y 30.
+
 class UI {
 public:
 	int width, height;

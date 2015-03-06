@@ -32,7 +32,7 @@ void Cloth::initWorldPoints() {
 	for (int i = 0; i < yRes; i++) {
 		for (int j = 0; j < xRes; j++) {
 			GLfloat *point = getUvPoint(j, i);
-			setWorldPoint(j, i, point[0] - w/2, point[1] - h/2, 0);
+			setWorldPoint(j, i, point[0] - w/2, point[1] - h/2, -5);
 		}
 	}
 
