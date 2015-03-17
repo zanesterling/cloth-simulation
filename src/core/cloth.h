@@ -15,7 +15,9 @@ struct Cloth {
 	void initUvPoints();
 	void initWorldPoints();
 
+	GLfloat *getUvPoint(int);
 	GLfloat *getUvPoint(int, int);
+	GLfloat *getWorldPoint(int);
 	GLfloat *getWorldPoint(int, int);
 	void setWorldPoint(int, int, GLfloat, GLfloat, GLfloat);
 };

@@ -43,9 +43,17 @@ void Cloth::initWorldPoints() {
 	}
 }
 
+GLfloat *Cloth::getUvPoint(int i) {
+	return uvPoints + 2 * i;
+}
+
 // NOTE: doesn't check bounds!
 GLfloat *Cloth::getUvPoint(int x, int y) {
 	return uvPoints + 2 * (y*xRes + x);
+}
+
+GLfloat *Cloth::getWorldPoint(int i) {
+	return uvPoints + 3 * i;
 }
 
 // NOTE: doesn't check bounds!
