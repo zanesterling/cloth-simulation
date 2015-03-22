@@ -1,23 +1,21 @@
 #pragma once
 
-#include <GL/freeglut.h>
-
 struct Cloth {
 	int xRes, yRes;
-	GLfloat w, h;
-	GLfloat *uvPoints;
-	GLfloat *worldPoints;
-	GLfloat *worldVels;
+	double w, h;
+	double *uvPoints;
+	double *worldPoints;
+	double *worldVels;
 
 	Cloth(int, int);
-	Cloth(int, int, GLfloat, GLfloat);
+	Cloth(int, int, double, double);
 
 	void initUvPoints();
 	void initWorldPoints();
 
-	GLfloat *getUvPoint(int);
-	GLfloat *getUvPoint(int, int);
-	GLfloat *getWorldPoint(int);
-	GLfloat *getWorldPoint(int, int);
-	void setWorldPoint(int, int, GLfloat, GLfloat, GLfloat);
+	double *getUvPoint(int);
+	double *getUvPoint(int, int);
+	double *getWorldPoint(int);
+	double *getWorldPoint(int, int);
+	void setWorldPoint(int, int, double, double, double);
 };

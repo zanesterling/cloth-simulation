@@ -7,7 +7,7 @@ Cloth::Cloth(int xRes, int yRes)
 	initWorldPoints();
 }
 
-Cloth::Cloth(int xRes, int yRes, GLfloat w, GLfloat h)
+Cloth::Cloth(int xRes, int yRes, double w, double h)
 	: xRes(xRes), yRes(yRes), w(w), h(h) {
 
 	initUvPoints();
@@ -16,7 +16,7 @@ Cloth::Cloth(int xRes, int yRes, GLfloat w, GLfloat h)
 
 // initialize uvPoints with uniform grid
 void Cloth::initUvPoints() {
-	uvPoints = new GLfloat[2 * xRes * yRes];
+	uvPoints = new double[2 * xRes * yRes];
 	for (int i = 0; i < yRes; i++) {
 		for (int j = 0; j < xRes; j++) {
 			uvPoints[2 * (i*xRes + j)]     = j * w / (xRes-1);
@@ -28,42 +28,42 @@ void Cloth::initUvPoints() {
 // initializte cloth world-state
 void Cloth::initWorldPoints() {
 	// init world positions
-	worldPoints = new GLfloat[3 * xRes * yRes];
+	worldPoints = new double[3 * xRes * yRes];
 	for (int i = 0; i < yRes; i++) {
 		for (int j = 0; j < xRes; j++) {
-			GLfloat *point = getUvPoint(j, i);
+			double *point = getUvPoint(j, i);
 			setWorldPoint(j, i, point[0] - w/2, point[1] - h/2, -5);
 		}
 	}
 
 	// init velocities
-	worldVels = new GLfloat[3 * xRes * yRes];
+	worldVels = new double[3 * xRes * yRes];
 	for (int i = 0; i < 3 * yRes*xRes; i++) {
 		worldVels[i] = 0;
 	}
 }
 
-GLfloat *Cloth::getUvPoint(int i) {
+double *Cloth::getUvPoint(int i) {
 	return uvPoints + 2 * i;
 }
 
 // NOTE: doesn't check bounds!
-GLfloat *Cloth::getUvPoint(int x, int y) {
+double *Cloth::getUvPoint(int x, int y) {
 	return uvPoints + 2 * (y*xRes + x);
 }
 
-GLfloat *Cloth::getWorldPoint(int i) {
+double *Cloth::getWorldPoint(int i) {
 	return uvPoints + 3 * i;
 }
 
 // NOTE: doesn't check bounds!
-GLfloat *Cloth::getWorldPoint(int x, int y) {
+double *Cloth::getWorldPoint(int x, int y) {
 	return worldPoints + 3 * (y*xRes + x);
 }
 
-void Cloth::setWorldPoint(int xCor, int yCor, GLfloat xPos, GLfloat yPos,
-	GLfloat zPos) {
-	GLfloat *point = getWorldPoint(xCor, yCor);
+void Cloth::setWorldPoint(int xCor, int yCor, double xPos, double yPos,
+	double zPos) {
+	double *point = getWorldPoint(xCor, yCor);
 	point[0] = xPos;
 	point[1] = yPos;
 	point[2] = zPos;

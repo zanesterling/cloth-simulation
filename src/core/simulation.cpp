@@ -8,13 +8,13 @@ Simulation::Simulation(int clothWidth, int clothHeight)
 void Simulation::update() {
 }
 
-GLfloat *Simulation::genTrisFromMesh() {
-	GLfloat *tris = new GLfloat[9 * getNumTris()];
+double *Simulation::genTrisFromMesh() {
+	double *tris = new double[9 * getNumTris()];
 
 	// copy in triangles
 	for (int i = 0; i < cloth.yRes - 1; i++) {
 		for (int j = 0 ; j < cloth.xRes - 1; j++) {
-			GLfloat *triPairStart = tris + 18 * (i*(cloth.xRes-1) + j);
+			double *triPairStart = tris + 18 * (i*(cloth.xRes-1) + j);
 
 			copyPoint(triPairStart,      cloth.getWorldPoint(j,   i),   3);
 			copyPoint(triPairStart + 3,  cloth.getWorldPoint(j,   i+1), 3);
@@ -33,6 +33,6 @@ int Simulation::getNumTris() {
 	return 2 * (cloth.xRes - 1) * (cloth.yRes - 1);
 }
 
-void Simulation::copyPoint(GLfloat *dest, GLfloat *src, int dim) {
-	memcpy(dest, src, dim * sizeof(GLfloat));
+void Simulation::copyPoint(double *dest, double *src, int dim) {
+	memcpy(dest, src, dim * sizeof(double));
 }

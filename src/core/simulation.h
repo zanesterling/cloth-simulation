@@ -7,12 +7,12 @@
 class Simulation {
 public:
 	Cloth cloth;
-	GLfloat *triVerts;
+	double *triVerts;
 
 	Simulation(int, int);
 
 	void update();
-	GLfloat *genTrisFromMesh();
+	double *genTrisFromMesh();
 	int getNumTris();
-	void copyPoint(GLfloat *, GLfloat *, int);
+	void copyPoint(double *, double *, int);
 };
