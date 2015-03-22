@@ -10,7 +10,7 @@ public:
 	Vec3() : x(0), y(0), z(0) {}
 	Vec3(const double x, const double y, const double z)
 		: x(x), y(y), z(z) {}
-	Vec3(const float *fp)
+	Vec3(const double *fp)
 		: x(fp[0]), y(fp[1]), z(fp[2]) {}
 
 	double len() const;
