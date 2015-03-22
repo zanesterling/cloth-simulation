@@ -1,11 +1,28 @@
 #include "matrix.h"
 
-Matrix::Matrix(int w, int h) : w(w), h(h) {
-	data = new double[w * h];
+Matrix::Matrix(Matrix m) 
+	: w(m.w), h(m.h), standalone(m.standalone) {
+	// if m is standalone we need to copy the data, else just copy the ref
+	if (m.standalone) {
+		data = new double[w * h];
+		memcpy(data, m.data, w * h * sizeof(double));
+	} else {
+		data = m.data;
+	}
 }
 
+Matrix::Matrix(int w, int h)
+	: w(w), h(h), standalone(true) {
+	// init data segment
+	data = new double[w * h];
+	for (int i = 0; i < w * h; i++) data[i] = 0;
+}
+
+Matrix::Matrix(int w, int h, double *data)
+	: w(w), h(h), data(data), standalone(false) {}
+
 Matrix::~Matrix() {
-	delete data;
+	if (standalone) delete data;
 }
 
 double *Matrix::operator[](int y) {
