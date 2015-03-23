@@ -1,9 +1,12 @@
 #pragma once
 
+#include <Eigen/Dense>
+
 #include <algorithm>
 
 #include "vec.h"
 #include "cloth.h"
 
+using namespace Eigen;
 // TODO add changeable stretch factors
-double *scaleCondition(Cloth &, int, int, int);
+RowVector2d scaleCondition(Cloth &, int, int, int);

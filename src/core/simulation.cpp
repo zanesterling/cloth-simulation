@@ -3,6 +3,9 @@
 Simulation::Simulation(int clothWidth, int clothHeight)
 	: cloth(Cloth(clothWidth, clothHeight)) {
 	triVerts = genTrisFromMesh();
+
+	auto scale = scaleCondition(cloth, 0, 1, cloth.xRes);
+	printf("%f %f\n", scale[0], scale[1]);
 }
 
 void Simulation::update() {

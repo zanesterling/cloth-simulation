@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "cloth.h"
+#include "conditions.h"
 
 class Simulation {
 public:
