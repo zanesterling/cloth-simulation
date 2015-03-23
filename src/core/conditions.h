@@ -9,4 +9,4 @@
 
 using namespace Eigen;
 // TODO add changeable stretch factors
-RowVector2d scaleCondition(Cloth &, int, int, int);
+Vector2d scaleCondition(Cloth &, int, int, int);

@@ -1,8 +1,6 @@
 #include "conditions.h"
 
-RowVector2d scaleCondition(Cloth &cloth, int i, int j, int k) {
-	RowVector2d condition;
-
+Vector2d scaleCondition(Cloth &cloth, int i, int j, int k) {
 	// get delta x_1, x_2
 	Vector3d wpi = Vector3d(cloth.getWorldPoint(i));
 	Vector3d dx1 = Vector3d(cloth.getWorldPoint(j)) - wpi;
@@ -24,6 +22,7 @@ RowVector2d scaleCondition(Cloth &cloth, int i, int j, int k) {
 	double area = cloth.w / (cloth.xRes - 1) * cloth.h / (cloth.yRes - 1);
 
 	// get final condition values
+	Vector2d condition;
 	condition[0] = area * (wu.norm() - 1);
 	condition[1] = area * (wv.norm() - 1);
 	return condition;
