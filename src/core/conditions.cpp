@@ -20,8 +20,11 @@ RowVector2d scaleCondition(Cloth &cloth, int i, int j, int k) {
 	Vector3d wu = dx1 * uvMatrix(0, 0) + dx2 * uvMatrix(1, 0);
 	Vector3d wv = dx1 * uvMatrix(0, 1) + dx2 * uvMatrix(1, 1);
 
+	// find triangle area
+	double area = cloth.w / (cloth.xRes - 1) * cloth.h / (cloth.yRes - 1);
+
 	// get final condition values
-	condition[0] = 0.5 * (wu.norm() - 1);
-	condition[1] = 0.5 * (wv.norm() - 1);
+	condition[0] = area * (wu.norm() - 1);
+	condition[1] = area * (wv.norm() - 1);
 	return condition;
 }
