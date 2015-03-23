@@ -13,4 +13,4 @@
 using namespace Eigen;
 // TODO add changeable stretch factors
 Vector2d scaleCondition(Cloth &, int, int, int);
-MatrixXd scalePartial(Cloth &, int, int, int, int);
+Matrix<double, 2, 3> scalePartial(Cloth &, int, int, int, int);

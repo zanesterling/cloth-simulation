@@ -28,8 +28,9 @@ Vector2d scaleCondition(Cloth &cloth, int i, int j, int k) {
 	return condition;
 }
 
-MatrixXd scalePartial(Cloth &cloth, int pt, int i, int j, int k) {
-	MatrixXd partial(2, 3); // two rows, three columns
+Matrix<double, 2, 3> scalePartial(Cloth &cloth, int pt,
+                                  int i, int j, int k) {
+	Matrix<double, 2, 3> partial; // two rows, three columns
 
 	Vector2d localCond = scaleCondition(cloth, i, j, k);
 	double *worldPt = cloth.getWorldPoint(pt);
