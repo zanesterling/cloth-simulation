@@ -27,3 +27,23 @@ Vector2d scaleCondition(Cloth &cloth, int i, int j, int k) {
 	condition[1] = area * (wv.norm() - 1);
 	return condition;
 }
+
+MatrixXd scalePartial(Cloth &cloth, int pt, int i, int j, int k) {
+	MatrixXd partial(2, 3); // two rows, three columns
+
+	Vector2d localCond = scaleCondition(cloth, i, j, k);
+	double *worldPt = cloth.getWorldPoint(pt);
+
+	for (int col = 0; col < 3; col++) {
+		// perturb the cloth
+		worldPt[col] += PERTURB_QUANT;
+
+		Vector2d perturbedCond = scaleCondition(cloth, i, j, k);
+		partial.col(col) = perturbedCond - localCond;
+
+		// de-perturb cloth
+		worldPt[col] -= PERTURB_QUANT;
+	}
+
+	return partial;
+}
