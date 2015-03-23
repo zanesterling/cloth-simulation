@@ -53,7 +53,7 @@ double *Cloth::getUvPoint(int x, int y) {
 }
 
 double *Cloth::getWorldPoint(int i) {
-	return uvPoints + 3 * i;
+	return worldPoints + 3 * i;
 }
 
 // NOTE: doesn't check bounds!
