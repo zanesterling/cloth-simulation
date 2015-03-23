@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string.h>
+#include <iostream>
 
 #include "cloth.h"
 #include "conditions.h"

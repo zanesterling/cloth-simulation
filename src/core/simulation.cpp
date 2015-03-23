@@ -1,11 +1,14 @@
 #include "simulation.h"
 
+using namespace std;
 Simulation::Simulation(int clothWidth, int clothHeight)
 	: cloth(Cloth(clothWidth, clothHeight)) {
 	triVerts = genTrisFromMesh();
 
 	auto scale = scaleCondition(cloth, 0, 1, cloth.xRes);
-	printf("%f %f\n", scale[0], scale[1]);
+	cout << scale << endl;
+	auto partial = scalePartial(cloth, 0, 0, 1, cloth.xRes);
+	cout << partial << endl;
 }
 
 void Simulation::update() {
