@@ -42,7 +42,7 @@ Matrix<double, 2, 3> scalePartial(Cloth &cloth, int pt,
 		worldPt[col] += PERTURB_QUANT;
 
 		Vector2d perturbedCond = scaleCondition(cloth, i, j, k);
-		partial.col(col) = perturbedCond - localCond;
+		partial.col(col) = (perturbedCond - localCond) / PERTURB_QUANT;
 
 		// de-perturb cloth
 		worldPt[col] -= PERTURB_QUANT;
@@ -69,7 +69,7 @@ RowVector3d shearPartial(Cloth &cloth, int pt, int i, int j, int k) {
 		worldPt[col] += PERTURB_QUANT;
 
 		double perturbedCond = shearCondition(cloth, i, j, k);
-		partial[col] = perturbedCond - localCond;
+		partial[col] = (perturbedCond - localCond) / PERTURB_QUANT;
 
 		// de-perturb cloth
 		worldPt[col] -= PERTURB_QUANT;
