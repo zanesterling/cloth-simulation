@@ -1,5 +1,8 @@
 #pragma once
 
+#include <Eigen/Dense>
+using namespace Eigen;
+
 struct Cloth {
 	int xRes, yRes;
 	double w, h;
@@ -20,4 +23,5 @@ struct Cloth {
 	void setWorldPoint(int, int, double, double, double);
 
 	double getTriUvArea();
+	Vector3d triNormal(int, int, int);
 };

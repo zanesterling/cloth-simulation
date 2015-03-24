@@ -77,3 +77,17 @@ RowVector3d shearPartial(Cloth &cloth, int pt, int i, int j, int k) {
 
 	return partial;
 }
+
+// p1,p2,p3 and p4,p3,p2 are counter-clockwise
+// p2 and p3 are shared between the two triangles
+double bendCondition(Cloth &cloth, int p1, int p2, int p3, int p4) {
+	Vector3d n1 = cloth.triNormal(p1, p2, p3);
+	Vector3d n2 = cloth.triNormal(p4, p3, p2);
+	Vector3d e = Vector3d(cloth.getWorldPoint(p2)) -
+	             Vector3d(cloth.getWorldPoint(p3));
+
+	double st = n1.cross(n2).dot(e);
+	double ct = n1.dot(n2);
+
+	return atan2(st, ct);
+}

@@ -6,9 +6,11 @@ Simulation::Simulation(int clothWidth, int clothHeight)
 	triVerts = genTrisFromMesh();
 
 	auto scale = scaleCondition(cloth, 0, 1, cloth.xRes);
-	cout << scale << endl;
+	cout << scale << endl << endl;
 	auto partial = scalePartial(cloth, 0, 0, 1, cloth.xRes);
-	cout << partial << endl;
+	cout << partial << endl << endl;
+	auto bend = bendCondition(cloth, 0, 1, cloth.xRes, cloth.xRes + 1);
+	cout << bend << endl;
 }
 
 void Simulation::update() {

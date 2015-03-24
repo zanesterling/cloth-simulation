@@ -72,3 +72,13 @@ void Cloth::setWorldPoint(int xCor, int yCor, double xPos, double yPos,
 double Cloth::getTriUvArea() {
 	return w / (xRes - 1) * h / (yRes - 1);
 }
+
+Vector3d Cloth::triNormal(int pi1, int pi2, int pi3) {
+	auto p1 = Vector3d(getWorldPoint(pi1));
+
+	// get side vectors
+	auto s1 = Vector3d(getWorldPoint(pi2)) - p1;
+	auto s2 = Vector3d(getWorldPoint(pi3)) - p1;
+
+	return s1.cross(s2).normalized();
+}
