@@ -68,3 +68,7 @@ void Cloth::setWorldPoint(int xCor, int yCor, double xPos, double yPos,
 	point[1] = yPos;
 	point[2] = zPos;
 }
+
+double Cloth::getTriUvArea() {
+	return w / (xRes - 1) * h / (yRes - 1);
+}

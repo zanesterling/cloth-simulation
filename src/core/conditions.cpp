@@ -20,9 +20,7 @@ Matrix<double, 3, 2> wuvMatrix(Cloth &cloth, int i, int j, int k) {
 }
 
 Vector2d scaleCondition(Cloth &cloth, int i, int j, int k) {
-	// find triangle area
-	double area = cloth.w / (cloth.xRes - 1) * cloth.h / (cloth.yRes - 1);
-
+	double area = cloth.getTriUvArea();
 	auto wm = wuvMatrix(cloth, i, j, k);
 
 	// get final condition values

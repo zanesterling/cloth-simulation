@@ -18,4 +18,6 @@ struct Cloth {
 	double *getWorldPoint(int);
 	double *getWorldPoint(int, int);
 	void setWorldPoint(int, int, double, double, double);
+
+	double getTriUvArea();
 };
