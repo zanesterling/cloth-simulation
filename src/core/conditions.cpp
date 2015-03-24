@@ -91,3 +91,24 @@ double bendCondition(Cloth &cloth, int p1, int p2, int p3, int p4) {
 
 	return atan2(st, ct);
 }
+
+RowVector3d bendPartial(Cloth &cloth, int pt,
+                        int p1, int p2, int p3, int p4) {
+	RowVector3d partial;
+
+	auto localCond = bendCondition(cloth, p1, p2, p3, p4);
+	double *worldPt = cloth.getWorldPoint(pt);
+
+	for (int col = 0; col < 3; col++) {
+		// perturb the cloth
+		worldPt[col] += PERTURB_QUANT;
+
+		auto perturbedCond = bendCondition(cloth, p1, p2, p3, p4);
+		partial[col] = (perturbedCond - localCond) / PERTURB_QUANT;
+
+		// de-perturb cloth
+		worldPt[col] -= PERTURB_QUANT;
+	}
+
+	return partial;
+}

@@ -10,7 +10,9 @@ Simulation::Simulation(int clothWidth, int clothHeight)
 	auto partial = scalePartial(cloth, 0, 0, 1, cloth.xRes);
 	cout << partial << endl << endl;
 	auto bend = bendCondition(cloth, 0, 1, cloth.xRes, cloth.xRes + 1);
-	cout << bend << endl;
+	cout << bend << endl << endl;
+	auto bPartial = bendPartial(cloth, 0, 0, 1, cloth.xRes, cloth.xRes+1);
+	cout << bPartial << endl << endl;
 }
 
 void Simulation::update() {
