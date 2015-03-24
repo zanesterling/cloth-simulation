@@ -50,3 +50,30 @@ Matrix<double, 2, 3> scalePartial(Cloth &cloth, int pt,
 
 	return partial;
 }
+
+double shearCondition(Cloth &cloth, int i, int j, int k) {
+	auto wuvm = wuvMatrix(cloth, i, j, k);
+	auto area = cloth.getTriUvArea();
+
+	return area * wuvm.col(0).dot(wuvm.col(1));
+}
+
+RowVector3d shearPartial(Cloth &cloth, int pt, int i, int j, int k) {
+	RowVector3d partial;
+
+	double localCond = shearCondition(cloth, i, j, k);
+	double *worldPt = cloth.getWorldPoint(pt);
+
+	for (int col = 0; col < 3; col++) {
+		// perturb the cloth
+		worldPt[col] += PERTURB_QUANT;
+
+		double perturbedCond = shearCondition(cloth, i, j, k);
+		partial[col] = perturbedCond - localCond;
+
+		// de-perturb cloth
+		worldPt[col] -= PERTURB_QUANT;
+	}
+
+	return partial;
+}

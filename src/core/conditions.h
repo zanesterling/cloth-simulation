@@ -17,3 +17,6 @@ Matrix<double, 3, 2> wuvMatrix(Cloth &, int, int, int);
 // TODO add changeable stretch factors
 Vector2d scaleCondition(Cloth &, int, int, int);
 Matrix<double, 2, 3> scalePartial(Cloth &, int, int, int, int);
+
+double shearCondition(Cloth &, int, int, int);
+RowVector3d shearPartial(Cloth &, int, int, int, int);
