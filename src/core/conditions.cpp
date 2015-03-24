@@ -1,10 +1,11 @@
 #include "conditions.h"
 
-Vector2d scaleCondition(Cloth &cloth, int i, int j, int k) {
+Matrix<double, 3, 2> wuvMatrix(Cloth &cloth, int i, int j, int k) {
 	// get delta x_1, x_2
-	Vector3d wpi = Vector3d(cloth.getWorldPoint(i));
-	Vector3d dx1 = Vector3d(cloth.getWorldPoint(j)) - wpi;
-	Vector3d dx2 = Vector3d(cloth.getWorldPoint(k)) - wpi;
+	Matrix<double, 3, 2> dxMatrix;
+	Vector3d worldPointI = Vector3d(cloth.getWorldPoint(i));
+	dxMatrix.col(0) = Vector3d(cloth.getWorldPoint(j)) - worldPointI;
+	dxMatrix.col(1) = Vector3d(cloth.getWorldPoint(k)) - worldPointI;
 
 	// find inverted [uv][12] matrix
 	Matrix2d uvMatrix;
@@ -15,16 +16,19 @@ Vector2d scaleCondition(Cloth &cloth, int i, int j, int k) {
 	uvMatrix = uvMatrix.inverse().eval();
 
 	// find ||w||s
-	Vector3d wu = dx1 * uvMatrix(0, 0) + dx2 * uvMatrix(1, 0);
-	Vector3d wv = dx1 * uvMatrix(0, 1) + dx2 * uvMatrix(1, 1);
+	return dxMatrix * uvMatrix;
+}
 
+Vector2d scaleCondition(Cloth &cloth, int i, int j, int k) {
 	// find triangle area
 	double area = cloth.w / (cloth.xRes - 1) * cloth.h / (cloth.yRes - 1);
 
+	auto wm = wuvMatrix(cloth, i, j, k);
+
 	// get final condition values
 	Vector2d condition;
-	condition[0] = area * (wu.norm() - 1);
-	condition[1] = area * (wv.norm() - 1);
+	condition[0] = area * (wm.col(0).norm() - 1);
+	condition[1] = area * (wm.col(1).norm() - 1);
 	return condition;
 }
 

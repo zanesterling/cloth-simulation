@@ -11,6 +11,9 @@
 #define PERTURB_QUANT 0.0001
 
 using namespace Eigen;
+
+Matrix<double, 3, 2> wuvMatrix(Cloth &, int, int, int);
+
 // TODO add changeable stretch factors
 Vector2d scaleCondition(Cloth &, int, int, int);
 Matrix<double, 2, 3> scalePartial(Cloth &, int, int, int, int);
