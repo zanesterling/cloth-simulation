@@ -80,12 +80,6 @@ void Simulation::handleShearCondition(int offset) {
 		cloth.worldVels[pt*3 + 1] += force[1];
 		cloth.worldVels[pt*3 + 2] += force[2];
 	}
-
-	for (int pt : trPoints) {
-		cloth.worldPoints[pt*3 + 0] += cloth.worldVels[pt*3 + 0];
-		cloth.worldPoints[pt*3 + 1] += cloth.worldVels[pt*3 + 1];
-		cloth.worldPoints[pt*3 + 2] += cloth.worldVels[pt*3 + 2];
-	}
 }
 
 double *Simulation::genTrisFromMesh() {
