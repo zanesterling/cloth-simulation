@@ -13,12 +13,14 @@ void Simulation::update() {
 			int offset = i * cloth.xRes + j;
 			handleScaleCondition(offset);
 			handleShearCondition(offset);
+			handleBendCondition(offset);
 		}
 	}
 
 	for (int i = 0; i < cloth.xRes * cloth.yRes; i++) {
 		cloth.worldPoints[i] += cloth.worldVels[i];
 	}
+
 	triVerts = genTrisFromMesh();
 }
 
@@ -76,6 +78,25 @@ void Simulation::handleShearCondition(int offset) {
 	for (int pt : trPoints) {
 		auto shPart = shearPartial(cloth, pt, trPoints);
 		auto force = -shPart.transpose() * shCond;
+		cloth.worldVels[pt*3 + 0] += force[0];
+		cloth.worldVels[pt*3 + 1] += force[1];
+		cloth.worldVels[pt*3 + 2] += force[2];
+	}
+}
+
+void Simulation::handleBendCondition(int offset) {
+	// bottom-left triangle
+	int blPoints[4] = {
+		offset,
+		offset + 1,
+		offset + cloth.xRes,
+		offset + cloth.xRes + 1
+	};
+	auto bdCond = bendCondition(cloth, blPoints);
+
+	for (int pt : blPoints) {
+		auto bdPart = bendPartial(cloth, pt, blPoints);
+		auto force = -bdPart.transpose() * bdCond;
 		cloth.worldVels[pt*3 + 0] += force[0];
 		cloth.worldVels[pt*3 + 1] += force[1];
 		cloth.worldVels[pt*3 + 2] += force[2];
