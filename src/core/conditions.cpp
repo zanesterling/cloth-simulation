@@ -19,6 +19,10 @@ Matrix<double, 3, 2> wuvMatrix(Cloth &cloth, int i, int j, int k) {
 	return dxMatrix * uvMatrix;
 }
 
+Vector2d scaleCondition(Cloth &cloth, int *tri) {
+	return scaleCondition(cloth, tri[0], tri[1], tri[2]);
+}
+
 Vector2d scaleCondition(Cloth &cloth, int i, int j, int k) {
 	double area = cloth.getTriUvArea();
 	auto wm = wuvMatrix(cloth, i, j, k);
@@ -28,6 +32,10 @@ Vector2d scaleCondition(Cloth &cloth, int i, int j, int k) {
 	condition[0] = area * (wm.col(0).norm() - 1);
 	condition[1] = area * (wm.col(1).norm() - 1);
 	return condition;
+}
+
+Matrix<double, 2, 3> scalePartial(Cloth &cloth, int pt, int *tri) {
+	return scalePartial(cloth, pt, tri[0], tri[1], tri[2]);
 }
 
 Matrix<double, 2, 3> scalePartial(Cloth &cloth, int pt,
@@ -51,11 +59,19 @@ Matrix<double, 2, 3> scalePartial(Cloth &cloth, int pt,
 	return partial;
 }
 
+double shearCondition(Cloth &cloth, int *tri) {
+	return shearCondition(cloth, tri[0], tri[1], tri[2]);
+}
+
 double shearCondition(Cloth &cloth, int i, int j, int k) {
 	auto wuvm = wuvMatrix(cloth, i, j, k);
 	auto area = cloth.getTriUvArea();
 
 	return area * wuvm.col(0).dot(wuvm.col(1));
+}
+
+RowVector3d shearPartial(Cloth &cloth, int pt, int *tri) {
+	return shearPartial(cloth, pt, tri[0], tri[1], tri[2]);
 }
 
 RowVector3d shearPartial(Cloth &cloth, int pt, int i, int j, int k) {
@@ -78,6 +94,10 @@ RowVector3d shearPartial(Cloth &cloth, int pt, int i, int j, int k) {
 	return partial;
 }
 
+double bendCondition(Cloth &cloth, int *tris) {
+	return bendCondition(cloth, tris);
+}
+
 // p1,p2,p3 and p4,p3,p2 are counter-clockwise
 // p2 and p3 are shared between the two triangles
 double bendCondition(Cloth &cloth, int p1, int p2, int p3, int p4) {
@@ -90,6 +110,10 @@ double bendCondition(Cloth &cloth, int p1, int p2, int p3, int p4) {
 	double ct = n1.dot(n2);
 
 	return atan2(st, ct);
+}
+
+RowVector3d bendPartial(Cloth &cloth, int pt, int *tris) {
+	return bendPartial(cloth, pt, tris);
 }
 
 RowVector3d bendPartial(Cloth &cloth, int pt,
