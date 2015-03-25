@@ -12,6 +12,7 @@ void Simulation::update() {
 		for (int j = 0; j < cloth.xRes-1; j++) {
 			int offset = i * cloth.xRes + j;
 			handleScaleCondition(offset);
+			handleShearCondition(offset);
 		}
 	}
 
@@ -45,6 +46,45 @@ void Simulation::handleScaleCondition(int offset) {
 	for (int pt : trPoints) {
 		auto scPart = scalePartial(cloth, pt, trPoints);
 		auto force = -scPart.transpose() * scCond;
+		cloth.worldVels[pt*3 + 0] += force[0];
+		cloth.worldVels[pt*3 + 1] += force[1];
+		cloth.worldVels[pt*3 + 2] += force[2];
+	}
+
+	for (int pt : trPoints) {
+		cloth.worldPoints[pt*3 + 0] += cloth.worldVels[pt*3 + 0];
+		cloth.worldPoints[pt*3 + 1] += cloth.worldVels[pt*3 + 1];
+		cloth.worldPoints[pt*3 + 2] += cloth.worldVels[pt*3 + 2];
+	}
+}
+
+void Simulation::handleShearCondition(int offset) {
+	// bottom-left triangle
+	int blPoints[3] = {offset, offset + 1, offset + cloth.xRes};
+	auto shCond = shearCondition(cloth, blPoints);
+
+	for (int pt : blPoints) {
+		auto shPart = shearPartial(cloth, pt, blPoints);
+		auto force = -shPart.transpose() * shCond;
+		cloth.worldVels[pt*3 + 0] += force[0];
+		cloth.worldVels[pt*3 + 1] += force[1];
+		cloth.worldVels[pt*3 + 2] += force[2];
+	}
+
+	for (int pt : blPoints) {
+		cloth.worldPoints[pt*3 + 0] += cloth.worldVels[pt*3 + 0];
+		cloth.worldPoints[pt*3 + 1] += cloth.worldVels[pt*3 + 1];
+		cloth.worldPoints[pt*3 + 2] += cloth.worldVels[pt*3 + 2];
+	}
+
+	// top-right triangle
+	int trPoints[3] = {offset + cloth.xRes, offset + 1,
+			           offset + cloth.xRes + 1};
+	shCond = shearCondition(cloth, trPoints);
+
+	for (int pt : trPoints) {
+		auto shPart = shearPartial(cloth, pt, trPoints);
+		auto force = -shPart.transpose() * shCond;
 		cloth.worldVels[pt*3 + 0] += force[0];
 		cloth.worldVels[pt*3 + 1] += force[1];
 		cloth.worldVels[pt*3 + 2] += force[2];

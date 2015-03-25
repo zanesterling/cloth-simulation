@@ -8,6 +8,7 @@
 
 class Simulation {
 	void handleScaleCondition(int);
+	void handleShearCondition(int);
 	double *genTrisFromMesh();
 	void copyPoint(double *, double *, int);
 
