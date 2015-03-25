@@ -5,6 +5,7 @@ Cloth::Cloth(int xRes, int yRes)
 
 	initUvPoints();
 	initWorldPoints();
+	worldVels = new double[3 * xRes * yRes];
 }
 
 Cloth::Cloth(int xRes, int yRes, double w, double h)
@@ -12,6 +13,7 @@ Cloth::Cloth(int xRes, int yRes, double w, double h)
 
 	initUvPoints();
 	initWorldPoints();
+	worldVels = new double[3 * xRes * yRes];
 }
 
 // initialize uvPoints with uniform grid

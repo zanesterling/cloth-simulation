@@ -3,19 +3,29 @@
 using namespace std;
 Simulation::Simulation(int clothWidth, int clothHeight)
 	: cloth(Cloth(clothWidth, clothHeight)) {
+	cloth.worldPoints[3 + 1] += 0.03;
 	triVerts = genTrisFromMesh();
-
-	auto scale = scaleCondition(cloth, 0, 1, cloth.xRes);
-	cout << scale << endl << endl;
-	auto partial = scalePartial(cloth, 0, 0, 1, cloth.xRes);
-	cout << partial << endl << endl;
-	auto bend = bendCondition(cloth, 0, 1, cloth.xRes, cloth.xRes + 1);
-	cout << bend << endl << endl;
-	auto bPartial = bendPartial(cloth, 0, 0, 1, cloth.xRes, cloth.xRes+1);
-	cout << bPartial << endl << endl;
 }
 
 void Simulation::update() {
+	int points[3] = {0, 1, cloth.xRes};
+	auto scCond = scaleCondition(cloth, 0, 1, cloth.xRes);
+
+	for (int pt : points) {
+		auto scPart = scalePartial(cloth, pt, 0, 1, cloth.xRes);
+		auto force = -scPart.transpose() * scCond;
+		cloth.worldVels[pt*3 + 0] += force[0];
+		cloth.worldVels[pt*3 + 1] += force[1];
+		cloth.worldVels[pt*3 + 2] += force[2];
+	}
+
+	for (int pt : points) {
+		cloth.worldPoints[pt*3 + 0] += cloth.worldVels[pt*3 + 0];
+		cloth.worldPoints[pt*3 + 1] += cloth.worldVels[pt*3 + 1];
+		cloth.worldPoints[pt*3 + 2] += cloth.worldVels[pt*3 + 2];
+	}
+
+	triVerts = genTrisFromMesh();
 }
 
 double *Simulation::genTrisFromMesh() {

@@ -20,9 +20,6 @@ void initGlut(int argc, char **argv) {
 	glutReshapeFunc(resize);
 	glutKeyboardFunc(keyboard);
 
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
 	glEnableClientState(GL_VERTEX_ARRAY);
 
 	glShadeModel(GL_FLAT);
