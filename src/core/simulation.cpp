@@ -16,6 +16,9 @@ void Simulation::update() {
 		}
 	}
 
+	for (int i = 0; i < cloth.xRes * cloth.yRes; i++) {
+		cloth.worldPoints[i] += cloth.worldVels[i];
+	}
 	triVerts = genTrisFromMesh();
 }
 
@@ -32,12 +35,6 @@ void Simulation::handleScaleCondition(int offset) {
 		cloth.worldVels[pt*3 + 2] += force[2];
 	}
 
-	for (int pt : blPoints) {
-		cloth.worldPoints[pt*3 + 0] += cloth.worldVels[pt*3 + 0];
-		cloth.worldPoints[pt*3 + 1] += cloth.worldVels[pt*3 + 1];
-		cloth.worldPoints[pt*3 + 2] += cloth.worldVels[pt*3 + 2];
-	}
-
 	// top-right triangle
 	int trPoints[3] = {offset + cloth.xRes, offset + 1,
 			           offset + cloth.xRes + 1};
@@ -49,12 +46,6 @@ void Simulation::handleScaleCondition(int offset) {
 		cloth.worldVels[pt*3 + 0] += force[0];
 		cloth.worldVels[pt*3 + 1] += force[1];
 		cloth.worldVels[pt*3 + 2] += force[2];
-	}
-
-	for (int pt : trPoints) {
-		cloth.worldPoints[pt*3 + 0] += cloth.worldVels[pt*3 + 0];
-		cloth.worldPoints[pt*3 + 1] += cloth.worldVels[pt*3 + 1];
-		cloth.worldPoints[pt*3 + 2] += cloth.worldVels[pt*3 + 2];
 	}
 }
 
