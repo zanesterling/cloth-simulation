@@ -7,6 +7,10 @@
 #include "conditions.h"
 
 class Simulation {
+	void handleScaleCondition(int);
+	double *genTrisFromMesh();
+	void copyPoint(double *, double *, int);
+
 public:
 	Cloth cloth;
 	double *triVerts;
@@ -14,7 +18,5 @@ public:
 	Simulation(int, int);
 
 	void update();
-	double *genTrisFromMesh();
 	int getNumTris();
-	void copyPoint(double *, double *, int);
 };

@@ -8,24 +8,53 @@ Simulation::Simulation(int clothWidth, int clothHeight)
 }
 
 void Simulation::update() {
-	int points[3] = {0, 1, cloth.xRes};
-	auto scCond = scaleCondition(cloth, 0, 1, cloth.xRes);
+	for (int i = 0; i < cloth.yRes-1; i++) {
+		for (int j = 0; j < cloth.xRes-1; j++) {
+			int offset = i * cloth.xRes + j;
+			handleScaleCondition(offset);
+		}
+	}
 
-	for (int pt : points) {
-		auto scPart = scalePartial(cloth, pt, 0, 1, cloth.xRes);
+	triVerts = genTrisFromMesh();
+}
+
+void Simulation::handleScaleCondition(int offset) {
+	// bottom-left triangle
+	int blPoints[3] = {offset, offset + 1, offset + cloth.xRes};
+	auto scCond = scaleCondition(cloth, blPoints);
+
+	for (int pt : blPoints) {
+		auto scPart = scalePartial(cloth, pt, blPoints);
 		auto force = -scPart.transpose() * scCond;
 		cloth.worldVels[pt*3 + 0] += force[0];
 		cloth.worldVels[pt*3 + 1] += force[1];
 		cloth.worldVels[pt*3 + 2] += force[2];
 	}
 
-	for (int pt : points) {
+	for (int pt : blPoints) {
 		cloth.worldPoints[pt*3 + 0] += cloth.worldVels[pt*3 + 0];
 		cloth.worldPoints[pt*3 + 1] += cloth.worldVels[pt*3 + 1];
 		cloth.worldPoints[pt*3 + 2] += cloth.worldVels[pt*3 + 2];
 	}
 
-	triVerts = genTrisFromMesh();
+	// top-right triangle
+	int trPoints[3] = {offset + cloth.xRes, offset + 1,
+			           offset + cloth.xRes + 1};
+	scCond = scaleCondition(cloth, trPoints);
+
+	for (int pt : trPoints) {
+		auto scPart = scalePartial(cloth, pt, trPoints);
+		auto force = -scPart.transpose() * scCond;
+		cloth.worldVels[pt*3 + 0] += force[0];
+		cloth.worldVels[pt*3 + 1] += force[1];
+		cloth.worldVels[pt*3 + 2] += force[2];
+	}
+
+	for (int pt : trPoints) {
+		cloth.worldPoints[pt*3 + 0] += cloth.worldVels[pt*3 + 0];
+		cloth.worldPoints[pt*3 + 1] += cloth.worldVels[pt*3 + 1];
+		cloth.worldPoints[pt*3 + 2] += cloth.worldVels[pt*3 + 2];
+	}
 }
 
 double *Simulation::genTrisFromMesh() {
