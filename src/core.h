@@ -19,4 +19,6 @@ void display();
 void idle();
 void resize(int, int);
 void keyboard(unsigned char, int, int);
+void mouse(int, int, int, int);
+void mouseMotion(int, int);
 void quit();

@@ -19,6 +19,8 @@ void initGlut(int argc, char **argv) {
 	glutIdleFunc(idle);
 	glutReshapeFunc(resize);
 	glutKeyboardFunc(keyboard);
+	glutMouseFunc(mouse);
+	glutMotionFunc(mouseMotion);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -55,6 +57,14 @@ void keyboard(unsigned char key, int x, int y) {
 			quit();
 			break;
 	}
+}
+
+void mouse(int button, int state, int x, int y) {
+	ui.mouse(button, state, x, y);
+}
+
+void mouseMotion(int x, int y) {
+	ui.mouseMotion(x, y);
 }
 
 void quit() {
