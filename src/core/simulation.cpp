@@ -13,11 +13,11 @@ void Simulation::update() {
 			int offset = i * cloth.xRes + j;
 			handleScaleCondition(offset);
 			handleShearCondition(offset);
-			handleBendCondition(offset);
+			//handleBendCondition(offset);
 		}
 	}
 
-	for (int i = 0; i < cloth.xRes * cloth.yRes; i++) {
+	for (int i = 0; i < 3 * cloth.xRes * cloth.yRes; i++) {
 		cloth.worldPoints[i] += cloth.worldVels[i];
 	}
 
@@ -125,12 +125,12 @@ void Simulation::handleBendCondition(int offset) {
 	}
 
 	if (yOff + 2 < cloth.yRes) {
-		// right-side triangle
+		// top-side triangle
 		int tpPoints[4] = {
 			offset + 1,
 			offset + cloth.xRes + 1,
 			offset + cloth.xRes,
-			offset + cloth.xRes * 2
+			offset + 2 * cloth.xRes
 		};
 		bdCond = bendCondition(cloth, tpPoints);
 
