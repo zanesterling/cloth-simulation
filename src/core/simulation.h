@@ -6,6 +6,8 @@
 #include "cloth.h"
 #include "conditions.h"
 
+#define LOCK_TOP_POINTS true
+
 class Simulation {
 	void handleScaleCondition(int);
 	void handleShearCondition(int);

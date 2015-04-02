@@ -17,7 +17,9 @@ void Simulation::update() {
 		}
 	}
 
-	for (int i = 0; i < 3 * cloth.xRes * cloth.yRes; i++) {
+	int lastPoint = 3 * cloth.xRes * cloth.yRes;
+	if (LOCK_TOP_POINTS) lastPoint -= 3 * cloth.xRes;
+	for (int i = 0; i < lastPoint; i++) {
 		cloth.worldPoints[i] += cloth.worldVels[i];
 	}
 
