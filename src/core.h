@@ -8,8 +8,10 @@
 #include "core/ui.h"
 #include "core/simulation.h"
 
-Simulation sim(10, 10);
+Simulation sim(5, 5);
 UI ui(720, 480, sim);
+
+bool running = true;
 
 int main(int, char **);
 void initGlut(int, char **);
