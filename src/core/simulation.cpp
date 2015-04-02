@@ -64,12 +64,6 @@ void Simulation::handleShearCondition(int offset) {
 		cloth.worldVels[pt*3 + 2] += force[2];
 	}
 
-	for (int pt : blPoints) {
-		cloth.worldPoints[pt*3 + 0] += cloth.worldVels[pt*3 + 0];
-		cloth.worldPoints[pt*3 + 1] += cloth.worldVels[pt*3 + 1];
-		cloth.worldPoints[pt*3 + 2] += cloth.worldVels[pt*3 + 2];
-	}
-
 	// top-right triangle
 	int trPoints[3] = {offset + cloth.xRes, offset + 1,
 			           offset + cloth.xRes + 1};
