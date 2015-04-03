@@ -57,16 +57,16 @@ void resize(int w, int h) {
 void keyboard(unsigned char key, int x, int y) {
 	switch (key) {
 		case 'w':
-			ui.vAlt = -0.03;
+			ui.vAlt = -0.02;
 			break;
 		case 's':
-			ui.vAlt = 0.03;
+			ui.vAlt = 0.02;
 			break;
 		case 'd':
-			ui.vAzim = -0.03;
+			ui.vAzim = -0.02;
 			break;
 		case 'a':
-			ui.vAzim = 0.03;
+			ui.vAzim = 0.02;
 			break;
 		case 'e':
 			ui.vAzim = 0;
