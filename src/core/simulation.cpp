@@ -96,7 +96,7 @@ void Simulation::handleBendCondition(int offset) {
 
 	for (int pt : blPoints) {
 		auto bdPart = bendPartial(cloth, pt, blPoints);
-		auto force = -bdPart.transpose() * bdCond;
+		auto force = -bdPart.transpose() * bdCond * BEND_STIFFNESS;
 		cloth.worldVels[pt*3 + 0] += force[0];
 		cloth.worldVels[pt*3 + 1] += force[1];
 		cloth.worldVels[pt*3 + 2] += force[2];
@@ -114,7 +114,7 @@ void Simulation::handleBendCondition(int offset) {
 
 		for (int pt : rtPoints) {
 			auto bdPart = bendPartial(cloth, pt, rtPoints);
-			auto force = -bdPart.transpose() * bdCond;
+			auto force = -bdPart.transpose() * bdCond * BEND_STIFFNESS;
 			cloth.worldVels[pt*3 + 0] += force[0];
 			cloth.worldVels[pt*3 + 1] += force[1];
 			cloth.worldVels[pt*3 + 2] += force[2];
@@ -133,7 +133,7 @@ void Simulation::handleBendCondition(int offset) {
 
 		for (int pt : tpPoints) {
 			auto bdPart = bendPartial(cloth, pt, tpPoints);
-			auto force = -bdPart.transpose() * bdCond;
+			auto force = -bdPart.transpose() * bdCond * BEND_STIFFNESS;
 			cloth.worldVels[pt*3 + 0] += force[0];
 			cloth.worldVels[pt*3 + 1] += force[1];
 			cloth.worldVels[pt*3 + 2] += force[2];
