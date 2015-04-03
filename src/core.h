@@ -11,8 +11,6 @@
 Simulation sim(5, 5);
 UI ui(720, 480, sim);
 
-bool running = true;
-
 int main(int, char **);
 void initGlut(int, char **);
 void initLights();

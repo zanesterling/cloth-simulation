@@ -41,13 +41,11 @@ void display() {
 }
 
 void idle() {
-	if (running) {
-		sim.update();
-		ui.update();
+	sim.update();
+	ui.update();
 
-		// mark dirty frame
-		glutPostRedisplay();
-	}
+	// mark dirty frame
+	glutPostRedisplay();
 }
 
 void resize(int w, int h) {
@@ -73,7 +71,7 @@ void keyboard(unsigned char key, int x, int y) {
 			ui.vAlt = 0;
 			break;
 		case 'p':
-			running = !running;
+			sim.running = !sim.running;
 			break;
 		case 'q':
 			quit();

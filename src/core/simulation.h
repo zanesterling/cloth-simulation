@@ -19,6 +19,7 @@ class Simulation {
 public:
 	Cloth cloth;
 	double *triVerts;
+	bool running = false;
 
 	Simulation(int, int);
 

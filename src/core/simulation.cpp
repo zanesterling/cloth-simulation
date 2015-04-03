@@ -9,6 +9,9 @@ Simulation::Simulation(int clothWidth, int clothHeight)
 }
 
 void Simulation::update() {
+	// if simulation is paused, don't update
+	if (!running) return;
+
 	for (int i = 0; i < cloth.yRes-1; i++) {
 		for (int j = 0; j < cloth.xRes-1; j++) {
 			int offset = i * cloth.xRes + j;
