@@ -43,6 +43,7 @@ void display() {
 void idle() {
 	if (running) {
 		sim.update();
+		ui.update();
 
 		// mark dirty frame
 		glutPostRedisplay();
@@ -55,7 +56,23 @@ void resize(int w, int h) {
 
 void keyboard(unsigned char key, int x, int y) {
 	switch (key) {
+		case 'w':
+			ui.vAlt = 0.03;
+			break;
+		case 's':
+			ui.vAlt = -0.03;
+			break;
 		case 'd':
+			ui.vAzim = 0.03;
+			break;
+		case 'a':
+			ui.vAzim = -0.03;
+			break;
+		case 'e':
+			ui.vAzim = 0;
+			ui.vAlt = 0;
+			break;
+		case 'p':
 			running = !running;
 			break;
 		case 'q':

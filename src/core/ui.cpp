@@ -4,6 +4,11 @@ UI::UI(int canvasWidth, int canvasHeight, Simulation &sim)
 	: width(canvasWidth), height(canvasHeight), sim(sim) {
 }
 
+void UI::update() {
+	azimuth += vAzim;
+	altitude += vAlt;
+}
+
 void UI::render() {
 	GLfloat *tris = new GLfloat[9 * sim.getNumTris()];
 	for (int i = 0; i < 9 * sim.getNumTris(); i++) {
@@ -11,8 +16,18 @@ void UI::render() {
 	}
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glPushMatrix();
+
+	// perspective transform
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
 	gluPerspective(FOV_Y, 1. * width / height, 0.1, 100);
+
+	// model transform
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glTranslatef(0, 0, -5);
+	glRotatef(180. / M_PI * altitude, 1, 0, 0);
+	glRotatef(180. / M_PI * azimuth,  0, 1, 0);
 
 	glVertexPointer(3, GL_FLOAT, 0, tris);
 

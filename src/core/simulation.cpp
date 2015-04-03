@@ -3,7 +3,8 @@
 using namespace std;
 Simulation::Simulation(int clothWidth, int clothHeight)
 	: cloth(Cloth(clothWidth, clothHeight)) {
-	cloth.worldPoints[3 + 1] += 0.03;
+	cloth.worldPoints[0] -= 0.03;
+	cloth.worldPoints[1] -= 0.03;
 	triVerts = genTrisFromMesh();
 }
 
