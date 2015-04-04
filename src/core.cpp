@@ -73,6 +73,9 @@ void keyboard(unsigned char key, int x, int y) {
 		case 'p':
 			sim.running = !sim.running;
 			break;
+		case 'r':
+			sim.reset();
+			break;
 		case 'q':
 			quit();
 			break;

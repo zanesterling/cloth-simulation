@@ -24,5 +24,6 @@ public:
 	Simulation(int, int);
 
 	void update();
+	void reset();
 	int getNumTris();
 };

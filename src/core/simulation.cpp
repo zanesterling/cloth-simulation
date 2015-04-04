@@ -30,6 +30,11 @@ void Simulation::update() {
 	triVerts = genTrisFromMesh();
 }
 
+void Simulation::reset() {
+	cloth = Cloth(cloth.xRes, cloth.yRes);
+	triVerts = genTrisFromMesh();
+}
+
 void Simulation::handleScaleCondition(int offset) {
 	// bottom-left triangle
 	int blPoints[3] = {offset, offset + 1, offset + cloth.xRes};
