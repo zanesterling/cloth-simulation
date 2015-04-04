@@ -131,11 +131,13 @@ RowVector3d bendPartial(Cloth &cloth, int pt,
 		// perturb the cloth
 		worldPt[col] += PERTURB_QUANT;
 
-		auto perturbedCond = bendCondition(cloth, p1, p2, p3, p4);
-		partial[col] = (perturbedCond - localCond) / PERTURB_QUANT;
+		auto pCond1 = bendCondition(cloth, p1, p2, p3, p4);
+		worldPt[col] -= 2 * PERTURB_QUANT;
+		auto pCond2 = bendCondition(cloth, p1, p2, p3, p4);
+		partial[col] = (pCond1 - pCond2) / (2 * PERTURB_QUANT);
 
 		// de-perturb cloth
-		worldPt[col] -= PERTURB_QUANT;
+		worldPt[col] += PERTURB_QUANT;
 	}
 
 	return partial;
