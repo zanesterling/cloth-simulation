@@ -1,10 +1,10 @@
 #include "simulation.h"
 
 using namespace std;
-Simulation::Simulation(int clothWidth, int clothHeight)
-	: cloth(Cloth(clothWidth, clothHeight)) {
-	cloth.worldPoints[0] -= 0.03;
-	cloth.worldPoints[1] -= 0.03;
+Simulation::Simulation(int clothXRes, int clothYRes)
+	: cloth(Cloth(clothXRes, clothYRes)) {
+	reset();
+
 	triVerts = genTrisFromMesh();
 }
 
@@ -32,6 +32,10 @@ void Simulation::update() {
 
 void Simulation::reset() {
 	cloth = Cloth(cloth.xRes, cloth.yRes);
+
+	cloth.worldPoints[3 + 1] -= 0.03;
+	cloth.worldPoints[3 + 2] -= 0.03;
+
 	triVerts = genTrisFromMesh();
 }
 
