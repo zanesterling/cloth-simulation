@@ -99,7 +99,7 @@ RowVector3d shearPartial(Cloth &cloth, int pt, int i, int j, int k) {
 }
 
 double bendCondition(Cloth &cloth, int *tris) {
-	return bendCondition(cloth, tris);
+	return bendCondition(cloth, tris[0], tris[1], tris[2], tris[3]);
 }
 
 // p1,p2,p3 and p4,p3,p2 are counter-clockwise
@@ -117,7 +117,7 @@ double bendCondition(Cloth &cloth, int p1, int p2, int p3, int p4) {
 }
 
 RowVector3d bendPartial(Cloth &cloth, int pt, int *tris) {
-	return bendPartial(cloth, pt, tris);
+	return bendPartial(cloth, pt, tris[0], tris[1], tris[2], tris[3]);
 }
 
 RowVector3d bendPartial(Cloth &cloth, int pt,
