@@ -7,7 +7,7 @@
 #include "conditions.h"
 
 #define LOCK_TOP_POINTS true
-#define BEND_STIFFNESS 0.8
+#define BEND_STIFFNESS 0.01
 
 class Simulation {
 	void handleScaleCondition(int);
