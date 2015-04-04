@@ -32,9 +32,6 @@ void UI::render() {
 	glVertexPointer(3, GL_FLOAT, 0, tris);
 
 	glColor3f(1, 1, 1);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glDrawArrays(GL_TRIANGLES, 0, 3 * sim.getNumTris());
-	glColor3f(0, 0, 0);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glDrawArrays(GL_TRIANGLES, 0, 3 * sim.getNumTris());
 
