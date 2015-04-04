@@ -33,8 +33,12 @@ void Simulation::update() {
 void Simulation::reset() {
 	cloth = Cloth(cloth.xRes, cloth.yRes);
 
-	cloth.worldPoints[3 + 1] -= 0.03;
-	cloth.worldPoints[3 + 2] -= 0.03;
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < cloth.xRes; j++) {
+			cloth.worldPoints[(i * cloth.xRes + j)*3 + 1] -= (10-i) * 0.01;
+			cloth.worldPoints[(i * cloth.xRes + j)*3 + 2] -= (10-i) * 0.01;
+		}
+	}
 
 	triVerts = genTrisFromMesh();
 }
