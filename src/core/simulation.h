@@ -7,6 +7,9 @@
 #include "conditions.h"
 
 #define LOCK_TOP_POINTS false
+
+#define SCALE_STIFFNESS 1
+#define SHEAR_STIFFNESS 1
 #define BEND_STIFFNESS 0.001
 
 class Simulation {
