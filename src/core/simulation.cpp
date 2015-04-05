@@ -12,6 +12,7 @@ void Simulation::update() {
 	// if simulation is paused, don't update
 	if (!running) return;
 
+	// get condition-forces and update velocities accordingly
 	for (int i = 0; i < cloth.yRes-1; i++) {
 		for (int j = 0; j < cloth.xRes-1; j++) {
 			int offset = i * cloth.xRes + j;
@@ -21,18 +22,24 @@ void Simulation::update() {
 		}
 	}
 
+	// lock the top row of points, if we've enabled that setting
 	int lastPoint = 3 * cloth.xRes * cloth.yRes;
 	if (LOCK_TOP_POINTS) lastPoint -= 3 * cloth.xRes;
+
+	// move the points by their velocities
 	for (int i = 0; i < lastPoint; i++) {
 		cloth.worldPoints[i] += cloth.worldVels[i];
 	}
 
+	// generate new triangles from the mesh
 	triVerts = genTrisFromMesh();
 }
 
 void Simulation::reset() {
+	// regenerate cloth
 	cloth = Cloth(cloth.xRes, cloth.yRes);
 
+	// perturb cloth for the test case
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < cloth.xRes; j++) {
 			cloth.worldPoints[(i * cloth.xRes + j)*3 + 1] -= (10-i) * 0.01;
@@ -40,6 +47,7 @@ void Simulation::reset() {
 		}
 	}
 
+	// regenerate triangles from the mesh
 	triVerts = genTrisFromMesh();
 }
 
@@ -164,7 +172,6 @@ double *Simulation::genTrisFromMesh() {
 	for (int i = 0; i < cloth.yRes - 1; i++) {
 		for (int j = 0 ; j < cloth.xRes - 1; j++) {
 			double *triPairStart = tris + 18 * (i*(cloth.xRes-1) + j);
-
 			copyPoint(triPairStart,      cloth.getWorldPoint(j,   i),   3);
 			copyPoint(triPairStart + 3,  cloth.getWorldPoint(j,   i+1), 3);
 			copyPoint(triPairStart + 6,  cloth.getWorldPoint(j+1, i),   3);
