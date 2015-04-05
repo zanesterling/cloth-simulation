@@ -13,9 +13,9 @@
 #define BEND_STIFFNESS 0.001
 
 class Simulation {
-	void handleScaleCondition(int);
-	void handleShearCondition(int);
-	void handleBendCondition(int);
+	void handleScaleCondition(int, double *);
+	void handleShearCondition(int, double *);
+	void handleBendCondition(int, double *);
 	double *genTrisFromMesh();
 	void copyPoint(double *, double *, int);
 
