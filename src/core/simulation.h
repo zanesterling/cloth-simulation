@@ -11,9 +11,10 @@
 #define SCALE_STIFFNESS 1
 #define SHEAR_STIFFNESS 1
 #define BEND_STIFFNESS 0.001
+#define DAMP_STIFFNESS 0.3
 
 class Simulation {
-	void handleScaleCondition(int, double *);
+	void handleScaleCondition(int, double *, double *);
 	void handleShearCondition(int, double *);
 	void handleBendCondition(int, double *);
 	double *genTrisFromMesh();

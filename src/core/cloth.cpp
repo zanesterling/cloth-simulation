@@ -63,6 +63,15 @@ double *Cloth::getWorldPoint(int x, int y) {
 	return worldPoints + 3 * (y*xRes + x);
 }
 
+double *Cloth::getWorldVel(int i) {
+	return worldVels + 3 * i;
+}
+
+// NOTE: doesn't check bounds!
+double *Cloth::getWorldVel(int x, int y) {
+	return worldVels + 3 * (y*xRes + x);
+}
+
 void Cloth::setWorldPoint(int xCor, int yCor, double xPos, double yPos,
 	double zPos) {
 	double *point = getWorldPoint(xCor, yCor);

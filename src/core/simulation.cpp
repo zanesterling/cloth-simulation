@@ -12,19 +12,26 @@ void Simulation::update() {
 	// if simulation is paused, don't update
 	if (!running) return;
 
-	// get condition-forces and update velocities accordingly
+	// zero new forces array
 	double *forces = new double[3 * cloth.xRes * cloth.yRes];
-	for (int i = 0; i < 3 * cloth.xRes * cloth.yRes; i++) forces[i] = 0;
+	double *dampingForces = new double[3 * cloth.xRes * cloth.yRes];
+	for (int i = 0; i < 3 * cloth.xRes * cloth.yRes; i++) {
+		forces[i] = 0;
+		dampingForces[i] = 0;
+	}
+
+	// get condition-forces and update velocities accordingly
 	for (int i = 0; i < cloth.yRes-1; i++) {
 		for (int j = 0; j < cloth.xRes-1; j++) {
 			int offset = i * cloth.xRes + j;
-			handleScaleCondition(offset, forces);
+			handleScaleCondition(offset, forces, dampingForces);
 			handleShearCondition(offset, forces);
 			handleBendCondition(offset, forces);
 		}
 	}
 	for (int i = 0; i < 3 * cloth.xRes * cloth.yRes; i++) {
 		cloth.worldVels[i] += forces[i];
+		cloth.worldVels[i] += dampingForces[i];
 	}
 
 	// lock the top row of points, if we've enabled that setting
@@ -56,7 +63,8 @@ void Simulation::reset() {
 	triVerts = genTrisFromMesh();
 }
 
-void Simulation::handleScaleCondition(int offset, double *forces) {
+void Simulation::handleScaleCondition(int offset, double *forces,
+                                      double *dampingForces) {
 	// bottom-left triangle
 	int blPoints[3] = {offset, offset + 1, offset + cloth.xRes};
 	auto scCond = scaleCondition(cloth, blPoints);
@@ -67,6 +75,13 @@ void Simulation::handleScaleCondition(int offset, double *forces) {
 		forces[pt*3 + 0] += force[0];
 		forces[pt*3 + 1] += force[1];
 		forces[pt*3 + 2] += force[2];
+
+		auto vel = Vector3d(cloth.getWorldVel(pt));
+		auto dampForce = -DAMP_STIFFNESS * scPart.transpose() * scPart *
+		                  vel;
+		dampingForces[pt*3 + 0] += dampForce[0];
+		dampingForces[pt*3 + 1] += dampForce[1];
+		dampingForces[pt*3 + 2] += dampForce[2];
 	}
 
 	// top-right triangle
@@ -80,6 +95,13 @@ void Simulation::handleScaleCondition(int offset, double *forces) {
 		forces[pt*3 + 0] += force[0];
 		forces[pt*3 + 1] += force[1];
 		forces[pt*3 + 2] += force[2];
+
+		auto vel = Vector3d(cloth.getWorldVel(pt));
+		auto dampForce = -DAMP_STIFFNESS * scPart.transpose() * scPart *
+		                  vel;
+		dampingForces[pt*3 + 0] += dampForce[0];
+		dampingForces[pt*3 + 1] += dampForce[1];
+		dampingForces[pt*3 + 2] += dampForce[2];
 	}
 }
 
