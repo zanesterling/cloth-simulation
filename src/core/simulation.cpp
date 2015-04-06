@@ -45,6 +45,9 @@ void Simulation::update() {
 
 	// generate new triangles from the mesh
 	triVerts = genTrisFromMesh();
+
+	delete forces;
+	delete dampingForces;
 }
 
 void Simulation::reset() {
