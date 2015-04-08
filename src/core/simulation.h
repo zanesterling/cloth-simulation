@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Eigen/Sparse>
+
 #include <string.h>
 #include <iostream>
 
@@ -13,10 +15,13 @@
 #define BEND_STIFFNESS 0.001
 #define DAMP_STIFFNESS 0.3
 
+#define TIMESTEP 1
+
 class Simulation {
-	void handleScaleCondition(int, double *, double *);
-	void handleShearCondition(int, double *);
-	void handleBendCondition(int, double *);
+	void handleScaleCondition(int, Matrix<Vector3d, Dynamic, Dynamic> &,
+	                          double *);
+	void handleShearCondition(int, Matrix<Vector3d, Dynamic, Dynamic> &);
+	void handleBendCondition(int,  Matrix<Vector3d, Dynamic, Dynamic> &);
 	double *genTrisFromMesh();
 	void copyPoint(double *, double *, int);
 

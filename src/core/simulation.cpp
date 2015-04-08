@@ -13,11 +13,11 @@ void Simulation::update() {
 	if (!running) return;
 
 	// zero new forces array
-	double *forces = new double[3 * cloth.xRes * cloth.yRes];
+	Matrix<Vector3d, Dynamic, Dynamic> forces(1, cloth.xRes * cloth.yRes);
 	double *dampingForces = new double[3 * cloth.xRes * cloth.yRes];
 	for (int i = 0; i < 3 * cloth.xRes * cloth.yRes; i++) {
-		forces[i] = 0;
 		dampingForces[i] = 0;
+		forces(0, i/3)[i % 3] = 0;
 	}
 
 	// get condition-forces and update velocities accordingly
@@ -26,12 +26,12 @@ void Simulation::update() {
 			int offset = i * cloth.xRes + j;
 			handleScaleCondition(offset, forces, dampingForces);
 			handleShearCondition(offset, forces);
-			handleBendCondition(offset, forces);
+			handleBendCondition (offset, forces);
 		}
 	}
 	for (int i = 0; i < 3 * cloth.xRes * cloth.yRes; i++) {
-		cloth.worldVels[i] += forces[i];
 		cloth.worldVels[i] += dampingForces[i];
+		cloth.worldVels[i] += forces(0, i / 3)[i % 3];
 	}
 
 	// lock the top row of points, if we've enabled that setting
@@ -46,7 +46,6 @@ void Simulation::update() {
 	// generate new triangles from the mesh
 	triVerts = genTrisFromMesh();
 
-	delete forces;
 	delete dampingForces;
 }
 
@@ -66,7 +65,8 @@ void Simulation::reset() {
 	triVerts = genTrisFromMesh();
 }
 
-void Simulation::handleScaleCondition(int offset, double *forces,
+void Simulation::handleScaleCondition(int offset,
+                                      Matrix<Vector3d, Dynamic, Dynamic> &forces,
                                       double *dampingForces) {
 	// bottom-left triangle
 	int blPoints[3] = {offset, offset + 1, offset + cloth.xRes};
@@ -75,9 +75,7 @@ void Simulation::handleScaleCondition(int offset, double *forces,
 	for (int pt : blPoints) {
 		auto scPart = scalePartial(cloth, pt, blPoints);
 		auto force = -SCALE_STIFFNESS * scPart.transpose() * scCond;
-		forces[pt*3 + 0] += force[0];
-		forces[pt*3 + 1] += force[1];
-		forces[pt*3 + 2] += force[2];
+		forces(0, pt) += force;
 
 		auto vel = Vector3d(cloth.getWorldVel(pt));
 		auto dampForce = -DAMP_STIFFNESS * scPart.transpose() * scPart *
@@ -95,9 +93,7 @@ void Simulation::handleScaleCondition(int offset, double *forces,
 	for (int pt : trPoints) {
 		auto scPart = scalePartial(cloth, pt, trPoints);
 		auto force = -SCALE_STIFFNESS * scPart.transpose() * scCond;
-		forces[pt*3 + 0] += force[0];
-		forces[pt*3 + 1] += force[1];
-		forces[pt*3 + 2] += force[2];
+		forces(0, pt) += force;
 
 		auto vel = Vector3d(cloth.getWorldVel(pt));
 		auto dampForce = -DAMP_STIFFNESS * scPart.transpose() * scPart *
@@ -108,7 +104,8 @@ void Simulation::handleScaleCondition(int offset, double *forces,
 	}
 }
 
-void Simulation::handleShearCondition(int offset, double *forces) {
+void Simulation::handleShearCondition(int offset,
+                                      Matrix<Vector3d, Dynamic, Dynamic> &forces) {
 	// bottom-left triangle
 	int blPoints[3] = {offset, offset + 1, offset + cloth.xRes};
 	auto shCond = shearCondition(cloth, blPoints);
@@ -116,9 +113,7 @@ void Simulation::handleShearCondition(int offset, double *forces) {
 	for (int pt : blPoints) {
 		auto shPart = shearPartial(cloth, pt, blPoints);
 		auto force = -SHEAR_STIFFNESS * shPart.transpose() * shCond;
-		forces[pt*3 + 0] += force[0];
-		forces[pt*3 + 1] += force[1];
-		forces[pt*3 + 2] += force[2];
+		forces(0, pt) += force;
 	}
 
 	// top-right triangle
@@ -129,13 +124,12 @@ void Simulation::handleShearCondition(int offset, double *forces) {
 	for (int pt : trPoints) {
 		auto shPart = shearPartial(cloth, pt, trPoints);
 		auto force = -SHEAR_STIFFNESS * shPart.transpose() * shCond;
-		forces[pt*3 + 0] += force[0];
-		forces[pt*3 + 1] += force[1];
-		forces[pt*3 + 2] += force[2];
+		forces(0, pt) += force;
 	}
 }
 
-void Simulation::handleBendCondition(int offset, double *forces) {
+void Simulation::handleBendCondition(int offset,
+                                     Matrix<Vector3d, Dynamic, Dynamic> &forces) {
 	int xOff = offset % cloth.xRes;
 	int yOff = offset / cloth.xRes;
 
@@ -151,9 +145,7 @@ void Simulation::handleBendCondition(int offset, double *forces) {
 	for (int pt : blPoints) {
 		auto bdPart = bendPartial(cloth, pt, blPoints);
 		auto force = -BEND_STIFFNESS * bdPart.transpose() * bdCond;
-		forces[pt*3 + 0] += force[0];
-		forces[pt*3 + 1] += force[1];
-		forces[pt*3 + 2] += force[2];
+		forces(0, pt) += force;
 	}
 
 	if (xOff < cloth.xRes - 2) {
@@ -169,9 +161,7 @@ void Simulation::handleBendCondition(int offset, double *forces) {
 		for (int pt : rtPoints) {
 			auto bdPart = bendPartial(cloth, pt, rtPoints);
 			auto force = -BEND_STIFFNESS * bdPart.transpose() * bdCond;
-			forces[pt*3 + 0] += force[0];
-			forces[pt*3 + 1] += force[1];
-			forces[pt*3 + 2] += force[2];
+			forces(0, pt) += force;
 		}
 	}
 
@@ -188,9 +178,7 @@ void Simulation::handleBendCondition(int offset, double *forces) {
 		for (int pt : tpPoints) {
 			auto bdPart = bendPartial(cloth, pt, tpPoints);
 			auto force = -BEND_STIFFNESS * bdPart.transpose() * bdCond;
-			forces[pt*3 + 0] += force[0];
-			forces[pt*3 + 1] += force[1];
-			forces[pt*3 + 2] += force[2];
+			forces(0, pt) += force;
 		}
 	}
 }
