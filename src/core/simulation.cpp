@@ -12,25 +12,24 @@ void Simulation::update() {
 	// if simulation is paused, don't update
 	if (!running) return;
 
-	// zero new forces array
+	// zero new forces matrix
 	Matrix<Vector3d, Dynamic, Dynamic> forces(1, cloth.xRes * cloth.yRes);
-	double *dampingForces = new double[3 * cloth.xRes * cloth.yRes];
-	for (int i = 0; i < 3 * cloth.xRes * cloth.yRes; i++) {
-		dampingForces[i] = 0;
-		forces(0, i/3)[i % 3] = 0;
+	for (int pt = 0; pt < cloth.xRes * cloth.yRes; pt++) {
+		forces(0, pt)[0] = 0;
+		forces(0, pt)[1] = 0;
+		forces(0, pt)[2] = 0;
 	}
 
 	// get condition-forces and update velocities accordingly
 	for (int i = 0; i < cloth.yRes-1; i++) {
 		for (int j = 0; j < cloth.xRes-1; j++) {
 			int offset = i * cloth.xRes + j;
-			handleScaleCondition(offset, forces, dampingForces);
+			handleScaleCondition(offset, forces);
 			handleShearCondition(offset, forces);
 			handleBendCondition (offset, forces);
 		}
 	}
 	for (int i = 0; i < 3 * cloth.xRes * cloth.yRes; i++) {
-		cloth.worldVels[i] += dampingForces[i];
 		cloth.worldVels[i] += forces(0, i / 3)[i % 3];
 	}
 
@@ -45,8 +44,6 @@ void Simulation::update() {
 
 	// generate new triangles from the mesh
 	triVerts = genTrisFromMesh();
-
-	delete dampingForces;
 }
 
 void Simulation::reset() {
@@ -66,8 +63,7 @@ void Simulation::reset() {
 }
 
 void Simulation::handleScaleCondition(int offset,
-                                      Matrix<Vector3d, Dynamic, Dynamic> &forces,
-                                      double *dampingForces) {
+                                      Matrix<Vector3d, Dynamic, Dynamic> &forces) {
 	// bottom-left triangle
 	int blPoints[3] = {offset, offset + 1, offset + cloth.xRes};
 	auto scCond = scaleCondition(cloth, blPoints);
@@ -80,9 +76,7 @@ void Simulation::handleScaleCondition(int offset,
 		auto vel = Vector3d(cloth.getWorldVel(pt));
 		auto dampForce = -DAMP_STIFFNESS * scPart.transpose() * scPart *
 		                  vel;
-		dampingForces[pt*3 + 0] += dampForce[0];
-		dampingForces[pt*3 + 1] += dampForce[1];
-		dampingForces[pt*3 + 2] += dampForce[2];
+		forces(0, pt) += dampForce;
 	}
 
 	// top-right triangle
@@ -98,9 +92,7 @@ void Simulation::handleScaleCondition(int offset,
 		auto vel = Vector3d(cloth.getWorldVel(pt));
 		auto dampForce = -DAMP_STIFFNESS * scPart.transpose() * scPart *
 		                  vel;
-		dampingForces[pt*3 + 0] += dampForce[0];
-		dampingForces[pt*3 + 1] += dampForce[1];
-		dampingForces[pt*3 + 2] += dampForce[2];
+		forces(0, pt) += dampForce;
 	}
 }
 

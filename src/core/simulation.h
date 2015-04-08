@@ -18,8 +18,7 @@
 #define TIMESTEP 1
 
 class Simulation {
-	void handleScaleCondition(int, Matrix<Vector3d, Dynamic, Dynamic> &,
-	                          double *);
+	void handleScaleCondition(int, Matrix<Vector3d, Dynamic, Dynamic> &);
 	void handleShearCondition(int, Matrix<Vector3d, Dynamic, Dynamic> &);
 	void handleBendCondition(int,  Matrix<Vector3d, Dynamic, Dynamic> &);
 	double *genTrisFromMesh();
