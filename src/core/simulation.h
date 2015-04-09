@@ -10,10 +10,10 @@
 
 #define LOCK_TOP_POINTS false
 
-#define SCALE_STIFFNESS 1
+#define SCALE_STIFF     1
+#define DAMP_STIFF      0.3
 #define SHEAR_STIFFNESS 1
-#define BEND_STIFFNESS 0.001
-#define DAMP_STIFFNESS 0.3
+#define BEND_STIFFNESS  0.001
 
 #define TIMESTEP 1
 
@@ -21,6 +21,7 @@ typedef Matrix<Vector3d, Dynamic, Dynamic> ForceMatrix;
 
 class Simulation {
 	void handleScaleCondition(int, ForceMatrix &);
+	void scaleHelper(int *, ForceMatrix &);
 	void handleShearCondition(int, ForceMatrix &);
 	void handleBendCondition(int,  ForceMatrix &);
 	double *genTrisFromMesh();

@@ -63,39 +63,32 @@ void Simulation::reset() {
 }
 
 void Simulation::handleScaleCondition(int offset, ForceMatrix &forces) {
+	int botLeftTri[3]  = {offset, offset + 1, offset + cloth.xRes};
+	int topRightTri[3] = {offset + cloth.xRes, offset + 1,
+	                offset + cloth.xRes + 1};
+
 	// bottom-left triangle
-	int blPoints[3] = {offset, offset + 1, offset + cloth.xRes};
-	auto scCond = scaleCondition(cloth, blPoints);
-
-	for (int pt : blPoints) {
-		// acount for scaling force
-		auto scPart = scalePartial(cloth, pt, blPoints);
-		auto force = -SCALE_STIFFNESS * scPart.transpose() * scCond;
-		forces(0, pt) += force;
-
-		// account for damping force
-		auto vel = Vector3d(cloth.getWorldVel(pt));
-		auto dampForce = -DAMP_STIFFNESS * scPart.transpose() * scPart *
-		                  vel;
-		forces(0, pt) += dampForce;
-	}
+	scaleHelper(botLeftTri, forces);
 
 	// top-right triangle
-	int trPoints[3] = {offset + cloth.xRes, offset + 1,
-			           offset + cloth.xRes + 1};
-	scCond = scaleCondition(cloth, trPoints);
+	scaleHelper(topRightTri, forces);
+}
 
-	for (int pt : trPoints) {
-		// account for scaling force
-		auto scPart = scalePartial(cloth, pt, trPoints);
-		auto force = -SCALE_STIFFNESS * scPart.transpose() * scCond;
-		forces(0, pt) += force;
+void Simulation::scaleHelper(int *triPts, ForceMatrix &forces) {
+	auto cond = scaleCondition(cloth, triPts);
+	for (int i = 0; i < 3; i++) {
+		int ptI = triPts[i];
+
+		// acount for scaling force
+		auto partialI = scalePartial(cloth, ptI, triPts);
+		auto force = -SCALE_STIFF * partialI.transpose() * cond;
+		forces(0, ptI) += force;
 
 		// account for damping force
-		auto vel = Vector3d(cloth.getWorldVel(pt));
-		auto dampForce = -DAMP_STIFFNESS * scPart.transpose() * scPart *
-		                  vel;
-		forces(0, pt) += dampForce;
+		auto velI = Vector3d(cloth.getWorldVel(ptI));
+		auto dampForce = -DAMP_STIFF * partialI.transpose() * partialI *
+		                  velI;
+		forces(0, ptI) += dampForce;
 	}
 }
 
