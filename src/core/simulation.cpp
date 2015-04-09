@@ -69,10 +69,12 @@ void Simulation::handleScaleCondition(int offset,
 	auto scCond = scaleCondition(cloth, blPoints);
 
 	for (int pt : blPoints) {
+		// acount for scaling force
 		auto scPart = scalePartial(cloth, pt, blPoints);
 		auto force = -SCALE_STIFFNESS * scPart.transpose() * scCond;
 		forces(0, pt) += force;
 
+		// account for damping force
 		auto vel = Vector3d(cloth.getWorldVel(pt));
 		auto dampForce = -DAMP_STIFFNESS * scPart.transpose() * scPart *
 		                  vel;
@@ -85,10 +87,12 @@ void Simulation::handleScaleCondition(int offset,
 	scCond = scaleCondition(cloth, trPoints);
 
 	for (int pt : trPoints) {
+		// account for scaling force
 		auto scPart = scalePartial(cloth, pt, trPoints);
 		auto force = -SCALE_STIFFNESS * scPart.transpose() * scCond;
 		forces(0, pt) += force;
 
+		// account for damping force
 		auto vel = Vector3d(cloth.getWorldVel(pt));
 		auto dampForce = -DAMP_STIFFNESS * scPart.transpose() * scPart *
 		                  vel;
