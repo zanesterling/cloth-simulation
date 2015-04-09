@@ -13,7 +13,7 @@ void Simulation::update() {
 	if (!running) return;
 
 	// zero new forces matrix
-	Matrix<Vector3d, Dynamic, Dynamic> forces(1, cloth.xRes * cloth.yRes);
+	ForceMatrix forces(1, cloth.xRes * cloth.yRes);
 	for (int pt = 0; pt < cloth.xRes * cloth.yRes; pt++) {
 		forces(0, pt)[0] = 0;
 		forces(0, pt)[1] = 0;
@@ -62,8 +62,7 @@ void Simulation::reset() {
 	triVerts = genTrisFromMesh();
 }
 
-void Simulation::handleScaleCondition(int offset,
-                                      Matrix<Vector3d, Dynamic, Dynamic> &forces) {
+void Simulation::handleScaleCondition(int offset, ForceMatrix &forces) {
 	// bottom-left triangle
 	int blPoints[3] = {offset, offset + 1, offset + cloth.xRes};
 	auto scCond = scaleCondition(cloth, blPoints);
@@ -100,8 +99,7 @@ void Simulation::handleScaleCondition(int offset,
 	}
 }
 
-void Simulation::handleShearCondition(int offset,
-                                      Matrix<Vector3d, Dynamic, Dynamic> &forces) {
+void Simulation::handleShearCondition(int offset, ForceMatrix &forces) {
 	// bottom-left triangle
 	int blPoints[3] = {offset, offset + 1, offset + cloth.xRes};
 	auto shCond = shearCondition(cloth, blPoints);
@@ -124,8 +122,7 @@ void Simulation::handleShearCondition(int offset,
 	}
 }
 
-void Simulation::handleBendCondition(int offset,
-                                     Matrix<Vector3d, Dynamic, Dynamic> &forces) {
+void Simulation::handleBendCondition(int offset, ForceMatrix &forces) {
 	int xOff = offset % cloth.xRes;
 	int yOff = offset / cloth.xRes;
 

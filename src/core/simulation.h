@@ -17,10 +17,12 @@
 
 #define TIMESTEP 1
 
+typedef Matrix<Vector3d, Dynamic, Dynamic> ForceMatrix;
+
 class Simulation {
-	void handleScaleCondition(int, Matrix<Vector3d, Dynamic, Dynamic> &);
-	void handleShearCondition(int, Matrix<Vector3d, Dynamic, Dynamic> &);
-	void handleBendCondition(int,  Matrix<Vector3d, Dynamic, Dynamic> &);
+	void handleScaleCondition(int, ForceMatrix &);
+	void handleShearCondition(int, ForceMatrix &);
+	void handleBendCondition(int,  ForceMatrix &);
 	double *genTrisFromMesh();
 	void copyPoint(double *, double *, int);
 
