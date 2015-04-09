@@ -67,10 +67,7 @@ void Simulation::handleScaleCondition(int offset, ForceMatrix &forces) {
 	int topRightTri[3] = {offset + cloth.xRes, offset + 1,
 	                offset + cloth.xRes + 1};
 
-	// bottom-left triangle
 	scaleHelper(botLeftTri, forces);
-
-	// top-right triangle
 	scaleHelper(topRightTri, forces);
 }
 
@@ -93,25 +90,23 @@ void Simulation::scaleHelper(int *triPts, ForceMatrix &forces) {
 }
 
 void Simulation::handleShearCondition(int offset, ForceMatrix &forces) {
-	// bottom-left triangle
-	int blPoints[3] = {offset, offset + 1, offset + cloth.xRes};
-	auto shCond = shearCondition(cloth, blPoints);
+	int botLeftTri[3] = {offset, offset + 1, offset + cloth.xRes};
+	int topRightTri[3] = {offset + cloth.xRes, offset + 1,
+			              offset + cloth.xRes + 1};
 
-	for (int pt : blPoints) {
-		auto shPart = shearPartial(cloth, pt, blPoints);
-		auto force = -SHEAR_STIFFNESS * shPart.transpose() * shCond;
-		forces(0, pt) += force;
-	}
+	shearHelper(botLeftTri, forces);
+	shearHelper(topRightTri, forces);
+}
 
-	// top-right triangle
-	int trPoints[3] = {offset + cloth.xRes, offset + 1,
-			           offset + cloth.xRes + 1};
-	shCond = shearCondition(cloth, trPoints);
+void Simulation::shearHelper(int *triPts, ForceMatrix &forces) {
+	auto cond = shearCondition(cloth, triPts);
 
-	for (int pt : trPoints) {
-		auto shPart = shearPartial(cloth, pt, trPoints);
-		auto force = -SHEAR_STIFFNESS * shPart.transpose() * shCond;
-		forces(0, pt) += force;
+	for (int i = 0; i < 3; i++) {
+		int ptI = triPts[i];
+
+		auto partialI = shearPartial(cloth, ptI, triPts);
+		auto force = -SHEAR_STIFF * partialI.transpose() * cond;
+		forces(0, ptI) += force;
 	}
 }
 
@@ -119,53 +114,48 @@ void Simulation::handleBendCondition(int offset, ForceMatrix &forces) {
 	int xOff = offset % cloth.xRes;
 	int yOff = offset / cloth.xRes;
 
-	// bottom-left triangle
-	int blPoints[4] = {
+	// diagonal triangle pair
+	int diagPts[4] = {
 		offset,
 		offset + 1,
 		offset + cloth.xRes,
 		offset + cloth.xRes + 1
 	};
-	auto bdCond = bendCondition(cloth, blPoints);
 
-	for (int pt : blPoints) {
-		auto bdPart = bendPartial(cloth, pt, blPoints);
-		auto force = -BEND_STIFFNESS * bdPart.transpose() * bdCond;
-		forces(0, pt) += force;
-	}
+	// right-side triangle pair
+	int rightPts[4] = {
+		offset + cloth.xRes,
+		offset + 1,
+		offset + cloth.xRes + 1,
+		offset + 2
+	};
 
-	if (xOff < cloth.xRes - 2) {
-		// right-side triangle
-		int rtPoints[4] = {
-			offset + cloth.xRes,
-			offset + 1,
-			offset + cloth.xRes + 1,
-			offset + 2
-		};
-		bdCond = bendCondition(cloth, rtPoints);
+	// top-side triangle pair
+	int topPts[4] = {
+		offset + 1,
+		offset + cloth.xRes + 1,
+		offset + cloth.xRes,
+		offset + 2 * cloth.xRes
+	};
 
-		for (int pt : rtPoints) {
-			auto bdPart = bendPartial(cloth, pt, rtPoints);
-			auto force = -BEND_STIFFNESS * bdPart.transpose() * bdCond;
-			forces(0, pt) += force;
-		}
-	}
+	bendHelper(diagPts, forces);
 
-	if (yOff < cloth.yRes - 2) {
-		// top-side triangle
-		int tpPoints[4] = {
-			offset + 1,
-			offset + cloth.xRes + 1,
-			offset + cloth.xRes,
-			offset + 2 * cloth.xRes
-		};
-		bdCond = bendCondition(cloth, tpPoints);
+	if (xOff < cloth.xRes - 2)
+		bendHelper(rightPts, forces);
 
-		for (int pt : tpPoints) {
-			auto bdPart = bendPartial(cloth, pt, tpPoints);
-			auto force = -BEND_STIFFNESS * bdPart.transpose() * bdCond;
-			forces(0, pt) += force;
-		}
+	if (yOff < cloth.yRes - 2)
+		bendHelper(topPts, forces);
+}
+
+void Simulation::bendHelper(int *tris, ForceMatrix &forces) {
+	auto cond = bendCondition(cloth, tris);
+
+	for (int i = 0; i < 4; i++) {
+		int ptI = tris[i];
+
+		auto partialI = bendPartial(cloth, ptI, tris);
+		auto force = -BEND_STIFF * partialI.transpose() * cond;
+		forces(0, ptI) += force;
 	}
 }
 
