@@ -29,8 +29,10 @@ void Simulation::update() {
 			handleBendCondition (offset, forces);
 		}
 	}
-	for (int i = 0; i < 3 * cloth.xRes * cloth.yRes; i++) {
-		cloth.worldVels[i] += forces(0, i / 3)[i % 3];
+	for (int i = 0; i < cloth.xRes * cloth.yRes; i++) {
+		for (int j = 0; j < 3; j++) {
+			cloth.worldVels[i*3 + j] += forces(0, i)[j];
+		}
 	}
 
 	// lock the top row of points, if we've enabled that setting
