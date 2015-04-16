@@ -61,6 +61,32 @@ Matrix<double, 2, 3> scalePartial(Cloth &cloth, int pt,
 	return partial;
 }
 
+// returns the p / p pJ of p / p pI of the condition on tri
+Matrix<Vector3d, 3, 2> scale2ndPartial(Cloth &cloth, int i, int j,
+                                       int *tri) {
+	Matrix<Vector3d, 3, 2> partialIJ;
+	
+	auto localPartial = scalePartial(cloth, pI, tri);
+	auto pJ = cloth.getWorldPoint(j);
+	
+	for (int ptCol = 0; ptCol < 3; ptCol++) {
+		// perturb the cloth
+		pJ[ptCol] += PERTURB_QUANT;
+	
+		auto partial1 = scalePartial(cloth, i, tri);
+		pJ[ptCol] -= 2 * PERTURB_QUANT;
+		auto partial2 = scalePartial(cloth, i, tri);
+		auto diff = (partial2 - partial1) / (2 * PERTURB_QUANT);
+	
+		for (auto &diffCol : diff.cols()) {
+			// TODO: remap the diff to the 2nd partial format
+		}
+	
+		// de-perturb the cloth
+		ptJ[col] += 2 * PERTURB_QUANT;
+	}
+}
+
 double shearCondition(Cloth &cloth, int *tri) {
 	return shearCondition(cloth, tri[0], tri[1], tri[2]);
 }

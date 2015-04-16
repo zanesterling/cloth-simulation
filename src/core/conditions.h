@@ -19,6 +19,7 @@ Vector2d scaleCondition(Cloth &, int *);
 Vector2d scaleCondition(Cloth &, int, int, int);
 Matrix<double, 2, 3> scalePartial(Cloth &, int, int *);
 Matrix<double, 2, 3> scalePartial(Cloth &, int, int, int, int);
+Matrix<Vector3d, 3, 2> scale2ndPartial(Cloth &, int, int, int *);
 
 double shearCondition(Cloth &, int *);
 double shearCondition(Cloth &, int, int, int);
