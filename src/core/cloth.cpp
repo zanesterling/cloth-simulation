@@ -3,6 +3,9 @@
 Cloth::Cloth(int xRes, int yRes)
 	: xRes(xRes), yRes(yRes), w(1), h(1) {
 
+	mass = 100;
+	massPerVertex = mass / (xRes * yRes);
+
 	initUvPoints();
 	initWorldPoints();
 	worldVels = new double[3 * xRes * yRes];
@@ -10,6 +13,9 @@ Cloth::Cloth(int xRes, int yRes)
 
 Cloth::Cloth(int xRes, int yRes, double w, double h)
 	: xRes(xRes), yRes(yRes), w(w), h(h) {
+
+	mass = 100;
+	massPerVertex = mass / (xRes * yRes);
 
 	initUvPoints();
 	initWorldPoints();

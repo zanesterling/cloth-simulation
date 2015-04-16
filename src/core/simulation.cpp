@@ -30,8 +30,8 @@ void Simulation::update() {
 		}
 	}
 	for (int i = 0; i < 3 * cloth.xRes * cloth.yRes; i++) {
-		cloth.worldVels[i] += forces[i];
-		cloth.worldVels[i] += dampingForces[i];
+		cloth.worldVels[i] += forces[i] / cloth.massPerVertex;
+		cloth.worldVels[i] += dampingForces[i] / cloth.massPerVertex;
 	}
 
 	// lock the top row of points, if we've enabled that setting

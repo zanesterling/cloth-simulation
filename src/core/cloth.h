@@ -9,6 +9,8 @@ struct Cloth {
 	double *uvPoints;
 	double *worldPoints;
 	double *worldVels;
+	double massPerVertex;
+	double mass;
 
 	Cloth(int, int);
 	Cloth(int, int, double, double);
