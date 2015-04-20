@@ -71,33 +71,33 @@ void Simulation::handleScaleCondition(int offset, ForceMatrix &forces,
 	int topRightTri[3] = {offset + cloth.xRes, offset + 1,
 	                offset + cloth.xRes + 1};
 
-	scaleHelper(botLeftTri, forces);
-	scaleHelper(topRightTri, forces);
+	scaleHelper(botLeftTri, forces, forcePartialX);
+	scaleHelper(topRightTri, forces, forcePartialX);
 }
 
 void Simulation::scaleHelper(int *triPts, ForceMatrix &forces,
                              ForcePartialMatrix &forcePartialX) {
-	auto cond = scaleCondition(cloth, triPts);
+	auto condX = scaleXCondition(cloth, triPts);
+	auto condY = scaleYCondition(cloth, triPts);
 	for (int i = 0; i < 3; i++) {
 		int ptI = triPts[i];
 
 		// acount for scaling force
-		auto partialI = scalePartial(cloth, ptI, triPts);
-		auto force = -SCALE_STIFF * partialI.transpose() * cond;
+		auto partialIX = scaleXPartial(cloth, ptI, triPts);
+		auto partialIY = scaleYPartial(cloth, ptI, triPts);
+		auto force = -SCALE_STIFF * (partialIX.transpose() * condX +
+		                             partialIY.transpose() * condY);
 		forces(0, ptI) += force;
 
 		// account for damping force
 		auto velI = Vector3d(cloth.getWorldVel(ptI));
-		auto dampForce = -DAMP_STIFF * partialI.transpose() * partialI *
-		                  velI;
+		auto dampForce = -DAMP_STIFF *
+		                 (partialIX.transpose() * partialIX +
+		                  partialIY.transpose() * partialIY) * velI;
 		forces(0, ptI) += dampForce;
 
 		// calculate the partial force partial x
 		for (int j = 0; j < 3; j++) {
-			auto k_ij = forcePartialX.coeffRef(i, j);
-
-			auto ptJ = triPts[j]
-			auto partialJ = scalePartial(cloth, ptJ, triPts);
 		}
 	}
 }
@@ -108,8 +108,8 @@ void Simulation::handleShearCondition(int offset, ForceMatrix &forces,
 	int topRightTri[3] = {offset + cloth.xRes, offset + 1,
 			              offset + cloth.xRes + 1};
 
-	shearHelper(botLeftTri, forces);
-	shearHelper(topRightTri, forces);
+	shearHelper(botLeftTri, forces, forcePartialX);
+	shearHelper(topRightTri, forces, forcePartialX);
 }
 
 void Simulation::shearHelper(int *triPts, ForceMatrix &forces,
@@ -154,13 +154,13 @@ void Simulation::handleBendCondition(int offset, ForceMatrix &forces,
 		offset + 2 * cloth.xRes
 	};
 
-	bendHelper(diagPts, forces);
+	bendHelper(diagPts, forces, forcePartialX);
 
 	if (xOff < cloth.xRes - 2)
-		bendHelper(rightPts, forces);
+		bendHelper(rightPts, forces, forcePartialX);
 
 	if (yOff < cloth.yRes - 2)
-		bendHelper(topPts, forces);
+		bendHelper(topPts, forces, forcePartialX);
 }
 
 void Simulation::bendHelper(int *tris, ForceMatrix &forces,

@@ -15,11 +15,14 @@ using namespace Eigen;
 Matrix<double, 3, 2> wuvMatrix(Cloth &, int, int, int);
 
 // TODO add changeable stretch factors
-Vector2d scaleCondition(Cloth &, int *);
-Vector2d scaleCondition(Cloth &, int, int, int);
-Matrix<double, 2, 3> scalePartial(Cloth &, int, int *);
-Matrix<double, 2, 3> scalePartial(Cloth &, int, int, int, int);
-Matrix<Vector3d, 3, 2> scale2ndPartial(Cloth &, int, int, int *);
+double scaleXCondition(Cloth &, int *);
+double scaleXCondition(Cloth &, int, int, int);
+RowVector3d scaleXPartial(Cloth &, int, int *);
+RowVector3d scaleXPartial(Cloth &, int, int, int, int);
+double scaleYCondition(Cloth &, int *);
+double scaleYCondition(Cloth &, int, int, int);
+RowVector3d scaleYPartial(Cloth &, int, int *);
+RowVector3d scaleYPartial(Cloth &, int, int, int, int);
 
 double shearCondition(Cloth &, int *);
 double shearCondition(Cloth &, int, int, int);
