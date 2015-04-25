@@ -1,16 +1,6 @@
 #include "cloth.h"
 
-Cloth::Cloth(int xRes, int yRes)
-	: xRes(xRes), yRes(yRes), w(1), h(1) {
-
-	mass = 40;
-	massPerVertex = mass / (xRes * yRes);
-
-	initUvPoints();
-	initWorldPoints();
-	worldVels = new double[3 * xRes * yRes];
-}
-
+Cloth::Cloth(int xRes, int yRes) : Cloth(xRes, yRes, 1, 1) {}
 Cloth::Cloth(int xRes, int yRes, double w, double h)
 	: xRes(xRes), yRes(yRes), w(w), h(h) {
 
