@@ -37,6 +37,8 @@ void UI::render() {
 
 	glPopMatrix();
 	glutSwapBuffers();
+
+	delete tris;
 }
 
 void UI::resize(int w, int h) {
