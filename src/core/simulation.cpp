@@ -99,6 +99,26 @@ void Simulation::scaleHelper(int *triPts, ForceMatrix &forces,
 
 		// calculate the partial force partial x
 		for (int j = 0; j < 3; j++) {
+			int ptJ = triPts[j];
+
+			auto partialJX = scaleXPartial(cloth, ptJ, triPts);
+			Matrix3d pfpxX = partialIX.transpose() * partialJX +
+			             scaleXSecondPartial(cloth, ptI, ptJ, triPts) *
+			             condX;
+
+			auto partialJY = scaleYPartial(cloth, ptJ, triPts);
+			Matrix3d pfpxY = partialIY.transpose() * partialJY +
+			             scaleYSecondPartial(cloth, ptI, ptJ, triPts) *
+			             condY;
+
+			Matrix3d pfpx = pfpxX + pfpxY;
+			//forcePartialX.block(i*3, j*3, 3, 3) += pfpx;
+			for (int rOff = 0; rOff < 3; rOff++) {
+				for (int cOff = 0; cOff < 3; cOff++) {
+					forcePartialX.coeffRef(ptI*3 + rOff, ptJ*3 + cOff) +=
+						pfpx(rOff, cOff);
+				}
+			}
 		}
 	}
 }

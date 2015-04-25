@@ -18,7 +18,7 @@
 #define TIMESTEP 1
 
 typedef Matrix<Vector3d, Dynamic, Dynamic> ForceMatrix;
-typedef SparseMatrix<Matrix3d> ForcePartialMatrix;
+typedef SparseMatrix<double> ForcePartialMatrix;
 
 class Simulation {
 	void handleScaleCondition(int, ForceMatrix &, ForcePartialMatrix &);
