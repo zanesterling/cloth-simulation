@@ -22,7 +22,7 @@ void Simulation::update() {
 		forces(0, pt)[2] = 0;
 	}
 
-	// get condition-forces and update velocities accordingly
+	// get condition-forces 
 	for (int i = 0; i < cloth.yRes-1; i++) {
 		for (int j = 0; j < cloth.xRes-1; j++) {
 			int offset = i * cloth.xRes + j;
@@ -31,9 +31,12 @@ void Simulation::update() {
 			handleBendCondition (offset, forces, forcePartialX);
 		}
 	}
+
+	// update velocities by condition-forces
 	for (int i = 0; i < cloth.xRes * cloth.yRes; i++) {
 		for (int j = 0; j < 3; j++) {
-			cloth.worldVels[i*3 + j] += forces(0, i)[j];
+			cloth.worldVels[i*3 + j] += forces(0, i)[j] /
+			                            cloth.massPerVertex;
 		}
 	}
 
