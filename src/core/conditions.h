@@ -4,7 +4,6 @@
 
 #include <algorithm>
 
-#include "vec.h"
 #include "cloth.h"
 
 // the amount by which we perturb the points in finding partials
