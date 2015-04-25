@@ -14,13 +14,15 @@ void Simulation::update() {
 
 	// zero new forces matrix
 	ForceMatrix forces(1, cloth.xRes * cloth.yRes);
-	ForcePartialMatrix forcePartialX(3 * cloth.xRes * cloth.yRes,
-	                                 3 * cloth.xRes * cloth.yRes);
 	for (int pt = 0; pt < cloth.xRes * cloth.yRes; pt++) {
 		forces(0, pt)[0] = 0;
 		forces(0, pt)[1] = 0;
 		forces(0, pt)[2] = 0;
 	}
+
+	ForcePartialMatrix forcePartialX(3 * cloth.xRes * cloth.yRes,
+	                                 3 * cloth.xRes * cloth.yRes);
+	forcePartialX.reserve(81 * getNumTris());
 
 	// get condition-forces 
 	for (int i = 0; i < cloth.yRes-1; i++) {
