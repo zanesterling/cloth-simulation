@@ -9,7 +9,7 @@ struct Cloth {
 	double *uvPoints;
 	double *worldPoints;
 	double *worldVels;
-	double massPerVertex;
+	double massPerVertI; // inverted mass-per-vertex
 	double mass;
 
 	Cloth(int, int);

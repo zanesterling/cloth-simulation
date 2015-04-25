@@ -35,8 +35,8 @@ void Simulation::update() {
 	// update velocities by condition-forces
 	for (int i = 0; i < cloth.xRes * cloth.yRes; i++) {
 		for (int j = 0; j < 3; j++) {
-			cloth.worldVels[i*3 + j] += forces(0, i)[j] /
-			                            cloth.massPerVertex;
+			cloth.worldVels[i*3 + j] += forces(0, i)[j] *
+			                            cloth.massPerVertI;
 		}
 	}
 
