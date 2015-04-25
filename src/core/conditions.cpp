@@ -98,7 +98,7 @@ RowVector3d scaleYPartial(Cloth &cloth, int pt,
 }
 
 // returns the p / p pJ of p / p pI of the condition on tri
-Matrix3d scaleX2ndPartial(Cloth &cloth, int i, int j, int *tri) {
+Matrix3d scaleXSecondPartial(Cloth &cloth, int i, int j, int *tri) {
 	Matrix3d partial;
 
 	auto localPartial = scaleXPartial(cloth, i, tri);
@@ -116,6 +116,31 @@ Matrix3d scaleX2ndPartial(Cloth &cloth, int i, int j, int *tri) {
 		// de-perturb cloth
 		ptJ[col] += PERTURB_QUANT;
 	}
+
+	return partial;
+}
+
+// returns the p / p pJ of p / p pI of the condition on tri
+Matrix3d scaleYSecondPartial(Cloth &cloth, int i, int j, int *tri) {
+	Matrix3d partial;
+
+	auto localPartial = scaleYPartial(cloth, i, tri);
+	auto ptJ = cloth.getWorldPoint(j);
+
+	for (int col = 0; col < 3; col++) {
+		// perturb the cloth
+		ptJ[col] += PERTURB_QUANT;
+
+		auto pPartial1 = scaleYPartial(cloth, i, tri);
+		ptJ[col] -= 2 * PERTURB_QUANT;
+		auto pPartial2 = scaleYPartial(cloth, i, tri);
+		partial.col(col) = (pPartial1 - pPartial2) / (2 * PERTURB_QUANT);
+
+		// de-perturb cloth
+		ptJ[col] += PERTURB_QUANT;
+	}
+
+	return partial;
 }
 
 double shearCondition(Cloth &cloth, int *tri) {

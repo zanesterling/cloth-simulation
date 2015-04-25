@@ -22,6 +22,8 @@ double scaleYCondition(Cloth &, int *);
 double scaleYCondition(Cloth &, int, int, int);
 RowVector3d scaleYPartial(Cloth &, int, int *);
 RowVector3d scaleYPartial(Cloth &, int, int, int, int);
+Matrix3d scaleXSecondPartial(Cloth &, int, int, int *);
+Matrix3d scaleYSecondPartial(Cloth &, int, int, int *);
 
 double shearCondition(Cloth &, int *);
 double shearCondition(Cloth &, int, int, int);
