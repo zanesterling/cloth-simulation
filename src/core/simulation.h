@@ -9,7 +9,7 @@
 #include "cloth.h"
 #include "conditions.h"
 
-#define LOCK_TOP_POINTS false
+#define LOCK_TOP_POINTS true
 
 #define SCALE_STIFF 1
 #define DAMP_STIFF  2
@@ -22,14 +22,14 @@ typedef Matrix<Vector3d, Dynamic, Dynamic> ForceMatrix;
 typedef Matrix<double, Dynamic, Dynamic> ForcePartialMatrix;
 
 class Simulation {
-	void handleScaleCondition(int, ForceMatrix &, ForcePartialMatrix &);
-	void scaleHelper(int *, ForceMatrix &, ForcePartialMatrix &, bool);
+	void handleScaleCondition(int);
+	void scaleHelper(int *, bool);
 
-	void handleShearCondition(int, ForceMatrix &, ForcePartialMatrix &);
-	void shearHelper(int *, ForceMatrix &, ForcePartialMatrix &, bool);
+	void handleShearCondition(int);
+	void shearHelper(int *, bool);
 
-	void handleBendCondition(int,  ForceMatrix &, ForcePartialMatrix &);
-	void bendHelper(int *, ForceMatrix &, ForcePartialMatrix &);
+	void handleBendCondition(int);
+	void bendHelper(int *);
 
 	double *genTrisFromMesh();
 	void copyPoint(double *, double *, int);
@@ -38,6 +38,9 @@ public:
 	Cloth cloth;
 	double *triVerts;
 	bool running = false;
+
+	ForceMatrix forces;
+	ForcePartialMatrix forcePartialX;
 
 	Simulation(int, int);
 

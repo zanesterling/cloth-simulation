@@ -17,7 +17,7 @@ PLATFORM_LIBS =
 WARNINGS = -Wall -Wextra
 # compiler features
 FEATURES =
-CFLAGS = -w -O -stdlib=libc++ -std=gnu++11 -g -march=native $(WARNINGS) $(FEATURES)
+CFLAGS = -w -O3 -stdlib=libc++ -std=gnu++11 -g -march=native $(WARNINGS) $(FEATURES)
 
 # Handle platform-specific setup
 ifeq ($(MACHINE), Darwin)
