@@ -10,6 +10,8 @@ Cloth::Cloth(int xRes, int yRes, double w, double h)
 	initUvPoints();
 	initWorldPoints();
 	worldVels = new double[3 * xRes * yRes];
+
+	triUvArea = getTriUvArea();
 }
 
 // initialize uvPoints with uniform grid
@@ -41,33 +43,6 @@ void Cloth::initWorldPoints() {
 	}
 }
 
-double *Cloth::getUvPoint(int i) {
-	return uvPoints + 2 * i;
-}
-
-// NOTE: doesn't check bounds!
-double *Cloth::getUvPoint(int x, int y) {
-	return uvPoints + 2 * (y*xRes + x);
-}
-
-double *Cloth::getWorldPoint(int i) {
-	return worldPoints + 3 * i;
-}
-
-// NOTE: doesn't check bounds!
-double *Cloth::getWorldPoint(int x, int y) {
-	return worldPoints + 3 * (y*xRes + x);
-}
-
-double *Cloth::getWorldVel(int i) {
-	return worldVels + 3 * i;
-}
-
-// NOTE: doesn't check bounds!
-double *Cloth::getWorldVel(int x, int y) {
-	return worldVels + 3 * (y*xRes + x);
-}
-
 void Cloth::setWorldPoint(int xCor, int yCor, double xPos, double yPos,
 	double zPos) {
 	double *point = getWorldPoint(xCor, yCor);
@@ -77,7 +52,7 @@ void Cloth::setWorldPoint(int xCor, int yCor, double xPos, double yPos,
 }
 
 double Cloth::getTriUvArea() {
-	return w / (xRes - 1) * h / (yRes - 1);
+	return w * h / (2 * (xRes - 1) * (yRes - 1));
 }
 
 Vector3d Cloth::triNormal(int pi1, int pi2, int pi3) {

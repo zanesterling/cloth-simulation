@@ -1,22 +1,39 @@
 #include "conditions.h"
 
-Matrix<double, 3, 2> wuvMatrix(Cloth &cloth, int i, int j, int k) {
+Matrix<double, 3, 2> dxMatrix(Cloth &cloth, int i, int j, int k) {
 	// get delta x_1, x_2
 	Matrix<double, 3, 2> dxMatrix;
-	Vector3d worldPointI = Vector3d(cloth.getWorldPoint(i));
+	Vector3d worldPointI(cloth.getWorldPoint(i));
 	dxMatrix.col(0) = Vector3d(cloth.getWorldPoint(j)) - worldPointI;
 	dxMatrix.col(1) = Vector3d(cloth.getWorldPoint(k)) - worldPointI;
 
+	return dxMatrix;
+}
+
+WuvMatrix wuvMatrix(Cloth &cloth, int i, int j, int k) {
+	// get delta x_1, x_2
+	Matrix<double, 3, 2> dxMatrix;
+	auto wpI = cloth.getWorldPoint(i);
+	auto wpJ = cloth.getWorldPoint(j);
+	auto wpK = cloth.getWorldPoint(k);
+	for (int elem = 0; elem < 3; elem++) {
+		dxMatrix(elem, 0) = wpJ[elem] - wpI[elem];
+		dxMatrix(elem, 1) = wpK[elem] - wpI[elem];
+	}
+
 	// find inverted [uv][12] matrix
 	Matrix2d uvMatrix;
-	uvMatrix << cloth.getUvPoint(j)[0] - cloth.getUvPoint(i)[0],
-	            cloth.getUvPoint(k)[0] - cloth.getUvPoint(i)[0],
-	            cloth.getUvPoint(j)[1] - cloth.getUvPoint(i)[1],
-	            cloth.getUvPoint(k)[1] - cloth.getUvPoint(i)[1];
-	uvMatrix = uvMatrix.inverse().eval();
+	uvMatrix(0, 0) = cloth.getUvPoint(j)[0] - cloth.getUvPoint(i)[0];
+	uvMatrix(0, 1) = cloth.getUvPoint(k)[0] - cloth.getUvPoint(i)[0],
+	uvMatrix(1, 0) = cloth.getUvPoint(j)[1] - cloth.getUvPoint(i)[1],
+	uvMatrix(1, 1) = cloth.getUvPoint(k)[1] - cloth.getUvPoint(i)[1];
 
 	// find ||w||s
-	return dxMatrix * uvMatrix;
+	return dxMatrix * uvMatrix.inverse();
+}
+
+double getWu(Cloth &cloth, int i, int j, int k) {
+
 }
 
 double scaleXCondition(Cloth &cloth, int *tri) {
@@ -24,7 +41,7 @@ double scaleXCondition(Cloth &cloth, int *tri) {
 }
 
 double scaleXCondition(Cloth &cloth, int i, int j, int k) {
-	double area = cloth.getTriUvArea();
+	double area = cloth.triUvArea;
 	auto wm = wuvMatrix(cloth, i, j, k);
 
 	// get final condition value
@@ -36,7 +53,7 @@ double scaleYCondition(Cloth &cloth, int *tri) {
 }
 
 double scaleYCondition(Cloth &cloth, int i, int j, int k) {
-	double area = cloth.getTriUvArea();
+	double area = cloth.triUvArea;
 	auto wm = wuvMatrix(cloth, i, j, k);
 
 	// get final condition value
@@ -101,16 +118,21 @@ RowVector3d scaleYPartial(Cloth &cloth, int pt,
 Matrix3d scaleXSecondPartial(Cloth &cloth, int i, int j, int *tri) {
 	Matrix3d partial;
 
-	auto localPartial = scaleXPartial(cloth, i, tri);
+	// perform the fetch once
+	int ptA = tri[0];
+	int ptB = tri[1];
+	int ptC = tri[2];
+
+	auto localPartial = scaleXPartial(cloth, i, ptA, ptB, ptC);
 	auto ptJ = cloth.getWorldPoint(j);
 
 	for (int col = 0; col < 3; col++) {
 		// perturb the cloth
 		ptJ[col] += PERTURB_QUANT;
 
-		auto pPartial1 = scaleXPartial(cloth, i, tri);
+		auto pPartial1 = scaleXPartial(cloth, i, ptA, ptB, ptC);
 		ptJ[col] -= 2 * PERTURB_QUANT;
-		auto pPartial2 = scaleXPartial(cloth, i, tri);
+		auto pPartial2 = scaleXPartial(cloth, i, ptA, ptB, ptC);
 		partial.col(col) = (pPartial1 - pPartial2) / (2 * PERTURB_QUANT);
 
 		// de-perturb cloth
@@ -124,16 +146,21 @@ Matrix3d scaleXSecondPartial(Cloth &cloth, int i, int j, int *tri) {
 Matrix3d scaleYSecondPartial(Cloth &cloth, int i, int j, int *tri) {
 	Matrix3d partial;
 
-	auto localPartial = scaleYPartial(cloth, i, tri);
+	// perform the fetch once
+	int ptA = tri[0];
+	int ptB = tri[1];
+	int ptC = tri[2];
+
+	auto localPartial = scaleYPartial(cloth, i, ptA, ptB, ptC);
 	auto ptJ = cloth.getWorldPoint(j);
 
 	for (int col = 0; col < 3; col++) {
 		// perturb the cloth
 		ptJ[col] += PERTURB_QUANT;
 
-		auto pPartial1 = scaleYPartial(cloth, i, tri);
+		auto pPartial1 = scaleYPartial(cloth, i, ptA, ptB, ptC);
 		ptJ[col] -= 2 * PERTURB_QUANT;
-		auto pPartial2 = scaleYPartial(cloth, i, tri);
+		auto pPartial2 = scaleYPartial(cloth, i, ptA, ptB, ptC);
 		partial.col(col) = (pPartial1 - pPartial2) / (2 * PERTURB_QUANT);
 
 		// de-perturb cloth
@@ -149,7 +176,7 @@ double shearCondition(Cloth &cloth, int *tri) {
 
 double shearCondition(Cloth &cloth, int i, int j, int k) {
 	auto wuvm = wuvMatrix(cloth, i, j, k);
-	auto area = cloth.getTriUvArea();
+	auto area = cloth.triUvArea;
 
 	return area * wuvm.col(0).dot(wuvm.col(1));
 }

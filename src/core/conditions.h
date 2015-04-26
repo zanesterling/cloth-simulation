@@ -11,6 +11,8 @@
 
 using namespace Eigen;
 
+typedef Matrix<double, 3, 2> WuvMatrix;
+
 Matrix<double, 3, 2> wuvMatrix(Cloth &, int, int, int);
 
 // TODO add changeable stretch factors
