@@ -13,24 +13,24 @@ using namespace Eigen;
 
 typedef Matrix<double, 3, 2> WuvMatrix;
 
-Matrix<double, 3, 2> wuvMatrix(Cloth &, int, int, int);
+WuvMatrix wuvMatrix(Cloth &, int, int, int);
 
 // TODO add changeable stretch factors
-double scaleXCondition(Cloth &, int *);
-double scaleXCondition(Cloth &, int, int, int);
-RowVector3d scaleXPartial(Cloth &, int, int *);
-RowVector3d scaleXPartial(Cloth &, int, int, int, int);
-double scaleYCondition(Cloth &, int *);
-double scaleYCondition(Cloth &, int, int, int);
-RowVector3d scaleYPartial(Cloth &, int, int *);
-RowVector3d scaleYPartial(Cloth &, int, int, int, int);
-Matrix3d scaleXSecondPartial(Cloth &, int, int, int *);
-Matrix3d scaleYSecondPartial(Cloth &, int, int, int *);
+double scaleXCondition(Cloth &, int *, bool);
+double scaleXCondition(Cloth &, int, int, int, bool);
+RowVector3d scaleXPartial(Cloth &, int, int *, bool);
+RowVector3d scaleXPartial(Cloth &, int, int, int, int, bool);
+double scaleYCondition(Cloth &, int *, bool);
+double scaleYCondition(Cloth &, int, int, int, bool);
+RowVector3d scaleYPartial(Cloth &, int, int *, bool);
+RowVector3d scaleYPartial(Cloth &, int, int, int, int, bool);
+Matrix3d scaleXSecondPartial(Cloth &, int, int, int *, bool);
+Matrix3d scaleYSecondPartial(Cloth &, int, int, int *, bool);
 
-double shearCondition(Cloth &, int *);
-double shearCondition(Cloth &, int, int, int);
-RowVector3d shearPartial(Cloth &, int, int *);
-RowVector3d shearPartial(Cloth &, int, int, int, int);
+double shearCondition(Cloth &, int *, bool);
+double shearCondition(Cloth &, int, int, int, bool);
+RowVector3d shearPartial(Cloth &, int, int *, bool);
+RowVector3d shearPartial(Cloth &, int, int, int, int, bool);
 
 double bendCondition(Cloth &, int *);
 double bendCondition(Cloth &, int, int, int, int);

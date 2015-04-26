@@ -18,14 +18,14 @@
 #define TIMESTEP 1
 
 typedef Matrix<Vector3d, Dynamic, Dynamic> ForceMatrix;
-typedef SparseMatrix<double> ForcePartialMatrix;
+typedef Matrix<double, Dynamic, Dynamic> ForcePartialMatrix;
 
 class Simulation {
 	void handleScaleCondition(int, ForceMatrix &, ForcePartialMatrix &);
-	void scaleHelper(int *, ForceMatrix &, ForcePartialMatrix &);
+	void scaleHelper(int *, ForceMatrix &, ForcePartialMatrix &, bool);
 
 	void handleShearCondition(int, ForceMatrix &, ForcePartialMatrix &);
-	void shearHelper(int *, ForceMatrix &, ForcePartialMatrix &);
+	void shearHelper(int *, ForceMatrix &, ForcePartialMatrix &, bool);
 
 	void handleBendCondition(int,  ForceMatrix &, ForcePartialMatrix &);
 	void bendHelper(int *, ForceMatrix &, ForcePartialMatrix &);

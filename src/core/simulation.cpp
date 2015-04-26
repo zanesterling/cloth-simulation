@@ -22,7 +22,7 @@ void Simulation::update() {
 
 	ForcePartialMatrix forcePartialX(3 * cloth.xRes * cloth.yRes,
 	                                 3 * cloth.xRes * cloth.yRes);
-	forcePartialX.reserve(81 * getNumTris());
+	//forcePartialX.reserve(81 * getNumTris());
 
 	// get condition-forces 
 	for (int i = 0; i < cloth.yRes-1; i++) {
@@ -77,20 +77,21 @@ void Simulation::handleScaleCondition(int offset, ForceMatrix &forces,
 	int topRightTri[3] = {offset + cloth.xRes, offset + 1,
 	                offset + cloth.xRes + 1};
 
-	scaleHelper(botLeftTri, forces, forcePartialX);
-	scaleHelper(topRightTri, forces, forcePartialX);
+	scaleHelper(botLeftTri, forces, forcePartialX, true);
+	scaleHelper(topRightTri, forces, forcePartialX, false);
 }
 
 void Simulation::scaleHelper(int *triPts, ForceMatrix &forces,
-                             ForcePartialMatrix &forcePartialX) {
-	auto condX = scaleXCondition(cloth, triPts);
-	auto condY = scaleYCondition(cloth, triPts);
+                             ForcePartialMatrix &forcePartialX,
+                             bool isBl) {
+	auto condX = scaleXCondition(cloth, triPts, isBl);
+	auto condY = scaleYCondition(cloth, triPts, isBl);
 	for (int i = 0; i < 3; i++) {
 		int ptI = triPts[i];
 
 		// acount for scaling force
-		auto partialIX = scaleXPartial(cloth, ptI, triPts);
-		auto partialIY = scaleYPartial(cloth, ptI, triPts);
+		auto partialIX = scaleXPartial(cloth, ptI, triPts, isBl);
+		auto partialIY = scaleYPartial(cloth, ptI, triPts, isBl);
 		auto force = -SCALE_STIFF * (partialIX.transpose() * condX +
 		                             partialIY.transpose() * condY);
 		forces(0, ptI) += force;
@@ -106,24 +107,26 @@ void Simulation::scaleHelper(int *triPts, ForceMatrix &forces,
 		for (int j = 0; j < 3; j++) {
 			int ptJ = triPts[j];
 
-			auto partialJX = scaleXPartial(cloth, ptJ, triPts);
+			auto partialJX = scaleXPartial(cloth, ptJ, triPts, isBl);
 			Matrix3d pfpxX = partialIX.transpose() * partialJX +
-			             scaleXSecondPartial(cloth, ptI, ptJ, triPts) *
-			             condX;
+			          scaleXSecondPartial(cloth, ptI, ptJ, triPts, isBl) *
+			          condX;
 
-			auto partialJY = scaleYPartial(cloth, ptJ, triPts);
+			auto partialJY = scaleYPartial(cloth, ptJ, triPts, isBl);
 			Matrix3d pfpxY = partialIY.transpose() * partialJY +
-			             scaleYSecondPartial(cloth, ptI, ptJ, triPts) *
-			             condY;
+			          scaleYSecondPartial(cloth, ptI, ptJ, triPts, isBl) *
+			          condY;
 
 			Matrix3d pfpx = pfpxX + pfpxY;
-			//forcePartialX.block(i*3, j*3, 3, 3) += pfpx;
+			forcePartialX.block(i*3, j*3, 3, 3) += pfpx;
+			/*
 			for (int rOff = 0; rOff < 3; rOff++) {
 				for (int cOff = 0; cOff < 3; cOff++) {
 					forcePartialX.coeffRef(ptI*3 + rOff, ptJ*3 + cOff) +=
 						pfpx(rOff, cOff);
 				}
 			}
+			*/
 		}
 	}
 }
@@ -134,18 +137,19 @@ void Simulation::handleShearCondition(int offset, ForceMatrix &forces,
 	int topRightTri[3] = {offset + cloth.xRes, offset + 1,
 			              offset + cloth.xRes + 1};
 
-	shearHelper(botLeftTri, forces, forcePartialX);
-	shearHelper(topRightTri, forces, forcePartialX);
+	shearHelper(botLeftTri, forces, forcePartialX, true);
+	shearHelper(topRightTri, forces, forcePartialX, false);
 }
 
 void Simulation::shearHelper(int *triPts, ForceMatrix &forces,
-                             ForcePartialMatrix &forcePartialX) {
-	auto cond = shearCondition(cloth, triPts);
+                             ForcePartialMatrix &forcePartialX,
+                             bool isBl) {
+	auto cond = shearCondition(cloth, triPts, isBl);
 
 	for (int i = 0; i < 3; i++) {
 		int ptI = triPts[i];
 
-		auto partialI = shearPartial(cloth, ptI, triPts);
+		auto partialI = shearPartial(cloth, ptI, triPts, isBl);
 		auto force = -SHEAR_STIFF * partialI.transpose() * cond;
 		forces(0, ptI) += force;
 	}
