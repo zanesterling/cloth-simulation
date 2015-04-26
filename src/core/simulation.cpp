@@ -60,10 +60,14 @@ void Simulation::reset() {
 	cloth = Cloth(cloth.xRes, cloth.yRes);
 
 	// perturb cloth for the test case
-	for (int i = 0; i < 10; i++) {
+	random_device rd;
+	mt19937 gen(rd());
+	uniform_real_distribution<> dis(0, 1);
+	for (int i = 0; i < cloth.yRes; i++) {
 		for (int j = 0; j < cloth.xRes; j++) {
-			cloth.worldPoints[(i * cloth.xRes + j)*3 + 1] -= (10-i) * 0.01;
-			cloth.worldPoints[(i * cloth.xRes + j)*3 + 2] -= (10-i) * 0.01;
+			cloth.getWorldPoint(j, i)[0] += dis(gen) / 80;
+			cloth.getWorldPoint(j, i)[1] += dis(gen) / 80;
+			cloth.getWorldPoint(j, i)[2] += dis(gen) / 80;
 		}
 	}
 

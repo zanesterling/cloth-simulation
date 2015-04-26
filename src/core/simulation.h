@@ -4,6 +4,7 @@
 
 #include <string.h>
 #include <iostream>
+#include <random>
 
 #include "cloth.h"
 #include "conditions.h"
@@ -11,7 +12,7 @@
 #define LOCK_TOP_POINTS false
 
 #define SCALE_STIFF 1
-#define DAMP_STIFF  0.3
+#define DAMP_STIFF  2
 #define SHEAR_STIFF 1
 #define BEND_STIFF  0.001
 
