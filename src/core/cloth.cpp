@@ -1,10 +1,9 @@
 #include "cloth.h"
 
-Cloth::Cloth(int xRes, int yRes) : Cloth(xRes, yRes, 1, 1) {}
 Cloth::Cloth(int xRes, int yRes, double w, double h)
 	: xRes(xRes), yRes(yRes), w(w), h(h) {
 
-	mass = 40;
+	mass = 20;
 	massPerVertI = (xRes * yRes) / mass;
 
 	initUvPoints();

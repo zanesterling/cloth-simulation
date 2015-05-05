@@ -21,6 +21,10 @@
 
 #define GRAVITY_ACCEL 0.0001
 
+#define RESET_PERTURB 0
+#define RESET_BEND    1
+#define RESET_SCENE RESET_BEND
+
 typedef Matrix<Vector3d, Dynamic, Dynamic> ForceMatrix;
 typedef Matrix<double, Dynamic, Dynamic> ForcePartialMatrix;
 

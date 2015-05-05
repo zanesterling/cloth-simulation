@@ -64,15 +64,26 @@ void Simulation::reset() {
 	// regenerate cloth
 	cloth = Cloth(cloth.xRes, cloth.yRes);
 
-	// perturb cloth for the test case
-	random_device rd;
-	mt19937 gen(rd());
-	uniform_real_distribution<> dis(0, 1);
-	for (int i = 0; i < cloth.yRes - 1; i++) {
-		for (int j = 0; j < cloth.xRes; j++) {
-			cloth.getWorldPoint(j, i)[0] += dis(gen) / 80;
-			cloth.getWorldPoint(j, i)[1] += dis(gen) / 80;
-			cloth.getWorldPoint(j, i)[2] += dis(gen) / 80;
+	if (RESET_SCENE == RESET_PERTURB) {
+		// perturb cloth for the test case
+		random_device rd;
+		mt19937 gen(rd());
+		uniform_real_distribution<> dis(0, 1);
+		for (int i = 0; i < cloth.yRes - 1; i++) {
+			for (int j = 0; j < cloth.xRes; j++) {
+				cloth.getWorldPoint(j, i)[0] += dis(gen) / 80;
+				cloth.getWorldPoint(j, i)[1] += dis(gen) / 80;
+				cloth.getWorldPoint(j, i)[2] += dis(gen) / 80;
+			}
+		}
+	} else if (RESET_SCENE == RESET_BEND) { 
+		for (int i = 0; i < cloth.yRes / 2; i++) {
+			for (int j = 0; j < cloth.xRes; j++) {
+				cloth.worldPoints[(i * cloth.xRes + j) * 3 + 1] +=
+					(cloth.yRes / 2 - i) * 0.001;
+				cloth.worldPoints[(i * cloth.xRes + j) * 3 + 2] -=
+					(cloth.yRes / 2 - i) * 0.01;
+			}
 		}
 	}
 

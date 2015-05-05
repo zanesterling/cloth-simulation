@@ -13,7 +13,7 @@ struct Cloth {
 	double mass;
 	double triUvArea;
 
-	Cloth(int, int);
+	Cloth(int xRes, int yRes) : Cloth(xRes, yRes, 1, 1) {}
 	Cloth(int, int, double, double);
 
 	void initUvPoints();
