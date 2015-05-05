@@ -45,6 +45,14 @@ void Simulation::update() {
 
 		// apply gravitic acceleration
 		cloth.worldVels[i*3 + 1] -= GRAVITY_ACCEL;
+
+		// lock floor as lower bound
+		if (FLOOR_ENABLED) {
+			if (cloth.worldPoints[i*3 + 1] <= FLOOR_HEIGHT &&
+				cloth.worldVels[i*3 + 1] < 0) {
+				cloth.worldVels[i*3 + 1] = 0;
+			}
+		}
 	}
 
 	// lock the top row of points, if we've enabled that setting
