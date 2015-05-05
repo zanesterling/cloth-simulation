@@ -85,6 +85,15 @@ void Simulation::reset() {
 					(cloth.yRes / 2 - i) * 0.01;
 			}
 		}
+	} else if (RESET_SCENE == RESET_SWING) {
+		for (int i = 0; i < cloth.yRes; i++) {
+			for (int j = 0; j < cloth.xRes; j++) {
+				auto point = cloth.getWorldPoint(j, i);
+				swap(point[1], point[2]);
+				point[1] += 0.5;
+				point[2] -= 0.5;
+			}
+		}
 	}
 
 	// regenerate triangles from the mesh
