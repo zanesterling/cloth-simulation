@@ -10,13 +10,16 @@
 #include "conditions.h"
 
 #define LOCK_TOP_POINTS true
+#define GRAVITY_ENABLED true
 
-#define SCALE_STIFF 1
+#define SCALE_STIFF 30
 #define DAMP_STIFF  2
 #define SHEAR_STIFF 1
 #define BEND_STIFF  0.001
 
 #define TIMESTEP 1
+
+#define GRAVITY_ACCEL 0.0001
 
 typedef Matrix<Vector3d, Dynamic, Dynamic> ForceMatrix;
 typedef Matrix<double, Dynamic, Dynamic> ForcePartialMatrix;

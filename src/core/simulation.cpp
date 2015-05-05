@@ -36,12 +36,15 @@ void Simulation::update() {
 		}
 	}
 
-	// update velocities by condition-forces
 	for (int i = 0; i < cloth.xRes * cloth.yRes; i++) {
+		// update velocities by condition-forces
 		for (int j = 0; j < 3; j++) {
 			cloth.worldVels[i*3 + j] += forces(0, i)[j] *
 			                            cloth.massPerVertI;
 		}
+
+		// apply gravitic acceleration
+		cloth.worldVels[i*3 + 1] -= GRAVITY_ACCEL;
 	}
 
 	// lock the top row of points, if we've enabled that setting
