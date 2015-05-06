@@ -18,9 +18,7 @@ void Simulation::update() {
 
 	// zero forces matrix
 	for (int pt = 0; pt < cloth.xRes * cloth.yRes; pt++) {
-		forces(0, pt)[0] = 0;
-		forces(0, pt)[1] = 0;
-		forces(0, pt)[2] = 0;
+		forces(0, pt).setZero();
 	}
 
 	forcePartialX.setZero();

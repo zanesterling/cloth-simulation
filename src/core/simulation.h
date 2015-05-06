@@ -9,7 +9,7 @@
 #include "cloth.h"
 #include "conditions.h"
 
-#define LOCK_TOP_POINTS false
+#define LOCK_TOP_POINTS true
 #define GRAVITY_ENABLED true
 #define FLOOR_ENABLED true
 #define ACCEL_LOCK true
@@ -26,12 +26,12 @@
 #define RESET_PERTURB 0
 #define RESET_BEND    1
 #define RESET_SWING   2
-#define RESET_SCENE RESET_BEND
+#define RESET_SCENE RESET_SWING
 
 #define FLOOR_HEIGHT -1
 
 #define MAX_SCALE 0.001
-#define MAX_BEND 0.00001
+#define MAX_BEND 0.000003
 
 typedef Matrix<Vector3d, Dynamic, Dynamic> ForceMatrix;
 typedef Matrix<double, Dynamic, Dynamic> ForcePartialMatrix;
