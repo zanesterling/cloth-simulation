@@ -126,42 +126,24 @@ void Simulation::scaleHelper(int *triPts, bool isBl) {
 		// acount for scaling force
 		auto partialIX = scaleXPartial(cloth, ptI, triPts, isBl);
 		auto partialIY = scaleYPartial(cloth, ptI, triPts, isBl);
-		auto force = -SCALE_STIFF * (partialIX.transpose() * condX +
-		                             partialIY.transpose() * condY);
+		Vector3d force = -SCALE_STIFF * (partialIX.transpose() * condX +
+		                                 partialIY.transpose() * condY);
+		for (int j; j < 3; j++) {
+			if (force[j] >  MAX_SCALE) force[j] =  MAX_SCALE;
+			if (force[j] < -MAX_SCALE) force[j] = -MAX_SCALE;
+		}
 		forces(0, ptI) += force;
 
 		// account for damping force
 		auto velI = Vector3d(cloth.getWorldVel(ptI));
-		auto dampForce = -DAMP_STIFF *
+		Vector3d dampForce = -DAMP_STIFF *
 		                 (partialIX.transpose() * partialIX +
 		                  partialIY.transpose() * partialIY) * velI;
-		forces(0, ptI) += dampForce;
-
-		// calculate the partial force partial x
-		for (int j = 0; j < 3; j++) {
-			int ptJ = triPts[j];
-
-			auto partialJX = scaleXPartial(cloth, ptJ, triPts, isBl);
-			Matrix3d pfpxX = partialIX.transpose() * partialJX +
-			          scaleXSecondPartial(cloth, ptI, ptJ, triPts, isBl) *
-			          condX;
-
-			auto partialJY = scaleYPartial(cloth, ptJ, triPts, isBl);
-			Matrix3d pfpxY = partialIY.transpose() * partialJY +
-			          scaleYSecondPartial(cloth, ptI, ptJ, triPts, isBl) *
-			          condY;
-
-			Matrix3d pfpx = pfpxX + pfpxY;
-			forcePartialX.block(i*3, j*3, 3, 3) += pfpx;
-			/*
-			for (int rOff = 0; rOff < 3; rOff++) {
-				for (int cOff = 0; cOff < 3; cOff++) {
-					forcePartialX.coeffRef(ptI*3 + rOff, ptJ*3 + cOff) +=
-						pfpx(rOff, cOff);
-				}
-			}
-			*/
+		for (int j; j < 3; j++) {
+			if (abs(dampForce[j]) > abs(velI[j] + force[j]))
+				dampForce[j] = -(velI[j] + force[j]);
 		}
+		forces(0, ptI) += dampForce;
 	}
 }
 
@@ -230,7 +212,11 @@ void Simulation::bendHelper(int *tris) {
 		int ptI = tris[i];
 
 		auto partialI = bendPartial(cloth, ptI, tris);
-		auto force = -BEND_STIFF * partialI.transpose() * cond;
+		Vector3d force = -BEND_STIFF * partialI.transpose() * cond;
+		for (int j = 0; j < 3; j++) {
+			if (force[j] > MAX_BEND) force[j] = MAX_BEND;
+			if (force[j] < -MAX_BEND) force[j] = -MAX_BEND;
+		}
 		forces(0, ptI) += force;
 	}
 }
