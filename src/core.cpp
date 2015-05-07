@@ -34,9 +34,10 @@ void initGlut(int argc, char **argv) {
 void initLights() {
 	GLfloat lightPos0[3] = {1, 1, 0};
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
-	GLfloat lightAmb0[8] = {0.8, 0.8, 0.8, 1};
+	GLfloat lightAmb0[4] = {0.8, 0.8, 0.8, 1};
 	glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmb0);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightAmb0);
+	GLfloat lightDif0[4] = {0.2, 0.2, 0.2, 1};
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDif0);
 }
 
 void display() {
