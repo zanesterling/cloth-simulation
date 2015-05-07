@@ -14,7 +14,10 @@ void UI::render() {
 	for (int i = 0; i < 9 * sim.getNumTris(); i++) {
 		tris[i] = (GLfloat) sim.triVerts[i];
 	}
-	GLfloat *norms = genNorms(tris);
+	GLfloat *norms = new GLfloat[9 * sim.getNumTris()];
+	for (int i = 0; i < 9 * sim.getNumTris(); i++) {
+		norms[i] = (GLfloat) sim.norms[i];
+	}
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -80,21 +83,4 @@ void UI::mouseMotion(int x, int y) {
 	auto point = sim.cloth.getWorldPoint(selectedVert);
 	point[0] = x;
 	point[1] = y;
-}
-
-GLfloat *UI::genNorms(GLfloat *tris) {
-	GLfloat *norms = new GLfloat[9 * sim.getNumTris()];
-	for (int i = 0; i < sim.getNumTris(); i++) {
-		auto p1 = Vector3f(tris + i*9);
-		auto p2 = Vector3f(tris + i*9 + 3);
-		auto p3 = Vector3f(tris + i*9 + 6);
-
-		auto norm = (p2 - p1).cross(p3 - p1);
-		norm.normalize();
-		for (int k = 0; k < 3; k++)
-			for (int j = 0; j < 3; j++)
-				norms[i*9 + k*3 + j] = norm[j];
-	}
-
-	return norms;
 }

@@ -47,11 +47,14 @@ class Simulation {
 	void bendHelper(int *);
 
 	double *genTrisFromMesh();
-	void copyPoint(double *, double *, int);
+	double *genNorms();
+	double *genTriNorms();
+	void copyPoint(double *, double *);
 
 public:
 	Cloth cloth;
 	double *triVerts;
+	double *norms;
 	bool running = false;
 
 	ForceMatrix forces;
@@ -61,5 +64,6 @@ public:
 
 	void update();
 	void reset();
-	int getNumTris();
+	int getNumTris() { return 2 * (cloth.xRes - 1) * (cloth.yRes - 1); }
+	int getNumPoints() { return cloth.xRes * cloth.yRes; }
 };

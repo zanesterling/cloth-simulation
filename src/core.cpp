@@ -28,8 +28,6 @@ void initGlut(int argc, char **argv) {
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
 
-	glShadeModel(GL_FLAT);
-
 	glClearColor(0., 0., 0., 1.);
 }
 
