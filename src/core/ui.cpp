@@ -39,7 +39,7 @@ void UI::render() {
 	glPolygonMode(GL_FRONT, fillMode ? GL_FILL : GL_LINE);
 
 	// draw front of cloth
-	glColor3f(0, 0.5, 0);
+	glColor3f(0.3, 0.8, 0.9);
 	glCullFace(GL_BACK);
 	glDrawArrays(GL_TRIANGLES, 0, 3 * sim.getNumTris());
 
@@ -47,7 +47,7 @@ void UI::render() {
 	for (int i = 0; i < 9 * sim.getNumTris(); i++) {
 		norms[i] = -norms[i];
 	}
-	glColor3f(0, 0, 0.5);
+	glColor3f(0.9, 0.4, 0.1);
 	glCullFace(GL_FRONT);
 	glDrawArrays(GL_TRIANGLES, 0, 3 * sim.getNumTris());
 
