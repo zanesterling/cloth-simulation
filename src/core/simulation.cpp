@@ -257,9 +257,9 @@ double *Simulation::genNorms() {
 			auto norm = (p2 - p1).cross(p3 - p1);
 			norm.normalize();
 			for (int i = 0; i < 3; i++) {
-				norms[(y * cloth.xRes + x) * 3 + i] += norm[i];
-				norms[(y * cloth.xRes + (x+1)) * 3 + i] += norm[i];
-				norms[((y+1) * cloth.xRes + x) * 3 + i] += norm[i];
+				norms[(y     * cloth.xRes + x)     * 3 + i] += norm[i];
+				norms[(y     * cloth.xRes + (x+1)) * 3 + i] += norm[i];
+				norms[((y+1) * cloth.xRes + x)     * 3 + i] += norm[i];
 			}
 
 			p1 = Vector3d(cloth.getWorldPoint(x, y+1));
@@ -268,8 +268,8 @@ double *Simulation::genNorms() {
 			norm = (p2 - p1).cross(p3 - p1);
 			norm.normalize();
 			for (int i = 0; i < 3; i++) {
-				norms[((y+1) * cloth.xRes + x) * 3 + i] += norm[i];
-				norms[(y * cloth.xRes + (x+1)) * 3 + i] += norm[i];
+				norms[((y+1) * cloth.xRes + x)     * 3 + i] += norm[i];
+				norms[(y     * cloth.xRes + (x+1)) * 3 + i] += norm[i];
 				norms[((y+1) * cloth.xRes + (x+1)) * 3 + i] += norm[i];
 			}
 		}
