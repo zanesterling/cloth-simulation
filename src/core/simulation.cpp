@@ -278,7 +278,7 @@ double *Simulation::genNorms() {
 	// normalize each point's norm (for smoother jazz)
 	for (int y = 0; y < cloth.yRes; y++) {
 		for (int x = 0; x < cloth.xRes; x++) {
-			auto norm = norms + y * cloth.xRes + x;
+			auto norm = norms + 3 * (y * cloth.xRes + x);
 			auto normv = Vector3d(norm);
 			normv.normalize();
 			for (int i = 0; i < 3; i++)
