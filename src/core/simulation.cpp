@@ -231,7 +231,7 @@ double *Simulation::genTrisFromMesh() {
 		for (int j = 0 ; j < cloth.xRes - 1; j++) {
 			double *triPairStart = tris + 18 * (i*(cloth.xRes-1) + j);
 			copyPoint(triPairStart,      cloth.getWorldPoint(j,   i));
-			copyPoint(triPairStart + 3,  cloth.getWorldPoint(j+1, j));
+			copyPoint(triPairStart + 3,  cloth.getWorldPoint(j+1, i));
 			copyPoint(triPairStart + 6,  cloth.getWorldPoint(j,   i+1));
 
 			copyPoint(triPairStart + 9,  cloth.getWorldPoint(j,   i+1));
@@ -301,7 +301,7 @@ double *Simulation::genTriNorms() {
 			copyPoint(start + 6,  norms + ((y+1) * cloth.xRes + x)    * 3);
 
 			copyPoint(start + 9,  norms + ((y+1) * cloth.xRes + x)    * 3);
-			copyPoint(start + 12, norms + (y * cloth.xRes + (x+1))    * 3);
+			copyPoint(start + 12, norms + (y     * cloth.xRes + (x+1))* 3);
 			copyPoint(start + 15, norms + ((y+1) * cloth.xRes + (x+1))* 3);
 		}
 	}
