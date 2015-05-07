@@ -36,11 +36,19 @@ void UI::render() {
 	glVertexPointer(3, GL_FLOAT, 0, tris);
 	glNormalPointer(GL_FLOAT, 0, norms);
 
-	glColor3f(1, 1, 1);
-	if (fillMode)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	else
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glPolygonMode(GL_FRONT, fillMode ? GL_FILL : GL_LINE);
+
+	// draw front of cloth
+	glColor3f(0, 0.5, 0);
+	glCullFace(GL_BACK);
+	glDrawArrays(GL_TRIANGLES, 0, 3 * sim.getNumTris());
+
+	// invert normals and draw back
+	for (int i = 0; i < 9 * sim.getNumTris(); i++) {
+		norms[i] = -norms[i];
+	}
+	glColor3f(0, 0, 0.5);
+	glCullFace(GL_FRONT);
 	glDrawArrays(GL_TRIANGLES, 0, 3 * sim.getNumTris());
 
 	glPopMatrix();
