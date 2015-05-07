@@ -34,7 +34,6 @@
 #define MAX_BEND 0.000003
 
 typedef Matrix<Vector3d, Dynamic, Dynamic> ForceMatrix;
-typedef Matrix<double, Dynamic, Dynamic> ForcePartialMatrix;
 
 class Simulation {
 	void handleScaleCondition(int);
@@ -58,7 +57,6 @@ public:
 	bool running = false;
 
 	ForceMatrix forces;
-	ForcePartialMatrix forcePartialX;
 
 	Simulation(int, int);
 

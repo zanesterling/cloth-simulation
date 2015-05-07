@@ -8,9 +8,7 @@ Simulation::Simulation(int clothXRes, int clothYRes)
 	triVerts = genTrisFromMesh();
 	norms = genTriNorms();
 
-	forces.resize(1, cloth.xRes * cloth.yRes);
-	forcePartialX.resize(3 * cloth.xRes * cloth.yRes,
-	                     3 * cloth.xRes * cloth.yRes);
+	forces.resize(1, getNumPoints());
 }
 
 void Simulation::update() {
@@ -21,9 +19,6 @@ void Simulation::update() {
 	for (int pt = 0; pt < cloth.xRes * cloth.yRes; pt++) {
 		forces(0, pt).setZero();
 	}
-
-	forcePartialX.setZero();
-	//forcePartialX.reserve(81 * getNumTris());
 
 	// get condition-forces 
 	for (int i = 0; i < cloth.yRes-1; i++) {
