@@ -22,7 +22,11 @@ void initGlut(int argc, char **argv) {
 	glutMouseFunc(mouse);
 	glutMotionFunc(mouseMotion);
 
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
 
 	glShadeModel(GL_FLAT);
 
@@ -30,10 +34,11 @@ void initGlut(int argc, char **argv) {
 }
 
 void initLights() {
-	GLfloat lightPos0[3] = {7, 1, 0};
+	GLfloat lightPos0[3] = {1, 1, 0};
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
 	GLfloat lightAmb0[8] = {0.8, 0.8, 0.8, 1};
 	glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmb0);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightAmb0);
 }
 
 void display() {

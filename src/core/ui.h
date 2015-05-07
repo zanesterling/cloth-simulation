@@ -27,4 +27,6 @@ public:
 
 	void mouse(int, int, int, int);
 	void mouseMotion(int, int);
+	
+	GLfloat *genNorms(GLfloat *);
 };
