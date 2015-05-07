@@ -18,6 +18,7 @@ public:
 	double altitude = 0;
 	double vAzim = 0;
 	double vAlt = 0;
+	bool fillMode = true;
 
 	UI(int, int, Simulation &);
 

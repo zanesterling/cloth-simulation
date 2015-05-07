@@ -37,7 +37,10 @@ void UI::render() {
 	glNormalPointer(GL_FLOAT, 0, norms);
 
 	glColor3f(1, 1, 1);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	if (fillMode)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	else
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glDrawArrays(GL_TRIANGLES, 0, 3 * sim.getNumTris());
 
 	glPopMatrix();

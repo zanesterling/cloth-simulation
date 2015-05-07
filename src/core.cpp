@@ -36,7 +36,7 @@ void initLights() {
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
 	GLfloat lightAmb0[4] = {0.8, 0.8, 0.8, 1};
 	glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmb0);
-	GLfloat lightDif0[4] = {0.2, 0.2, 0.2, 1};
+	GLfloat lightDif0[4] = {0.8, 0.8, 0.8, 1};
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDif0);
 }
 
@@ -82,6 +82,9 @@ void keyboard(unsigned char key, int x, int y) {
 			break;
 		case 'q':
 			quit();
+			break;
+		case 't':
+			ui.fillMode = !ui.fillMode;
 			break;
 	}
 }
