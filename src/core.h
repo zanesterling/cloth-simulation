@@ -9,7 +9,7 @@
 #include "core/simulation.h"
 
 Simulation sim(40, 40);
-UI ui(1360, 820, sim);
+UI ui(1360, 840, sim);
 
 int main(int, char **);
 void initGlut(int, char **);
