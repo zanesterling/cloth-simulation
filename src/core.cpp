@@ -40,7 +40,7 @@ void initLights() {
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
 	GLfloat lightAmb0[4] = {0.6, 0.6, 0.6, 1};
 	glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmb0);
-	GLfloat lightDif0[4] = {0.4, 0.4, 0.4, 1};
+	GLfloat lightDif0[4] = {0.6, 0.6, 0.6, 1};
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDif0);
 }
 
