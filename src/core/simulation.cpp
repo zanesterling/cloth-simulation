@@ -69,6 +69,8 @@ void Simulation::reset() {
 	// regenerate cloth
 	cloth = Cloth(cloth.xRes, cloth.yRes);
 
+	maxScale = MAX_SCALE * 30 * 30 / (cloth.xRes * cloth.yRes);
+
 	if (RESET_SCENE == RESET_PERTURB) {
 		// perturb cloth for the test case
 		random_device rd;
@@ -115,19 +117,26 @@ void Simulation::handleScaleCondition(int offset) {
 }
 
 void Simulation::scaleHelper(int *triPts, bool isBl) {
-	auto condX = scaleXCondition(cloth, triPts, isBl);
-	auto condY = scaleYCondition(cloth, triPts, isBl);
+	double stretchX = 1;
+	double stretchY = 1;
+	if (bannerStyle) {
+		stretchX = 0.5;
+		stretchY = 1;
+	}
+
+	auto condX = scaleXCondition(cloth, triPts, isBl, stretchX);
+	auto condY = scaleYCondition(cloth, triPts, isBl, stretchY);
 	for (int i = 0; i < 3; i++) {
 		int ptI = triPts[i];
 
 		// acount for scaling force
-		auto partialIX = scaleXPartial(cloth, ptI, triPts, isBl);
-		auto partialIY = scaleYPartial(cloth, ptI, triPts, isBl);
+		auto partialIX = scaleXPartial(cloth, ptI, triPts, isBl, stretchX);
+		auto partialIY = scaleYPartial(cloth, ptI, triPts, isBl, stretchY);
 		Vector3d force = -SCALE_STIFF * (partialIX.transpose() * condX +
 		                                 partialIY.transpose() * condY);
 		for (int j; j < 3; j++) {
-			if (force[j] >  MAX_SCALE) force[j] =  MAX_SCALE;
-			if (force[j] < -MAX_SCALE) force[j] = -MAX_SCALE;
+			if (force[j] >  maxScale) force[j] =  maxScale;
+			if (force[j] < -maxScale) force[j] = -maxScale;
 		}
 		forces(0, ptI) += force;
 

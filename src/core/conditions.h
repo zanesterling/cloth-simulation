@@ -15,17 +15,14 @@ typedef Matrix<double, 3, 2> WuvMatrix;
 
 WuvMatrix wuvMatrix(Cloth &, int, int, int);
 
-// TODO add changeable stretch factors
-double scaleXCondition(Cloth &, int *, bool);
-double scaleXCondition(Cloth &, int, int, int, bool);
-RowVector3d scaleXPartial(Cloth &, int, int *, bool);
-RowVector3d scaleXPartial(Cloth &, int, int, int, int, bool);
-double scaleYCondition(Cloth &, int *, bool);
-double scaleYCondition(Cloth &, int, int, int, bool);
-RowVector3d scaleYPartial(Cloth &, int, int *, bool);
-RowVector3d scaleYPartial(Cloth &, int, int, int, int, bool);
-Matrix3d scaleXSecondPartial(Cloth &, int, int, int *, bool);
-Matrix3d scaleYSecondPartial(Cloth &, int, int, int *, bool);
+double scaleXCondition(Cloth &, int *, bool, double);
+double scaleXCondition(Cloth &, int, int, int, bool, double);
+RowVector3d scaleXPartial(Cloth &, int, int *, bool, double);
+RowVector3d scaleXPartial(Cloth &, int, int, int, int, bool, double);
+double scaleYCondition(Cloth &, int *, bool, double);
+double scaleYCondition(Cloth &, int, int, int, bool, double);
+RowVector3d scaleYPartial(Cloth &, int, int *, bool, double);
+RowVector3d scaleYPartial(Cloth &, int, int, int, int, bool, double);
 
 double shearCondition(Cloth &, int *, bool);
 double shearCondition(Cloth &, int, int, int, bool);

@@ -88,8 +88,20 @@ void keyboard(unsigned char key, int x, int y) {
 			quit();
 			break;
 		case 't':
+			ui.normals = !ui.normals;
+			if (ui.normals)
+				glEnable(GL_LIGHTING);
+			else
+				glDisable(GL_LIGHTING);
+			break;
+		case 'y':
+			ui.colors = !ui.colors;
+			break;
+		case 'u':
 			ui.fillMode = !ui.fillMode;
 			break;
+		case 'i':
+			sim.bannerStyle = !sim.bannerStyle;
 	}
 }
 

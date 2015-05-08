@@ -11,7 +11,7 @@
 
 #define LOCK_TOP_POINTS true
 #define GRAVITY_ENABLED true
-#define FLOOR_ENABLED true
+#define FLOOR_ENABLED false
 #define ACCEL_LOCK true
 
 #define SCALE_STIFF 20
@@ -36,6 +36,8 @@
 typedef Matrix<Vector3d, Dynamic, Dynamic> ForceMatrix;
 
 class Simulation {
+	double maxScale;
+
 	void handleScaleCondition(int);
 	void scaleHelper(int *, bool);
 
@@ -55,6 +57,7 @@ public:
 	double *triVerts;
 	double *norms;
 	bool running = false;
+	bool bannerStyle = false;
 
 	ForceMatrix forces;
 

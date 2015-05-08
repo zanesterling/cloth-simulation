@@ -19,6 +19,8 @@ public:
 	double vAzim = 0;
 	double vAlt = 0;
 	bool fillMode = true;
+	bool colors = true;
+	bool normals = true;
 
 	UI(int, int, Simulation &);
 

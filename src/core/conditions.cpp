@@ -45,48 +45,36 @@ WuvMatrix wuvMatrix(Cloth &cloth, int i, int j, int k, bool isBl) {
 	}
 }
 
-double scaleXCondition(Cloth &cloth, int *tri, bool isBl) {
-	return scaleXCondition(cloth, tri[0], tri[1], tri[2], isBl);
-}
-
-double scaleXCondition(Cloth &cloth, int i, int j, int k, bool isBl) {
+double scaleXCondition(Cloth &cloth, int *tri, bool isBl, double b) {
 	double area = cloth.triUvArea;
-	auto wm = wuvMatrix(cloth, i, j, k, isBl);
+	auto wm = wuvMatrix(cloth, tri[0], tri[1], tri[2], isBl);
 
 	// get final condition value
-	return area * (wm.col(0).norm() - 1);
+	return area * (wm.col(0).norm() - b);
 }
 
-double scaleYCondition(Cloth &cloth, int *tri, bool isBl) {
-	return scaleYCondition(cloth, tri[0], tri[1], tri[2], isBl);
-}
-
-double scaleYCondition(Cloth &cloth, int i, int j, int k, bool isBl) {
+double scaleYCondition(Cloth &cloth, int *tri, bool isBl, double b) {
 	double area = cloth.triUvArea;
-	auto wm = wuvMatrix(cloth, i, j, k, isBl);
+	auto wm = wuvMatrix(cloth, tri[0], tri[1], tri[2], isBl);
 
 	// get final condition value
-	return area * (wm.col(1).norm() - 1);
+	return area * (wm.col(1).norm() - b);
 }
 
-RowVector3d scaleXPartial(Cloth &cloth, int pt, int *tri, bool isBl) {
-	return scaleXPartial(cloth, pt, tri[0], tri[1], tri[2], isBl);
-}
-
-RowVector3d scaleXPartial(Cloth &cloth, int pt,
-                          int i, int j, int k, bool isBl) {
+RowVector3d scaleXPartial(Cloth &cloth, int pt, int *tri, bool isBl,
+                          double b) {
 	RowVector3d partial; // two rows, three columns
 
-	auto localCond = scaleXCondition(cloth, i, j, k, isBl);
+	auto localCond = scaleXCondition(cloth, tri, isBl, b);
 	double *worldPt = cloth.getWorldPoint(pt);
 
 	for (int col = 0; col < 3; col++) {
 		// perturb the cloth
 		worldPt[col] += PERTURB_QUANT;
 
-		auto pCond1 = scaleXCondition(cloth, i, j, k, isBl);
+		auto pCond1 = scaleXCondition(cloth, tri, isBl, b);
 		worldPt[col] -= 2 * PERTURB_QUANT;
-		auto pCond2 = scaleXCondition(cloth, i, j, k, isBl);
+		auto pCond2 = scaleXCondition(cloth, tri, isBl, b);
 		partial[col] = (pCond1 - pCond2) / (2 * PERTURB_QUANT);
 
 		// de-perturb cloth
@@ -96,86 +84,24 @@ RowVector3d scaleXPartial(Cloth &cloth, int pt,
 	return partial;
 }
 
-RowVector3d scaleYPartial(Cloth &cloth, int pt, int *tri, bool isBl) {
-	return scaleYPartial(cloth, pt, tri[0], tri[1], tri[2], isBl);
-}
-
-RowVector3d scaleYPartial(Cloth &cloth, int pt,
-                          int i, int j, int k, bool isBl) {
+RowVector3d scaleYPartial(Cloth &cloth, int pt, int *tri, bool isBl,
+                          double b) {
 	RowVector3d partial; // two rows, three columns
 
-	auto localCond = scaleYCondition(cloth, i, j, k, isBl);
+	auto localCond = scaleYCondition(cloth, tri, isBl, b);
 	double *worldPt = cloth.getWorldPoint(pt);
 
 	for (int col = 0; col < 3; col++) {
 		// perturb the cloth
 		worldPt[col] += PERTURB_QUANT;
 
-		auto pCond1 = scaleYCondition(cloth, i, j, k, isBl);
+		auto pCond1 = scaleYCondition(cloth, tri, isBl, b);
 		worldPt[col] -= 2 * PERTURB_QUANT;
-		auto pCond2 = scaleYCondition(cloth, i, j, k, isBl);
+		auto pCond2 = scaleYCondition(cloth, tri, isBl, b);
 		partial[col] = (pCond1 - pCond2) / (2 * PERTURB_QUANT);
 
 		// de-perturb cloth
 		worldPt[col] += PERTURB_QUANT;
-	}
-
-	return partial;
-}
-
-// returns the p / p pJ of p / p pI of the condition on tri
-Matrix3d scaleXSecondPartial(Cloth &cloth, int i, int j, int *tri,
-                             bool isBl) {
-	Matrix3d partial;
-
-	// perform the fetch once
-	int ptA = tri[0];
-	int ptB = tri[1];
-	int ptC = tri[2];
-
-	auto localPartial = scaleXPartial(cloth, i, ptA, ptB, ptC, isBl);
-	auto ptJ = cloth.getWorldPoint(j);
-
-	for (int col = 0; col < 3; col++) {
-		// perturb the cloth
-		ptJ[col] += PERTURB_QUANT;
-
-		auto pPartial1 = scaleXPartial(cloth, i, ptA, ptB, ptC, isBl);
-		ptJ[col] -= 2 * PERTURB_QUANT;
-		auto pPartial2 = scaleXPartial(cloth, i, ptA, ptB, ptC, isBl);
-		partial.col(col) = (pPartial1 - pPartial2) / (2 * PERTURB_QUANT);
-
-		// de-perturb cloth
-		ptJ[col] += PERTURB_QUANT;
-	}
-
-	return partial;
-}
-
-// returns the p / p pJ of p / p pI of the condition on tri
-Matrix3d scaleYSecondPartial(Cloth &cloth, int i, int j, int *tri,
-                             bool isBl) {
-	Matrix3d partial;
-
-	// perform the fetch once
-	int ptA = tri[0];
-	int ptB = tri[1];
-	int ptC = tri[2];
-
-	auto localPartial = scaleYPartial(cloth, i, ptA, ptB, ptC, isBl);
-	auto ptJ = cloth.getWorldPoint(j);
-
-	for (int col = 0; col < 3; col++) {
-		// perturb the cloth
-		ptJ[col] += PERTURB_QUANT;
-
-		auto pPartial1 = scaleYPartial(cloth, i, ptA, ptB, ptC, isBl);
-		ptJ[col] -= 2 * PERTURB_QUANT;
-		auto pPartial2 = scaleYPartial(cloth, i, ptA, ptB, ptC, isBl);
-		partial.col(col) = (pPartial1 - pPartial2) / (2 * PERTURB_QUANT);
-
-		// de-perturb cloth
-		ptJ[col] += PERTURB_QUANT;
 	}
 
 	return partial;
