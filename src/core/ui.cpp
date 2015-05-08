@@ -69,32 +69,18 @@ void UI::resize(int w, int h) {
 void UI::mouse(int button, int state, int x, int y) {
 	mouseLoc[0] = x;
 	mouseLoc[1] = y;
-
-	// TODO deal with perspective transform
-	if (button == GLUT_LEFT_BUTTON) {
-		if (state == GLUT_UP) {
-			selectedVert = -1;
-		} else {
-			// for each point in the cloth mesh
-			Cloth &cloth = sim.cloth;
-			for (int i = 0; i < cloth.xRes * cloth.yRes; i++) {
-				// if the point is close to the click, select it
-				auto point = Vector2d(cloth.getWorldPoint(i));
-				if ((point - mouseLoc).norm() < CLICK_RADIUS) {
-					selectedVert = i;
-				}
-			}
-		}
-	}
+	this->button = button;
 }
 
 void UI::mouseMotion(int x, int y) {
-	if (selectedVert == -1) return;
+	auto dx = x - mouseLoc[0];
+
+	if (button == GLUT_LEFT_BUTTON) {
+		sim.changeScaleX(1. * dx / width);
+	} else if (button == GLUT_RIGHT_BUTTON) {
+		sim.changeCuff(1. * dx / width);
+	}
 
 	mouseLoc[0] = x;
 	mouseLoc[1] = y;
-
-	auto point = sim.cloth.getWorldPoint(selectedVert);
-	point[0] = x;
-	point[1] = y;
 }

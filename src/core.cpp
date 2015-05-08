@@ -102,6 +102,10 @@ void keyboard(unsigned char key, int x, int y) {
 			break;
 		case 'i':
 			sim.bannerStyle = !sim.bannerStyle;
+			break;
+		case 'o':
+			sim.cuffing = !sim.cuffing;
+			break;
 	}
 }
 

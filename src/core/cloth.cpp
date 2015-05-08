@@ -9,6 +9,8 @@ Cloth::Cloth(int xRes, int yRes, double w, double h)
 	initUvPoints();
 	initWorldPoints();
 	worldVels = new double[3 * xRes * yRes];
+	for (int i = 0; i < 3 * xRes * yRes; i++)
+		worldVels[i] = 0;
 
 	triUvArea = getTriUvArea();
 }

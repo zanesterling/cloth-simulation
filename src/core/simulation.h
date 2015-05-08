@@ -37,9 +37,12 @@ typedef Matrix<Vector3d, Dynamic, Dynamic> ForceMatrix;
 
 class Simulation {
 	double maxScale;
+	double scaleX;
+	double scaleY;
+	double cuffScale;
 
 	void handleScaleCondition(int);
-	void scaleHelper(int *, bool);
+	void scaleHelper(int *, bool, int);
 
 	void handleShearCondition(int);
 	void shearHelper(int *, bool);
@@ -58,6 +61,7 @@ public:
 	double *norms;
 	bool running = false;
 	bool bannerStyle = false;
+	bool cuffing = false;
 
 	ForceMatrix forces;
 
@@ -67,4 +71,8 @@ public:
 	void reset();
 	int getNumTris() { return 2 * (cloth.xRes - 1) * (cloth.yRes - 1); }
 	int getNumPoints() { return cloth.xRes * cloth.yRes; }
+
+	void changeScaleX(double d) { scaleX += d; }
+	void changeScaleY(double d) { scaleY += d; }
+	void changeCuff(double d)   { cuffScale += d; }
 };

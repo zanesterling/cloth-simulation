@@ -5,9 +5,6 @@ Simulation::Simulation(int clothXRes, int clothYRes)
 	: cloth(Cloth(clothXRes, clothYRes)) {
 	reset();
 
-	triVerts = genTrisFromMesh();
-	norms = genTriNorms();
-
 	forces.resize(1, getNumPoints());
 }
 
@@ -68,7 +65,6 @@ void Simulation::update() {
 void Simulation::reset() {
 	// regenerate cloth
 	cloth = Cloth(cloth.xRes, cloth.yRes);
-
 	maxScale = MAX_SCALE * 30 * 30 / (cloth.xRes * cloth.yRes);
 
 	if (RESET_SCENE == RESET_PERTURB) {
@@ -105,6 +101,11 @@ void Simulation::reset() {
 
 	// regenerate triangles from the mesh
 	triVerts = genTrisFromMesh();
+	norms = genTriNorms();
+
+	scaleX = 1;
+	scaleY = 1;
+	cuffScale = 1;
 }
 
 void Simulation::handleScaleCondition(int offset) {
@@ -112,16 +113,28 @@ void Simulation::handleScaleCondition(int offset) {
 	int topRightTri[3] = {offset + cloth.xRes, offset + 1,
 	                offset + cloth.xRes + 1};
 
-	scaleHelper(botLeftTri, true);
-	scaleHelper(topRightTri, false);
+	int x = offset % cloth.xRes;
+	int y = offset / cloth.xRes;
+
+	scaleHelper(botLeftTri, true, y);
+	scaleHelper(topRightTri, false, y);
 }
 
-void Simulation::scaleHelper(int *triPts, bool isBl) {
-	double stretchX = 1;
-	double stretchY = 1;
+void Simulation::scaleHelper(int *triPts, bool isBl, int y) {
+	double stretchX = scaleX;
+	double stretchY = scaleY;
 	if (bannerStyle) {
 		stretchX = 0.5;
 		stretchY = 1;
+	}
+	if (y < 5) {
+		stretchX = cuffScale * y / 5. + 1 * (5 - y) / 5.;
+	}
+	if (cuffing) {
+		if (y == 0)
+			stretchX = 0.3;
+		else if (y == 1)
+			stretchX = 0.5;
 	}
 
 	auto condX = scaleXCondition(cloth, triPts, isBl, stretchX);

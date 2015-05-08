@@ -8,8 +8,9 @@
 #define CLICK_RADIUS 3.
 
 class UI {
-	int selectedVert = -1;
 	Vector2d mouseLoc;
+
+	int button;
 
 public:
 	int width, height;
