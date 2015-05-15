@@ -26,7 +26,8 @@
 #define RESET_PERTURB 0
 #define RESET_BEND    1
 #define RESET_SWING   2
-#define RESET_SCENE RESET_SWING
+#define RESET_HANG    3
+#define RESET_SCENE RESET_HANG
 
 #define FLOOR_HEIGHT -1
 
