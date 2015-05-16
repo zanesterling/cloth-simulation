@@ -9,7 +9,8 @@
 #include "cloth.h"
 #include "conditions.h"
 
-#define LOCK_TOP_POINTS true
+#define LOCK_TOP_ROW true
+
 #define GRAVITY_ENABLED true
 #define FLOOR_ENABLED false
 #define ACCEL_LOCK true

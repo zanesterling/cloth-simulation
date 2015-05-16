@@ -48,7 +48,7 @@ void Simulation::update() {
 
 	// lock the top row of points, if we've enabled that setting
 	int lastPoint = 3 * cloth.xRes * cloth.yRes;
-	if (LOCK_TOP_POINTS) lastPoint -= 3 * cloth.xRes;
+	if (LOCK_TOP_ROW) lastPoint -= 3 * cloth.xRes;
 
 	// move the points by their velocities
 	for (int i = 0; i < lastPoint; i++) {
