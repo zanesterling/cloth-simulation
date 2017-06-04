@@ -61,7 +61,7 @@ public:
 	Cloth cloth;
 	double *triVerts;
 	double *norms;
-	bool running = false;
+	bool running = true;
 	bool bannerStyle = false;
 	bool cuffing = false;
 

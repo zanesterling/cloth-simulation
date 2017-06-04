@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
 
 void initGlut(int argc, char **argv) {
 	glutInit(&argc, argv);
-	
+
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowSize(ui.width, ui.height);
 	glutCreateWindow("Cloth simulation");
