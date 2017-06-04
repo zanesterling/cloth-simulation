@@ -1,7 +1,7 @@
 # Platform identifier
 MACHINE = $(shell uname -s)
 # Our source, so we can include relative to src/
-INCLUDES = -Isrc/
+INCLUDES = -Isrc/ -I/usr/local/Cellar/eigen/3.3.2/include/eigen3/ -I/usr/local/Cellar/freeglut/3.0.0/include/ -I/usr/local/Cellar/glew/2.0.0/include/
 # Directories inside src that we should look in for compilation
 DIRS = 
 # Object files, by keeping the directory structure from src/ in obj/
@@ -38,11 +38,11 @@ CORE_LIB = main_core.dylib
 # Link into an executable
 # UNIX FORM:
 unix: dirs $(OBJS)
-	$(CXX) $(FLAGS) -o $(EXEC) $(LIBS) src/core.cpp $(OBJS)
+	$(CXX) $(FLAGS) $(INCLUDES) -o $(EXEC) $(LIBS) src/core.cpp $(OBJS)
 
 # Compile for each thing
 obj/%.o: src/%.cpp
-	$(CXX) $(FLAGS) -c -MMD -MP $< -o $@ $(INCLUDES)
+	$(CXX) $(FLAGS) $(INCLUDES) -c -MMD -MP $< -o $@
 
 # Create empty dirs if they don't exist
 dirs:
