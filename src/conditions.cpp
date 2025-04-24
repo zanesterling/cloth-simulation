@@ -8,7 +8,7 @@ Matrix2d trUvMatrixI;
 
 WuvMatrix wuvMatrix(Cloth &cloth, int i, int j, int k, bool isBl) {
 	// get delta x_1, x_2
-	Matrix<double, 3, 2> dxMatrix;
+	Eigen::Matrix<double, 3, 2> dxMatrix;
 	auto wpI = cloth.getWorldPoint(i);
 	auto wpJ = cloth.getWorldPoint(j);
 	auto wpK = cloth.getWorldPoint(k);

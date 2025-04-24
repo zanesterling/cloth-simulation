@@ -25,7 +25,7 @@ constexpr Color DEFAULT_BACK_COLOR  = {.red=0.9, .green=0.4, .blue=0.1};
 constexpr Color WHITE               = {.red=1.0, .green=1.0, .blue=1.0};
 
 class UI {
-	Vector2d mouseLoc;
+	Eigen::Vector2d mouseLoc;
 
 	int button;
 

@@ -1,7 +1,10 @@
 #pragma once
 
 #include <Eigen/Dense>
-using namespace Eigen;
+
+typedef Eigen::Matrix<double, 3, 2> WuvMatrix;
+typedef Eigen::RowVector3d RowVector3d;
+typedef Eigen::Vector3d Vector3d;
 
 struct Cloth {
 	int xRes, yRes;

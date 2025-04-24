@@ -9,9 +9,10 @@
 // the amount by which we perturb the points in finding partials
 #define PERTURB_QUANT 0.0001
 
-using namespace Eigen;
-
-typedef Matrix<double, 3, 2> WuvMatrix;
+typedef Eigen::Matrix<double, 3, 2> WuvMatrix;
+typedef Eigen::Matrix2d Matrix2d;
+typedef Eigen::RowVector3d RowVector3d;
+typedef Eigen::Vector3d Vector3d;
 
 WuvMatrix wuvMatrix(Cloth &, int, int, int);
 
