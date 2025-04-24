@@ -41,19 +41,19 @@ class Simulation {
 	double scaleY;
 	double cuffScale;
 
-	void handleScaleCondition(int);
-	void scaleHelper(int *, bool, int);
+	void handleScaleCondition(int offset);
+	void scaleHelper(int *triPts, bool isBl, int y);
 
-	void handleShearCondition(int);
-	void shearHelper(int *, bool);
+	void handleShearCondition(int offset);
+	void shearHelper(int *triPts, bool isBl);
 
-	void handleBendCondition(int);
-	void bendHelper(int *);
+	void handleBendCondition(int offset);
+	void bendHelper(int *tris);
 
 	double *genTrisFromMesh();
 	double *genNorms();
 	double *genTriNorms();
-	void copyPoint(double *, double *);
+	void copyPoint(double *dest, double *src);
 
 public:
 	Cloth cloth;
