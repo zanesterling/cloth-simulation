@@ -65,20 +65,20 @@ void UI::resize(int w, int h) {
 }
 
 void UI::mouse(int button, int state, int x, int y) {
-	mouseLoc[0] = x;
-	mouseLoc[1] = y;
+	this->mouseX = x;
+	this->mouseY = y;
 	this->button = button;
 }
 
 void UI::mouseMotion(int x, int y) {
-	auto dx = x - mouseLoc[0];
+	float dx = x - this->mouseX;
 
 	if (button == GLUT_LEFT_BUTTON) {
-		sim.changeScaleX(1. * dx / width);
+		sim.changeScaleX(dx / width);
 	} else if (button == GLUT_RIGHT_BUTTON) {
-		sim.changeCuff(1. * dx / width);
+		sim.changeCuff(dx / width);
 	}
 
-	mouseLoc[0] = x;
-	mouseLoc[1] = y;
+	this->mouseX = x;
+	this->mouseY = y;
 }
