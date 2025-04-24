@@ -23,3 +23,29 @@ $ make run
 ```
 
 Click and drag left and right to adjust the cuffing of the cloth.
+
+## Controls
+
+### View controls
+ | Key   | Function                          |
+ |-------|-----------------------------------|
+ | w / s | start rotating altitude up/down   |
+ | a / d | start rotating azimuth left/right |
+ | e     | stop all rotation                 |
+ | q     | quit                              |
+
+### Render settings
+ | Key | Function                                          |
+ |-----|---------------------------------------------------|
+ | y   | toggle cloth colors on / off                      |
+ | u   | toggle between wireframe and solid fill rendering |
+ | t   | toggle lighting on / off                          |
+
+### Render settings
+ | Key     | Function                                        |
+ |---------|-------------------------------------------------|
+ | p       | toggle simulation pause                         |
+ | r       | reset simulation                                |
+ | i       | toggle "banner mode": cloth becomes narrower    |
+ | o       | toggle "cuffing": end of cloth becomes narrower |
+ | \[ / \] | change to the prev / next scene                 |
