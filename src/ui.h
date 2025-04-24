@@ -37,7 +37,6 @@ public:
 	double vAzim = 0;
 	double vAlt = 0;
 	bool fillMode = true;
-	bool normals = true;
 
 	Color frontColor = DEFAULT_FRONT_COLOR;
 	Color backColor  = DEFAULT_BACK_COLOR;

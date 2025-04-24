@@ -1,5 +1,9 @@
 #include "core.h"
 
+#define global_variable static;
+
+global_variable bool lighting_enabled = true;
+
 int main(int argc, char **argv) {
 	initGlut(argc, argv);
 	initLights();
@@ -87,11 +91,12 @@ void keyboard(unsigned char key, int x, int y) {
 			quit();
 			break;
 		case 't':
-			ui.normals = !ui.normals;
-			if (ui.normals)
+			lighting_enabled = !lighting_enabled;
+			if (lighting_enabled) {
 				glEnable(GL_LIGHTING);
-			else
+			} else {
 				glDisable(GL_LIGHTING);
+			}
 			break;
 		case 'y':
 			if (ui.frontColor == WHITE) {
