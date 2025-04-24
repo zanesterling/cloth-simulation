@@ -22,16 +22,16 @@ FLAGS = $(PLATFORM_FLAGS) $(GLOBAL_FLAGS)
 EXEC = main.out
 CORE_LIB = main_core.dylib
 
-unix: dirs $(OBJS)
+unix: obj/ obj/core/ $(OBJS)
 	$(CXX) $(FLAGS) $(INCLUDES) -o $(EXEC) $(LIBS) src/core.cpp $(OBJS)
 
 obj/%.o: src/%.cpp
 	$(CXX) $(FLAGS) $(INCLUDES) -c -MMD -MP $< -o $@
 
-# Create empty dirs if they don't exist
-dirs:
-	@test -d obj || mkdir obj
-	@test -d obj/core || mkdir obj/core
+obj/:
+	mkdir -p obj
+obj/core/:
+	mkdir -p obj/core
 
 clean:
 	rm -rf $(EXEC) $(CORE_LIB) $(EXEC).dSYM obj
