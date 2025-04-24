@@ -52,7 +52,7 @@ void Simulation::update() {
 
 	// move the points by their velocities
 	for (int i = 0; i < lastPoint; i++) {
-		cloth.worldPoints[i] += cloth.worldVels[i];
+		cloth.worldPoints[i] += cloth.worldVels[i] * TIMESTEP;
 	}
 
 	// generate new triangles from the mesh
