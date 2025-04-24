@@ -3,8 +3,23 @@
 An implementation of Large Steps in Cloth Simulation (Baraff, Witkin).
 Done as a final project for CSE328 at Stony Brook University.
 
+## Setup
+
+### MacOS
+To build the project, you will first need to install
+[Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page),
+[freeglut](https://freeglut.sourceforge.net/),
+and [GLEW](https://glew.sourceforge.net/).
+
 ```shell
-# To run:
+$ brew install eigen freeglut glew
+```
+
+Next update the `INCLUDES` in the `Makefile` to point to the include directories for your versions of each library.
+
+## Run
+
+```shell
 $ make run
 ```
 
