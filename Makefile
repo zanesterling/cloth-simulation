@@ -1,6 +1,6 @@
 PLATFORM = $(shell uname -s)
 INCLUDES = -Isrc/ -I/opt/Homebrew/Cellar/eigen/3.4.0_1/include/eigen3/ -I/opt/Homebrew/Cellar/freeglut/3.6.0/include/ -I/opt/Homebrew/Cellar/glew/2.2.0_1/include/
-OBJS = $(patsubst src/core/%.cpp,obj/core/%.o, $(wildcard src/core/*.cpp))
+OBJS = $(patsubst src/%.cpp,obj/%.o, $(filter-out src/core.cpp,$(wildcard src/*.cpp)))
 # Dependency files, used to automatically recompile a source if a header it depends on changes
 DEPS = $(OBJS:.o=.d)
 
@@ -22,16 +22,14 @@ FLAGS = $(PLATFORM_FLAGS) $(GLOBAL_FLAGS)
 EXEC = main.out
 CORE_LIB = main_core.dylib
 
-$(EXEC): obj/ obj/core/ $(OBJS)
+$(EXEC): $(OBJS)
 	$(CXX) $(FLAGS) $(INCLUDES) -o $(EXEC) $(LIBS) src/core.cpp $(OBJS)
 
-obj/%.o: src/%.cpp
+obj/%.o: src/%.cpp obj
 	$(CXX) $(FLAGS) $(INCLUDES) -c -MMD -MP $< -o $@
 
-obj/:
+obj:
 	mkdir -p obj
-obj/core/:
-	mkdir -p obj/core
 
 clean:
 	rm -rf $(EXEC) $(CORE_LIB) $(EXEC).dSYM obj

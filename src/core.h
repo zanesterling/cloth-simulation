@@ -5,8 +5,8 @@
 
 #include <stdio.h>
 
-#include "core/ui.h"
-#include "core/simulation.h"
+#include "ui.h"
+#include "simulation.h"
 
 Simulation sim(40, 40);
 UI ui(1360, 840, sim);
