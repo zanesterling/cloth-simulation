@@ -59,16 +59,16 @@ void keyboard(unsigned char key, int x, int y) {
 	switch (key) {
 		// View control.
 		case 'w':
-			ui.vAlt = 0.02;
+			ui.vAlt = 0.01;
 			break;
 		case 's':
-			ui.vAlt = -0.02;
+			ui.vAlt = -0.01;
 			break;
 		case 'd':
-			ui.vAzim = -0.02;
+			ui.vAzim = -0.01;
 			break;
 		case 'a':
-			ui.vAzim = 0.02;
+			ui.vAzim = 0.01;
 			break;
 		case 'e':
 			ui.vAzim = 0;
