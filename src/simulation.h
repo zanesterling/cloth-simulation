@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Eigen/Sparse>
-
 #include <string.h>
 #include <iostream>
 #include <random>
