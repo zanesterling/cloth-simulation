@@ -65,6 +65,7 @@ void resize(int w, int h) {
 
 void keyboard(unsigned char key, int x, int y) {
 	switch (key) {
+		// View control.
 		case 'w':
 			ui.vAlt = 0.02;
 			break;
@@ -81,23 +82,8 @@ void keyboard(unsigned char key, int x, int y) {
 			ui.vAzim = 0;
 			ui.vAlt = 0;
 			break;
-		case 'p':
-			sim.running = !sim.running;
-			break;
-		case 'r':
-			sim.reset();
-			break;
-		case 'q':
-			quit();
-			break;
-		case 't':
-			lighting_enabled = !lighting_enabled;
-			if (lighting_enabled) {
-				glEnable(GL_LIGHTING);
-			} else {
-				glDisable(GL_LIGHTING);
-			}
-			break;
+
+		// Render settings.
 		case 'y':
 			if (ui.frontColor == WHITE) {
 				ui.frontColor = DEFAULT_FRONT_COLOR;
@@ -110,11 +96,31 @@ void keyboard(unsigned char key, int x, int y) {
 		case 'u':
 			ui.fillMode = !ui.fillMode;
 			break;
+		case 't':
+			lighting_enabled = !lighting_enabled;
+			if (lighting_enabled) {
+				glEnable(GL_LIGHTING);
+			} else {
+				glDisable(GL_LIGHTING);
+			}
+			break;
+
+		// Simulation settings.
+		case 'p':
+			sim.running = !sim.running;
+			break;
+		case 'r':
+			sim.reset();
+			break;
 		case 'i':
 			sim.bannerStyle = !sim.bannerStyle;
 			break;
 		case 'o':
 			sim.cuffing = !sim.cuffing;
+			break;
+
+		case 'q':
+			quit();
 			break;
 	}
 }
