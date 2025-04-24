@@ -145,12 +145,12 @@ void Simulation::reset() {
 	cloth = Cloth(cloth.xRes, cloth.yRes);
 	maxScale = MAX_SCALE * 30 * 30 / (cloth.xRes * cloth.yRes);
 
-	random_device rd;
-	mt19937 gen(rd());
-	uniform_real_distribution<> dis(0, 1);
-
 	switch (RESET_SCENE) {
-		case RESET_PERTURB:
+		case RESET_PERTURB: {
+			random_device rd;
+			mt19937 gen(rd());
+			uniform_real_distribution<> dis(0, 1);
+
 			// perturb cloth f
 			for (int i = 0; i < cloth.yRes - 1; i++) {
 				for (int j = 0; j < cloth.xRes; j++) {
@@ -159,7 +159,8 @@ void Simulation::reset() {
 					cloth.getWorldPoint(j, i)[2] += dis(gen) / 80;
 				}
 			}
-			break;
+		} break;
+
 		case RESET_BEND:
 			for (int i = 0; i < cloth.yRes / 2; i++) {
 				for (int j = 0; j < cloth.xRes; j++) {
