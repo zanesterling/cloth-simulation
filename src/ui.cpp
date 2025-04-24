@@ -40,8 +40,7 @@ void UI::render() {
 
 	glColor3f(1, 1, 1);
 	// draw front of cloth
-	if (colors)
-		glColor3f(0.3, 0.8, 0.9);
+	glColor3f(frontColor.red, frontColor.green, frontColor.blue);
 	glCullFace(GL_BACK);
 	glDrawArrays(GL_TRIANGLES, 0, 3 * sim.getNumTris());
 
@@ -49,8 +48,7 @@ void UI::render() {
 	for (int i = 0; i < 9 * sim.getNumTris(); i++) {
 		norms[i] = -norms[i];
 	}
-	if (colors)
-		glColor3f(0.9, 0.4, 0.1);
+	glColor3f(backColor.red, backColor.green, backColor.blue);
 	glCullFace(GL_FRONT);
 	glDrawArrays(GL_TRIANGLES, 0, 3 * sim.getNumTris());
 

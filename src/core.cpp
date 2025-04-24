@@ -94,7 +94,13 @@ void keyboard(unsigned char key, int x, int y) {
 				glDisable(GL_LIGHTING);
 			break;
 		case 'y':
-			ui.colors = !ui.colors;
+			if (ui.frontColor == WHITE) {
+				ui.frontColor = DEFAULT_FRONT_COLOR;
+				ui.backColor  = DEFAULT_BACK_COLOR;
+			} else {
+				ui.frontColor = WHITE;
+				ui.backColor  = WHITE;
+			}
 			break;
 		case 'u':
 			ui.fillMode = !ui.fillMode;
