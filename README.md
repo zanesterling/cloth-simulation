@@ -15,7 +15,7 @@ and [GLEW](https://glew.sourceforge.net/).
 $ brew install eigen freeglut glew
 ```
 
-Next update the `INCLUDES` in the `Makefile` to point to the include directories for your versions of each library.
+Next update the `PLATFORM_INCLUDES` in the `Makefile` to point to the include directories for your versions of each library.
 
 ## Run
 
