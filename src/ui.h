@@ -1,6 +1,7 @@
 #pragma once
 
 #include <GL/freeglut.h>
+#include <math.h>
 
 #include "simulation.h"
 
@@ -31,8 +32,8 @@ class UI {
 public:
 	int width, height;
 	Simulation &sim;
-	double azimuth = 0;
-	double altitude = 0;
+	double azimuth = M_PI / 4;
+	double altitude = M_PI / 8;
 	double vAzim = 0;
 	double vAlt = 0;
 	bool fillMode = true;
