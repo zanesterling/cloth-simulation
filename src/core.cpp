@@ -18,12 +18,12 @@ void initGlut(int argc, char **argv) {
 	glutInitWindowSize(ui.width, ui.height);
 	glutCreateWindow("Cloth simulation");
 
-	glutDisplayFunc(display);
+	glutDisplayFunc([]() { ui.render(); });
 	glutIdleFunc(idle);
-	glutReshapeFunc(resize);
+	glutReshapeFunc([](int w, int h) { ui.resize(w, h); });
 	glutKeyboardFunc(keyboard);
-	glutMouseFunc(mouse);
-	glutMotionFunc(mouseMotion);
+	glutMouseFunc([](int button, int state, int x, int y) { ui.mouse(button, state, x, y); });
+	glutMotionFunc([](int x, int y) { ui.mouseMotion(x, y); });
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -47,20 +47,12 @@ void initLights() {
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDif0);
 }
 
-void display() {
-	ui.render();
-}
-
 void idle() {
 	sim.update();
 	ui.update();
 
 	// mark dirty frame
 	glutPostRedisplay();
-}
-
-void resize(int w, int h) {
-	ui.resize(w, h);
 }
 
 void keyboard(unsigned char key, int x, int y) {
@@ -123,14 +115,6 @@ void keyboard(unsigned char key, int x, int y) {
 			quit();
 			break;
 	}
-}
-
-void mouse(int button, int state, int x, int y) {
-	ui.mouse(button, state, x, y);
-}
-
-void mouseMotion(int x, int y) {
-	ui.mouseMotion(x, y);
 }
 
 void quit() {
