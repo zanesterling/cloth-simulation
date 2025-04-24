@@ -26,7 +26,7 @@ EXEC = main.out
 CORE_LIB = main_core.dylib
 
 $(EXEC): $(OBJS)
-	$(CXX) $(FLAGS) $(INCLUDES) -o $(EXEC) $(LIBS) src/core.cpp $(OBJS)
+	$(CXX) $(FLAGS) $(INCLUDES) $(LIBS) src/core.cpp $(OBJS) -o $(EXEC)
 
 obj/%.o: src/%.cpp obj
 	$(CXX) $(FLAGS) $(INCLUDES) -c -MMD -MP $< -o $@
