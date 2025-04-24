@@ -3,6 +3,9 @@
 An implementation of Large Steps in Cloth Simulation (Baraff, Witkin).
 Done as a final project for CSE328 at Stony Brook University.
 
+![cloth swinging and ruffling](https://github.com/zanesterling/cloth-simulation/blob/master/resources/recording.gif?raw=true)
+
+
 ## Setup
 
 ### MacOS
