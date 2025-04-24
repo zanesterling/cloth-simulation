@@ -50,13 +50,11 @@ class Simulation {
 	void handleBendCondition(int offset);
 	void bendHelper(int *tris);
 
-	double *genNorms();
-	double *genTriNorms();
-
 public:
 	Cloth cloth;
+	double *clothNorms;
 	double *triVerts;
-	double *norms;
+	double *triNorms;
 	bool running = true;
 	bool bannerStyle = false;
 	bool cuffing = false;

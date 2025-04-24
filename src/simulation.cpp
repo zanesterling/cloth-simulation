@@ -29,6 +29,64 @@ void copyTrianglesFromMesh(double *triangles, Cloth& cloth) {
 	}
 }
 
+void copyTriangleNormsFromClothNorms(double *triangleNorms, double *clothNorms, Cloth& cloth) {
+	for (int y = 0; y < cloth.yRes - 1; y++) {
+		for (int x = 0; x < cloth.xRes - 1; x++) {
+			auto start = triangleNorms + 18 * (y * (cloth.xRes - 1) + x);
+			copyPoint(start,      clothNorms + (y     * cloth.xRes + x)    * 3);
+			copyPoint(start + 3,  clothNorms + (y     * cloth.xRes + (x+1))* 3);
+			copyPoint(start + 6,  clothNorms + ((y+1) * cloth.xRes + x)    * 3);
+
+			copyPoint(start + 9,  clothNorms + ((y+1) * cloth.xRes + x)    * 3);
+			copyPoint(start + 12, clothNorms + (y     * cloth.xRes + (x+1))* 3);
+			copyPoint(start + 15, clothNorms + ((y+1) * cloth.xRes + (x+1))* 3);
+		}
+	}
+}
+
+void generateClothNormsFromMesh(double* clothNorms, Cloth& cloth) {
+	int numPoints = cloth.xRes * cloth.yRes;
+	for (int i = 0; i < 3 * numPoints; i++) clothNorms[i] = 0;
+
+	// additively generate clothNorms per triangle
+	for (int y = 0; y < cloth.yRes - 1; y++) {
+		for (int x = 0; x < cloth.xRes - 1; x++) {
+			auto p1 = Vector3d(cloth.getWorldPoint(x, y));
+			auto p2 = Vector3d(cloth.getWorldPoint(x+1, y));
+			auto p3 = Vector3d(cloth.getWorldPoint(x, y+1));
+			auto norm = (p2 - p1).cross(p3 - p1);
+			norm.normalize();
+			for (int i = 0; i < 3; i++) {
+				clothNorms[(y     * cloth.xRes + x)     * 3 + i] += norm[i];
+				clothNorms[(y     * cloth.xRes + (x+1)) * 3 + i] += norm[i];
+				clothNorms[((y+1) * cloth.xRes + x)     * 3 + i] += norm[i];
+			}
+
+			p1 = Vector3d(cloth.getWorldPoint(x, y+1));
+			p2 = Vector3d(cloth.getWorldPoint(x+1, y));
+			p3 = Vector3d(cloth.getWorldPoint(x+1, y+1));
+			norm = (p2 - p1).cross(p3 - p1);
+			norm.normalize();
+			for (int i = 0; i < 3; i++) {
+				clothNorms[((y+1) * cloth.xRes + x)     * 3 + i] += norm[i];
+				clothNorms[(y     * cloth.xRes + (x+1)) * 3 + i] += norm[i];
+				clothNorms[((y+1) * cloth.xRes + (x+1)) * 3 + i] += norm[i];
+			}
+		}
+	}
+
+	// normalize each point's norm (for smoother jazz)
+	for (int y = 0; y < cloth.yRes; y++) {
+		for (int x = 0; x < cloth.xRes; x++) {
+			auto norm = clothNorms + 3 * (y * cloth.xRes + x);
+			auto normv = Vector3d(norm);
+			normv.normalize();
+			for (int i = 0; i < 3; i++)
+				norm[i] = normv[i];
+		}
+	}
+}
+
 void Simulation::update() {
 	// if simulation is paused, don't update
 	if (!running) return;
@@ -78,8 +136,8 @@ void Simulation::update() {
 
 	// generate new triangles from the mesh
 	copyTrianglesFromMesh(triVerts, cloth);
-	if (norms) delete norms;
-	norms = genTriNorms();
+	generateClothNormsFromMesh(clothNorms, cloth);
+	copyTriangleNormsFromClothNorms(triNorms, clothNorms, cloth);
 }
 
 void Simulation::reset() {
@@ -129,8 +187,11 @@ void Simulation::reset() {
 
 	// regenerate triangles from the mesh
 	triVerts = new double[9 * getNumTris()];
+	clothNorms = new double[3 * getNumPoints()];
+	triNorms = new double[9 * getNumTris()];
 	copyTrianglesFromMesh(triVerts, cloth);
-	norms = genTriNorms();
+	generateClothNormsFromMesh(clothNorms, cloth);
+	copyTriangleNormsFromClothNorms(triNorms, clothNorms, cloth);
 
 	scaleX = 1;
 	scaleY = 1;
@@ -267,71 +328,4 @@ void Simulation::bendHelper(int *tris) {
 		}
 		forces(0, ptI) += force;
 	}
-}
-
-double *Simulation::genNorms() {
-	// zero new norms
-	double *norms = new double[3 * getNumPoints()];
-	for (int i = 0; i < 3 * getNumPoints(); i++) norms[i] = 0;
-
-	// additively generate norms per triangle
-	for (int y = 0; y < cloth.yRes - 1; y++) {
-		for (int x = 0; x < cloth.xRes - 1; x++) {
-			auto p1 = Vector3d(cloth.getWorldPoint(x, y));
-			auto p2 = Vector3d(cloth.getWorldPoint(x+1, y));
-			auto p3 = Vector3d(cloth.getWorldPoint(x, y+1));
-			auto norm = (p2 - p1).cross(p3 - p1);
-			norm.normalize();
-			for (int i = 0; i < 3; i++) {
-				norms[(y     * cloth.xRes + x)     * 3 + i] += norm[i];
-				norms[(y     * cloth.xRes + (x+1)) * 3 + i] += norm[i];
-				norms[((y+1) * cloth.xRes + x)     * 3 + i] += norm[i];
-			}
-
-			p1 = Vector3d(cloth.getWorldPoint(x, y+1));
-			p2 = Vector3d(cloth.getWorldPoint(x+1, y));
-			p3 = Vector3d(cloth.getWorldPoint(x+1, y+1));
-			norm = (p2 - p1).cross(p3 - p1);
-			norm.normalize();
-			for (int i = 0; i < 3; i++) {
-				norms[((y+1) * cloth.xRes + x)     * 3 + i] += norm[i];
-				norms[(y     * cloth.xRes + (x+1)) * 3 + i] += norm[i];
-				norms[((y+1) * cloth.xRes + (x+1)) * 3 + i] += norm[i];
-			}
-		}
-	}
-
-	// normalize each point's norm (for smoother jazz)
-	for (int y = 0; y < cloth.yRes; y++) {
-		for (int x = 0; x < cloth.xRes; x++) {
-			auto norm = norms + 3 * (y * cloth.xRes + x);
-			auto normv = Vector3d(norm);
-			normv.normalize();
-			for (int i = 0; i < 3; i++)
-				norm[i] = normv[i];
-		}
-	}
-
-	return norms;
-}
-
-double *Simulation::genTriNorms() {
-	auto norms = genNorms();
-
-	double *triNorms = new double[9 * getNumTris()];
-	for (int y = 0; y < cloth.yRes - 1; y++) {
-		for (int x = 0; x < cloth.xRes - 1; x++) {
-			auto start = triNorms + 18 * (y * (cloth.xRes - 1) + x);
-			copyPoint(start,      norms + (y     * cloth.xRes + x)    * 3);
-			copyPoint(start + 3,  norms + (y     * cloth.xRes + (x+1))* 3);
-			copyPoint(start + 6,  norms + ((y+1) * cloth.xRes + x)    * 3);
-
-			copyPoint(start + 9,  norms + ((y+1) * cloth.xRes + x)    * 3);
-			copyPoint(start + 12, norms + (y     * cloth.xRes + (x+1))* 3);
-			copyPoint(start + 15, norms + ((y+1) * cloth.xRes + (x+1))* 3);
-		}
-	}
-	
-	delete norms;
-	return triNorms;
 }

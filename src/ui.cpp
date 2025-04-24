@@ -24,7 +24,7 @@ void UI::render() {
 	}
 	for (int i = 0; i < 9 * simNumTris; i++) {
 		triangles[i] = (GLfloat) sim.triVerts[i];
-		normals[i] = (GLfloat) sim.norms[i];
+		normals[i] = (GLfloat) sim.triNorms[i];
 	}
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
