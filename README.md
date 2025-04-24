@@ -7,12 +7,11 @@ Done as a final project for CSE328 at Stony Brook University.
 
 ### MacOS
 To build the project, you will first need to install
-[Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page),
-[freeglut](https://freeglut.sourceforge.net/),
-and [GLEW](https://glew.sourceforge.net/).
+[Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page)
+and [freeglut](https://freeglut.sourceforge.net/).
 
 ```shell
-$ brew install eigen freeglut glew
+$ brew install eigen freeglut
 ```
 
 Next update the `PLATFORM_INCLUDES` in the `Makefile` to point to the include directories for your versions of each library.

@@ -2,7 +2,6 @@
 
 int main(int argc, char **argv) {
 	initGlut(argc, argv);
-	glewInit();
 	initLights();
 
 	glutMainLoop();

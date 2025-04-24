@@ -4,7 +4,7 @@ OBJS = $(patsubst src/%.cpp,obj/%.o, $(filter-out src/core.cpp,$(wildcard src/*.
 DEPS = $(OBJS:.o=.d)
 
 CXX = clang++
-GLOBAL_LIBS = -lGLEW
+GLOBAL_LIBS =
 GLOBAL_FLAGS = -w -O3 -stdlib=libc++ -std=gnu++11 -g -march=native -Wall -Wextra
 GLOBAL_INCLUDES = -Isrc/
 PLATFORM_FLAGS = 
@@ -15,7 +15,7 @@ ifeq ($(PLATFORM), Darwin)
 	CXX = clang++
 	PLATFORM_FLAGS = -mmacosx-version-min=10.7 -D__MAC__
 	PLATFORM_LIBS = -framework GLUT -framework OpenGL
-	PLATFORM_INCLUDES = -I/opt/Homebrew/Cellar/eigen/3.4.0_1/include/eigen3/ -I/opt/Homebrew/Cellar/freeglut/3.6.0/include/ -I/opt/Homebrew/Cellar/glew/2.2.0_1/include/
+	PLATFORM_INCLUDES = -I/opt/Homebrew/Cellar/eigen/3.4.0_1/include/eigen3/ -I/opt/Homebrew/Cellar/freeglut/3.6.0/include/
 endif
 
 LIBS = $(PLATFORM_LIBS) $(GLOBAL_LIBS)
