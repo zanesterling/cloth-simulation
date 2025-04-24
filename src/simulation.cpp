@@ -8,6 +8,27 @@ Simulation::Simulation(int clothXRes, int clothYRes)
 	forces.resize(1, getNumPoints());
 }
 
+void copyPoint(double *dest, double *src) {
+	memcpy(dest, src, 3 * sizeof(double));
+}
+
+// triangles must be a pointer to an array of floats big enough
+// to store 18 floats per cloth square.
+void copyTrianglesFromMesh(double *triangles, Cloth& cloth) {
+	for (int i = 0; i < cloth.yRes - 1; i++) {
+		for (int j = 0 ; j < cloth.xRes - 1; j++) {
+			double *triPairStart = triangles + 18 * (i*(cloth.xRes-1) + j);
+			copyPoint(triPairStart,      cloth.getWorldPoint(j,   i));
+			copyPoint(triPairStart + 3,  cloth.getWorldPoint(j+1, i));
+			copyPoint(triPairStart + 6,  cloth.getWorldPoint(j,   i+1));
+
+			copyPoint(triPairStart + 9,  cloth.getWorldPoint(j,   i+1));
+			copyPoint(triPairStart + 12, cloth.getWorldPoint(j+1, i));
+			copyPoint(triPairStart + 15, cloth.getWorldPoint(j+1, i+1));
+		}
+	}
+}
+
 void Simulation::update() {
 	// if simulation is paused, don't update
 	if (!running) return;
@@ -56,9 +77,8 @@ void Simulation::update() {
 	}
 
 	// generate new triangles from the mesh
-	if (triVerts) delete triVerts;
+	copyTrianglesFromMesh(triVerts, cloth);
 	if (norms) delete norms;
-	triVerts = genTrisFromMesh();
 	norms = genTriNorms();
 }
 
@@ -108,7 +128,8 @@ void Simulation::reset() {
 	}
 
 	// regenerate triangles from the mesh
-	triVerts = genTrisFromMesh();
+	triVerts = new double[9 * getNumTris()];
+	copyTrianglesFromMesh(triVerts, cloth);
 	norms = genTriNorms();
 
 	scaleX = 1;
@@ -248,26 +269,6 @@ void Simulation::bendHelper(int *tris) {
 	}
 }
 
-double *Simulation::genTrisFromMesh() {
-	double *tris = new double[9 * getNumTris()];
-
-	// copy in triangles
-	for (int i = 0; i < cloth.yRes - 1; i++) {
-		for (int j = 0 ; j < cloth.xRes - 1; j++) {
-			double *triPairStart = tris + 18 * (i*(cloth.xRes-1) + j);
-			copyPoint(triPairStart,      cloth.getWorldPoint(j,   i));
-			copyPoint(triPairStart + 3,  cloth.getWorldPoint(j+1, i));
-			copyPoint(triPairStart + 6,  cloth.getWorldPoint(j,   i+1));
-
-			copyPoint(triPairStart + 9,  cloth.getWorldPoint(j,   i+1));
-			copyPoint(triPairStart + 12, cloth.getWorldPoint(j+1, i));
-			copyPoint(triPairStart + 15, cloth.getWorldPoint(j+1, i+1));
-		}
-	}
-
-	return tris;
-}
-
 double *Simulation::genNorms() {
 	// zero new norms
 	double *norms = new double[3 * getNumPoints()];
@@ -333,8 +334,4 @@ double *Simulation::genTriNorms() {
 	
 	delete norms;
 	return triNorms;
-}
-
-void Simulation::copyPoint(double *dest, double *src) {
-	memcpy(dest, src, 3 * sizeof(double));
 }

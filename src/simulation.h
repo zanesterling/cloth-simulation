@@ -50,10 +50,8 @@ class Simulation {
 	void handleBendCondition(int offset);
 	void bendHelper(int *tris);
 
-	double *genTrisFromMesh();
 	double *genNorms();
 	double *genTriNorms();
-	void copyPoint(double *dest, double *src);
 
 public:
 	Cloth cloth;
