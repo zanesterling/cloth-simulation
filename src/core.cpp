@@ -110,6 +110,12 @@ void keyboard(unsigned char key, int x, int y) {
 		case 'o':
 			sim.cuffing = !sim.cuffing;
 			break;
+		case '[':
+			sim.prevScene();
+			break;
+		case ']':
+			sim.nextScene();
+			break;
 
 		case 'q':
 			quit();

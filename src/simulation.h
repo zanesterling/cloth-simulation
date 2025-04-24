@@ -22,18 +22,29 @@
 
 #define GRAVITY_ACCEL 0.0003
 
-#define RESET_PERTURB 0
-#define RESET_BEND    1
-#define RESET_SWING   2
-#define RESET_HANG    3
-#define RESET_SCENE RESET_SWING
-
 #define FLOOR_HEIGHT -1
 
 #define MAX_SCALE 0.001
 #define MAX_BEND 0.000003
 
 typedef Eigen::Matrix<Vector3d, Eigen::Dynamic, Eigen::Dynamic> ForceMatrix;
+
+#define NUM_SCENES 4
+enum SceneId {
+	Perturb,
+	Bend,
+	Swing,
+	Hang
+};
+struct Scene {
+	SceneId id;
+};
+const Scene SCENES[NUM_SCENES] = {
+	{.id = SceneId::Perturb},
+	{.id = SceneId::Bend},
+	{.id = SceneId::Swing},
+	{.id = SceneId::Hang},
+};
 
 class Simulation {
 	double maxScale;
@@ -59,6 +70,9 @@ public:
 	bool bannerStyle = false;
 	bool cuffing = false;
 
+	// Determines the state of the cloth on reset.
+	Scene scene = SCENES[SceneId::Swing];
+
 	ForceMatrix forces;
 
 	Simulation(int, int);
@@ -71,4 +85,15 @@ public:
 	void changeScaleX(double d) { scaleX += d; }
 	void changeScaleY(double d) { scaleY += d; }
 	void changeCuff(double d)   { cuffScale += d; }
+
+	void prevScene() {
+		int nextId = (scene.id - 1 + NUM_SCENES) % NUM_SCENES;
+		scene = SCENES[nextId];
+		reset();
+	}
+	void nextScene() {
+		int nextId = (scene.id + 1) % NUM_SCENES;
+		scene = SCENES[nextId];
+		reset();
+	}
 };

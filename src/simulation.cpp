@@ -145,8 +145,8 @@ void Simulation::reset() {
 	cloth = Cloth(cloth.xRes, cloth.yRes);
 	maxScale = MAX_SCALE * 30 * 30 / (cloth.xRes * cloth.yRes);
 
-	switch (RESET_SCENE) {
-		case RESET_PERTURB: {
+	switch (scene.id) {
+		case SceneId::Perturb: {
 			random_device rd;
 			mt19937 gen(rd());
 			uniform_real_distribution<> dis(0, 1);
@@ -161,7 +161,7 @@ void Simulation::reset() {
 			}
 		} break;
 
-		case RESET_BEND:
+		case SceneId::Bend:
 			for (int i = 0; i < cloth.yRes / 2; i++) {
 				for (int j = 0; j < cloth.xRes; j++) {
 					cloth.worldPoints[(i * cloth.xRes + j) * 3 + 1] +=
@@ -171,7 +171,8 @@ void Simulation::reset() {
 				}
 			}
 			break;
-		case RESET_SWING:
+
+		case SceneId::Swing:
 			for (int i = 0; i < cloth.yRes; i++) {
 				for (int j = 0; j < cloth.xRes; j++) {
 					auto point = cloth.getWorldPoint(j, i);
@@ -181,7 +182,8 @@ void Simulation::reset() {
 				}
 			}
 			break;
-		case RESET_HANG:
+
+		case SceneId::Hang:
 			// do nothing. leave cloth hanging straight.
 			break;
 	}
