@@ -22,7 +22,7 @@ FLAGS = $(PLATFORM_FLAGS) $(GLOBAL_FLAGS)
 EXEC = main.out
 CORE_LIB = main_core.dylib
 
-unix: obj/ obj/core/ $(OBJS)
+$(EXEC): obj/ obj/core/ $(OBJS)
 	$(CXX) $(FLAGS) $(INCLUDES) -o $(EXEC) $(LIBS) src/core.cpp $(OBJS)
 
 obj/%.o: src/%.cpp
@@ -37,5 +37,5 @@ clean:
 	rm -rf $(EXEC) $(CORE_LIB) $(EXEC).dSYM obj
 
 # TODO: Make the dependency for this be the platform the user is on
-run: unix
+run: $(EXEC)
 	./$(EXEC)
