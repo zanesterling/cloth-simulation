@@ -15,7 +15,7 @@ void initGlut(int, char **);
 void initLights();
 
 void display();
-void idle();
+void frame(int);
 void resize(int, int);
 void keyboard(unsigned char, int, int);
 void mouse(int, int, int, int);

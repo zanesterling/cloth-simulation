@@ -19,11 +19,11 @@ void initGlut(int argc, char **argv) {
 	glutCreateWindow("Cloth simulation");
 
 	glutDisplayFunc([]() { ui.render(); });
-	glutIdleFunc(idle);
 	glutReshapeFunc([](int w, int h) { ui.resize(w, h); });
 	glutKeyboardFunc(keyboard);
 	glutMouseFunc([](int button, int state, int x, int y) { ui.mouse(button, state, x, y); });
 	glutMotionFunc([](int x, int y) { ui.mouseMotion(x, y); });
+	frame(0);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -47,7 +47,8 @@ void initLights() {
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDif0);
 }
 
-void idle() {
+constexpr int FPS = 60;
+void frame(int) {
 	struct timespec startTime, endTime;
 	clock_gettime(CLOCK_MONOTONIC, &startTime);
 
@@ -60,6 +61,7 @@ void idle() {
 
 	// mark dirty frame
 	glutPostRedisplay();
+	glutTimerFunc(1000 / FPS, frame, 0);
 }
 
 void keyboard(unsigned char key, int x, int y) {
