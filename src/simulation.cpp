@@ -316,7 +316,7 @@ void Simulation::scaleHelper(int *triPts, bool isBl, Vector2d buv) {
 
 		// account for damping force
 		Vector3d velI = Vector3d(cloth.getWorldVel(ptI));
-		Vector3d dampForce = -DAMP_STIFF * partial * partial.transpose() * velI;
+		Vector3d dampForce = -SCALE_DAMP_STIFF * partial * partial.transpose() * velI;
 		scaleDampForces(0, ptI) += dampForce;
 	}
 }
@@ -341,7 +341,7 @@ void Simulation::shearHelper(int *triPts, bool isBl) {
 		shearForces(0, pointIndex) += force;
 
 		Vector3d velocity = Vector3d(cloth.getWorldVel(pointIndex));
-		Vector3d dampForce = -DAMP_STIFF * partial * partial.transpose() * velocity;
+		Vector3d dampForce = -SHEAR_DAMP_STIFF * partial * partial.transpose() * velocity;
 		shearDampForces(0, pointIndex) += dampForce;
 	}
 }
@@ -389,14 +389,17 @@ void Simulation::bendHelper(int *tris) {
 	auto cond = bendCondition(cloth, tris);
 
 	for (int i = 0; i < 4; i++) {
-		int ptI = tris[i];
+		int pointIndex = tris[i];
 
-		auto partial = bendPartial(cloth, ptI, tris);
+		auto partial = bendPartial(cloth, pointIndex, tris);
 		Vector3d force = -BEND_STIFF * partial * cond;
 		for (int j = 0; j < 3; j++) {
-			if (force[j] > MAX_BEND) force[j] = MAX_BEND;
-			if (force[j] < -MAX_BEND) force[j] = -MAX_BEND;
+			force[j] = clamp(-MAX_BEND, force[j], MAX_BEND);
 		}
-		bendForces(0, ptI) += force;
+		bendForces(0, pointIndex) += force;
+
+		Vector3d velocity = Vector3d(cloth.getWorldVel(pointIndex));
+		Vector3d dampForce = -BEND_DAMP_STIFF * partial * partial.transpose() * velocity;
+		bendDampForces(0, pointIndex) += dampForce;
 	}
 }

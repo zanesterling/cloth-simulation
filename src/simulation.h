@@ -13,10 +13,12 @@
 #define FLOOR_ENABLED false
 #define ACCEL_LOCK true
 
-#define SCALE_STIFF 20
-#define DAMP_STIFF  2
-#define SHEAR_STIFF 1
-#define BEND_STIFF  0.0001
+#define SCALE_STIFF      20
+#define SCALE_DAMP_STIFF 2
+#define SHEAR_STIFF      1
+#define SHEAR_DAMP_STIFF 2
+#define BEND_STIFF       0.0001
+#define BEND_DAMP_STIFF  0
 
 #define TIMESTEP 1
 
