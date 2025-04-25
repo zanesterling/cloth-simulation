@@ -127,6 +127,7 @@ void keyboard(unsigned char key, int x, int y) {
 		case '.': // step frame-by-frame
 			sim.running = true;
 			sim.update();
+			ui.update();
 			sim.running = false;
 			break;
 		case 'r':
