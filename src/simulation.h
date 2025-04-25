@@ -61,6 +61,8 @@ class Simulation {
 	void handleBendCondition(int squareX, int squareY);
 	void bendHelper(int *tris);
 
+	void computeForces(ForceMatrix &forces);
+
 public:
 	Cloth cloth;
 	double *clothNorms;

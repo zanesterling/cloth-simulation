@@ -155,23 +155,7 @@ void Simulation::update() {
 		bendDampForces(0, pt).setZero();
 	}
 
-	// get condition-forces 
-	for (int i = 0; i < cloth.yRes-1; i++) {
-		for (int j = 0; j < cloth.xRes-1; j++) {
-			int offset = i * cloth.xRes + j;
-			handleScaleCondition(offset);
-			handleShearCondition(offset);
-			handleBendCondition (j, i);
-		}
-	}
-
-	// sum up total forces
-	totalForces += scaleForces;
-	totalForces += scaleDampForces;
-	totalForces += shearForces;
-	totalForces += shearDampForces;
-	totalForces += bendForces;
-	totalForces += bendDampForces;
+	computeForces(totalForces);
 
 	for (int i = 0; i < cloth.xRes * cloth.yRes; i++) {
 		// update velocities by condition-forces
@@ -276,6 +260,28 @@ inline double clamp(double low, double x, double high) {
 	if (x < low)  return low;
 	if (x > high) return high;
 	return x;
+}
+
+void Simulation::computeForces(ForceMatrix &forces) {
+	for (int i = 0; i < cloth.yRes-1; i++) {
+		for (int j = 0; j < cloth.xRes-1; j++) {
+			int offset = i * cloth.xRes + j;
+			handleScaleCondition(offset);
+			handleShearCondition(offset);
+			handleBendCondition (j, i);
+		}
+	}
+
+	int numPoints = cloth.xRes * cloth.yRes;
+	for (int i = 0; i < numPoints; i++) {
+		forces(0, i).setZero();
+	}
+	forces += scaleForces;
+	forces += scaleDampForces;
+	forces += shearForces;
+	forces += shearDampForces;
+	forces += bendForces;
+	forces += bendDampForces;
 }
 
 void Simulation::handleScaleCondition(int offset) {
