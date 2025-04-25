@@ -48,7 +48,14 @@ void generateClothNormsFromMesh(double* clothNorms, Cloth& cloth) {
 	int numPoints = cloth.xRes * cloth.yRes;
 	memset(clothNorms, 0, 3 * numPoints * sizeof(*clothNorms));
 
-	// additively generate clothNorms per triangle
+	// We're computing here a normal for each point in the mesh.
+	// We define that to be the average of the normals of the eight triangles
+	// that it's included in.
+	// To compute that average we find the normal for each triangle and add
+	// it into the per-point normal for each of the triangle's three vertices,
+	// then normalize the resulting vector.
+	//
+	// This loop is that first step of summing up triangle normals.
 	for (int y = 0; y < cloth.yRes - 1; y++) {
 		for (int x = 0; x < cloth.xRes - 1; x++) {
 			auto p1 = Vector3d(cloth.getWorldPoint(x, y));
