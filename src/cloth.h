@@ -12,8 +12,8 @@ struct Cloth {
 	double *uvPoints;
 	double *worldPoints;
 	double *worldVels;
-	double massPerVertInverted;
-	double mass;
+	double *invertedPointMasses;
+	double triangleMass;
 	double triUvArea;
 
 	Cloth(int xRes, int yRes) : Cloth(xRes, yRes, 1, 1) {}

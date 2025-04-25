@@ -117,8 +117,8 @@ void Simulation::update() {
 		// update velocities by condition-forces
 		auto force = forces(0, i);
 		for (int j = 0; j < 3; j++) {
-			cloth.worldVels[i*3 + j] +=
-				force[j] * cloth.massPerVertInverted * TIMESTEP;
+			auto massInverted = cloth.invertedPointMasses[i];
+			cloth.worldVels[i*3 + j] += force[j] * massInverted * TIMESTEP;
 		}
 
 		// apply gravitic acceleration

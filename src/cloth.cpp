@@ -2,15 +2,34 @@
 
 Cloth::Cloth(int xRes, int yRes, double w, double h)
 	: xRes(xRes), yRes(yRes), w(w), h(h) {
+	int numPoints = xRes * yRes;
 
-	mass = 20;
-	massPerVertInverted = (xRes * yRes) / mass;
+	triangleMass = 20.0 / (xRes * yRes * 2);
+	double oneThirdTriangleMass = triangleMass / 3.0;
+	invertedPointMasses = new double[numPoints];
+	double interiorInvertedMass = 1.0 / (oneThirdTriangleMass * 8);
+	for (int pointIndex = 0; pointIndex < numPoints; pointIndex++) {
+		invertedPointMasses[pointIndex] = interiorInvertedMass;
+	}
+	double sideInvertedMass = 1.0 / (oneThirdTriangleMass * 4);
+	for (int i = 1; i < xRes-1; i++) {
+		invertedPointMasses[i]                 = sideInvertedMass; // top edge
+		invertedPointMasses[xRes*(yRes-1) + i] = sideInvertedMass; // bottom edge
+	}
+	for (int i = 1; i < yRes-1; i++) {
+		invertedPointMasses[i*xRes]            = sideInvertedMass; // left edge
+		invertedPointMasses[i*xRes + xRes-1]   = sideInvertedMass; // right edge
+	}
+	double cornerInvertedMass = 1.0 / (oneThirdTriangleMass * 2);
+	invertedPointMasses[0]                      = cornerInvertedMass;
+	invertedPointMasses[xRes-1]                 = cornerInvertedMass;
+	invertedPointMasses[xRes*(yRes-1) + 0]      = cornerInvertedMass;
+	invertedPointMasses[xRes*(yRes-1) + xRes-1] = cornerInvertedMass;
 
 	initUvPoints();
 	initWorldPoints();
-	worldVels = new double[3 * xRes * yRes];
-	for (int i = 0; i < 3 * xRes * yRes; i++)
-		worldVels[i] = 0;
+	worldVels = new double[3 * numPoints];
+	memset(worldVels, 0, 3 * numPoints * sizeof(worldVels[0]));
 
 	triUvArea = getTriUvArea();
 }
