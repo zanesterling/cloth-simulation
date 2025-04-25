@@ -161,7 +161,7 @@ void Simulation::update() {
 			int offset = i * cloth.xRes + j;
 			handleScaleCondition(offset);
 			handleShearCondition(offset);
-			handleBendCondition (offset);
+			handleBendCondition (j, i);
 		}
 	}
 
@@ -352,9 +352,8 @@ void Simulation::shearHelper(int *triPts, bool isBl) {
 	}
 }
 
-void Simulation::handleBendCondition(int offset) {
-	int xOff = offset % cloth.xRes;
-	int yOff = offset / cloth.xRes;
+void Simulation::handleBendCondition(int squareX, int squareY) {
+	int offset = squareX + squareY * cloth.xRes;
 
 	// diagonal triangle pair
 	int diagPts[4] = {
@@ -363,30 +362,27 @@ void Simulation::handleBendCondition(int offset) {
 		offset + cloth.xRes,
 		offset + cloth.xRes + 1
 	};
-
-	// right-side triangle pair
-	int rightPts[4] = {
-		offset + cloth.xRes,
-		offset + 1,
-		offset + cloth.xRes + 1,
-		offset + 2
-	};
-
-	// top-side triangle pair
-	int topPts[4] = {
-		offset + 1,
-		offset + cloth.xRes + 1,
-		offset + cloth.xRes,
-		offset + 2 * cloth.xRes
-	};
-
 	bendHelper(diagPts);
 
-	if (xOff < cloth.xRes - 2) {
+	// right-side triangle pair
+	if (squareX < cloth.xRes - 2) {
+		int rightPts[4] = {
+			offset + cloth.xRes,
+			offset + 1,
+			offset + cloth.xRes + 1,
+			offset + 2
+		};
 		bendHelper(rightPts);
 	}
 
-	if (yOff < cloth.yRes - 2) {
+	// top-side triangle pair
+	if (squareY < cloth.yRes - 2) {
+		int topPts[4] = {
+			offset + 1,
+			offset + cloth.xRes + 1,
+			offset + cloth.xRes,
+			offset + 2 * cloth.xRes
+		};
 		bendHelper(topPts);
 	}
 }

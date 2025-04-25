@@ -58,7 +58,7 @@ class Simulation {
 	void handleShearCondition(int offset);
 	void shearHelper(int *triPts, bool isBl);
 
-	void handleBendCondition(int offset);
+	void handleBendCondition(int squareX, int squareY);
 	void bendHelper(int *tris);
 
 public:
