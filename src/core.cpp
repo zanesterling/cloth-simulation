@@ -47,8 +47,10 @@ void initLights() {
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDif0);
 }
 
-constexpr int FPS = 60;
-void frame(int) {
+constexpr long FPS = 60;
+constexpr long N_FRAMES_TO_BLUR = 60;
+static long frameDurMicrosSum = 0;
+void frame(int frameCount) {
 	struct timespec startTime, endTime;
 	clock_gettime(CLOCK_MONOTONIC, &startTime);
 
@@ -56,12 +58,19 @@ void frame(int) {
 	ui.update();
 
 	clock_gettime(CLOCK_MONOTONIC, &endTime);
-	long frameMicros = (endTime.tv_nsec - startTime.tv_nsec) / 1000;
-	printf("frame: %ld.%ldms\n", frameMicros / 1000, frameMicros % 1000);
+	long frameDurNanos =
+		(endTime.tv_sec - startTime.tv_sec) * 1000000L +
+		(endTime.tv_nsec - startTime.tv_nsec);
+	frameDurMicrosSum += frameDurNanos / 1000L;
+	if (frameCount % N_FRAMES_TO_BLUR == 0) {
+		long micros = frameDurMicrosSum / N_FRAMES_TO_BLUR;
+		printf("frame: %ld.%ldms\n", micros / 1000, micros % 1000);
+		frameDurMicrosSum = 0;
+	}
 
 	// mark dirty frame
 	glutPostRedisplay();
-	glutTimerFunc(1000 / FPS, frame, 0);
+	glutTimerFunc(1000 / FPS, frame, frameCount + 1);
 }
 
 void keyboard(unsigned char key, int x, int y) {
