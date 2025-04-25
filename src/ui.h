@@ -9,9 +9,10 @@
 #define CLICK_RADIUS 3.
 
 struct Color {
-	float red;
-	float green;
-	float blue;
+	double red;
+	double green;
+	double blue;
+	double _alpha;
 
 	bool operator==(const Color& right) {
 		return this->red == right.red
@@ -20,9 +21,9 @@ struct Color {
 	}
 };
 
-constexpr Color DEFAULT_FRONT_COLOR = {.red=0.3, .green=0.8, .blue=0.9};
-constexpr Color DEFAULT_BACK_COLOR  = {.red=0.9, .green=0.4, .blue=0.1};
-constexpr Color WHITE               = {.red=1.0, .green=1.0, .blue=1.0};
+constexpr Color DEFAULT_FRONT_COLOR = {.red=0.3, .green=0.8, .blue=0.9, ._alpha=0.0};
+constexpr Color DEFAULT_BACK_COLOR  = {.red=0.9, .green=0.4, .blue=0.1, ._alpha=0.0};
+constexpr Color WHITE               = {.red=1.0, .green=1.0, .blue=1.0, ._alpha=0.0};
 
 class UI {
 	float mouseX;
@@ -38,6 +39,8 @@ public:
 	double vAzim = 0;
 	double vAlt = 0;
 	bool fillMode = true;
+
+	int forceMatrixIndex = 0;
 
 	Color frontColor = DEFAULT_FRONT_COLOR;
 	Color backColor  = DEFAULT_BACK_COLOR;

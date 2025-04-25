@@ -44,9 +44,9 @@ void copyTrianglesFromMesh(double *triangles, Cloth& cloth) {
 
 // Matrix is of shape (1, nPoints).
 void copyForcesFromMatrix(double *dest, ForceMatrix &matrix, int xRes, int yRes) {
-	for (int squareY = 0; squareY < xRes - 1; squareY++) {
-		for (int squareX = 0; squareX < yRes - 1; squareX++) {
-			int squareIndex = squareX + squareY * matrix.cols();
+	for (int squareY = 0; squareY < yRes - 1; squareY++) {
+		for (int squareX = 0; squareX < xRes - 1; squareX++) {
+			int squareIndex = squareX + squareY * (xRes-1);
 			double *triPairStart = dest + 18 * squareIndex;
 			copyForce(triPairStart,      matrix(0, squareX   + xRes*(squareY)));
 			copyForce(triPairStart + 3,  matrix(0, squareX+1 + xRes*(squareY)));
