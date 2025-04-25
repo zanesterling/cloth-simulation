@@ -61,14 +61,6 @@ Vector2d scaleCondition(Cloth &cloth, int *tri, bool isBl, Vector2d buv) {
 	return area * (wnorms - buv);
 }
 
-double scaleUCondition(Cloth &cloth, int *tri, bool isBl, double b_u) {
-	return scaleCondition(cloth, tri, isBl, Vector2d(b_u, 0))[0];
-}
-
-double scaleVCondition(Cloth &cloth, int *tri, bool isBl, double b_v) {
-	return scaleCondition(cloth, tri, isBl, Vector2d(0, b_v))[1];
-}
-
 Eigen::Matrix<double, 3, 2> scalePartial(
 	Cloth &cloth,
 	int pt,
@@ -90,54 +82,6 @@ Eigen::Matrix<double, 3, 2> scalePartial(
 		Vector2d pCond2 = scaleCondition(cloth, tri, isBl, buv);
 
 		partial.row(col) = (pCond1 - pCond2) / (2 * PERTURB_QUANT);
-
-		// de-perturb cloth
-		worldPt[col] = originalPoint[col];
-	}
-
-	return partial;
-}
-
-RowVector3d scaleUPartial(Cloth &cloth, int pt, int *tri, bool isBl,
-                          double b) {
-	RowVector3d partial; // two rows, three columns
-
-	double *worldPt = cloth.getWorldPoint(pt);
-	double originalPoint[3] = {worldPt[0], worldPt[1], worldPt[2]};
-
-	for (int col = 0; col < 3; col++) {
-		// perturb the cloth
-		worldPt[col] = originalPoint[col] + PERTURB_QUANT;
-		auto pCond1 = scaleUCondition(cloth, tri, isBl, b);
-
-		worldPt[col] = originalPoint[col] - PERTURB_QUANT;
-		auto pCond2 = scaleUCondition(cloth, tri, isBl, b);
-
-		partial[col] = (pCond1 - pCond2) / (2 * PERTURB_QUANT);
-
-		// de-perturb cloth
-		worldPt[col] = originalPoint[col];
-	}
-
-	return partial;
-}
-
-RowVector3d scaleVPartial(Cloth &cloth, int pt, int *tri, bool isBl,
-                          double b) {
-	RowVector3d partial; // two rows, three columns
-
-	double *worldPt = cloth.getWorldPoint(pt);
-	double originalPoint[3] = {worldPt[0], worldPt[1], worldPt[2]};
-
-	for (int col = 0; col < 3; col++) {
-		// perturb the cloth
-		worldPt[col] = originalPoint[col] + PERTURB_QUANT;
-		auto pCond1 = scaleVCondition(cloth, tri, isBl, b);
-
-		worldPt[col] = originalPoint[col] - PERTURB_QUANT;
-		auto pCond2 = scaleVCondition(cloth, tri, isBl, b);
-
-		partial[col] = (pCond1 - pCond2) / (2 * PERTURB_QUANT);
 
 		// de-perturb cloth
 		worldPt[col] = originalPoint[col];

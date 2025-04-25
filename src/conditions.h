@@ -26,15 +26,6 @@ Eigen::Matrix<double, 3, 2> scalePartial(
 	Vector2d buv
 );
 
-double scaleUCondition(Cloth &, int *, bool, double);
-double scaleUCondition(Cloth &, int, int, int, bool, double);
-RowVector3d scaleUPartial(Cloth &, int, int *, bool, double);
-RowVector3d scaleUPartial(Cloth &, int, int, int, int, bool, double);
-double scaleVCondition(Cloth &, int *, bool, double);
-double scaleVCondition(Cloth &, int, int, int, bool, double);
-RowVector3d scaleVPartial(Cloth &, int, int *, bool, double);
-RowVector3d scaleVPartial(Cloth &, int, int, int, int, bool, double);
-
 double shearCondition(Cloth &, int *, bool);
 double shearCondition(Cloth &, int, int, int, bool);
 RowVector3d shearPartial(Cloth &, int, int *, bool);

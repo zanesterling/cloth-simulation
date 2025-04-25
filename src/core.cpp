@@ -51,13 +51,13 @@ constexpr long FPS = 60;
 constexpr long N_FRAMES_TO_BLUR = 60;
 static long frameDurMicrosSum = 0;
 static int frameCount;
-constexpr int BREAKPOINT = -1;
+constexpr int BREAKPOINT = -1; //120;
 void frame(int) {
 	struct timespec startTime, endTime;
 	clock_gettime(CLOCK_MONOTONIC, &startTime);
 
 	if (frameCount == BREAKPOINT) sim.running = false;
-	if (sim.running) printf("frame=%04d\n", frameCount);
+	// if (sim.running) printf("frame=%04d\n", frameCount);
 	sim.update();
 	ui.update();
 

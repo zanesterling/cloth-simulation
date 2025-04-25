@@ -322,12 +322,8 @@ void Simulation::scaleHelper(int *triPts, bool isBl, double stretchX, double str
 		scaleForces(0, ptI) += force;
 
 		// account for damping force
-		RowVector3d partialIU = scaleUPartial(cloth, ptI, triPts, isBl, stretchX);
-		RowVector3d partialIV = scaleVPartial(cloth, ptI, triPts, isBl, stretchY);
 		Vector3d velI = Vector3d(cloth.getWorldVel(ptI));
-		Vector3d dampForce = -DAMP_STIFF *
-		                 (partialIU.transpose() * partialIU +
-		                  partialIV.transpose() * partialIV) * velI;
+		Vector3d dampForce = -DAMP_STIFF * partial * partial.transpose() * velI;
 		for (int j = 0; j < 3; j++) {
 			if (abs(dampForce[j]) > abs(velI[j] + force[j])) {
 				dampForce[j] = -(velI[j] + force[j]);
