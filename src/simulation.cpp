@@ -46,7 +46,7 @@ void copyTriangleNormsFromClothNorms(double *triangleNorms, double *clothNorms, 
 
 void generateClothNormsFromMesh(double* clothNorms, Cloth& cloth) {
 	int numPoints = cloth.xRes * cloth.yRes;
-	for (int i = 0; i < 3 * numPoints; i++) clothNorms[i] = 0;
+	memset(clothNorms, 0, 3 * numPoints * sizeof(*clothNorms));
 
 	// additively generate clothNorms per triangle
 	for (int y = 0; y < cloth.yRes - 1; y++) {
