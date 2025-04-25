@@ -94,9 +94,9 @@ double shearCondition(Cloth &cloth, int *tri, bool isBl) {
 	return area * wuv.col(0).dot(wuv.col(1));
 }
 
-RowVector3d shearPartial(Cloth &cloth, int pt, int *tri, bool isBl) {
+Vector3d shearPartial(Cloth &cloth, int pt, int *tri, bool isBl) {
 	int i = tri[0], j = tri[1], k = tri[2];
-	RowVector3d partial;
+	Vector3d partial;
 
 	double *worldPt = cloth.getWorldPoint(pt);
 	double originalPoint[3] = {worldPt[0], worldPt[1], worldPt[2]};

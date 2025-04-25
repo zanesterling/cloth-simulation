@@ -331,14 +331,15 @@ void Simulation::handleShearCondition(int offset) {
 }
 
 void Simulation::shearHelper(int *triPts, bool isBl) {
-	auto cond = shearCondition(cloth, triPts, isBl);
+	double cond = shearCondition(cloth, triPts, isBl);
 
 	for (int i = 0; i < 3; i++) {
-		int ptI = triPts[i];
+		int pointIndex = triPts[i];
 
-		auto partialI = shearPartial(cloth, ptI, triPts, isBl);
-		auto force = -SHEAR_STIFF * partialI.transpose() * cond;
-		shearForces(0, ptI) += force;
+		Vector3d partial = shearPartial(cloth, pointIndex, triPts, isBl);
+		Vector3d force = -SHEAR_STIFF * partial * cond;
+		shearForces(0, pointIndex) += force;
+
 	}
 }
 
