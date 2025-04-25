@@ -12,7 +12,7 @@ struct Cloth {
 	double *uvPoints;
 	double *worldPoints;
 	double *worldVels;
-	double massPerVertI; // inverted mass-per-vertex
+	double massPerVertInverted;
 	double mass;
 	double triUvArea;
 

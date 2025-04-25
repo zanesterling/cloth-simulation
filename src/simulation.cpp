@@ -108,13 +108,14 @@ void Simulation::update() {
 
 	for (int i = 0; i < cloth.xRes * cloth.yRes; i++) {
 		// update velocities by condition-forces
+		auto force = forces(0, i);
 		for (int j = 0; j < 3; j++) {
-			cloth.worldVels[i*3 + j] += forces(0, i)[j] *
-			                            cloth.massPerVertI;
+			cloth.worldVels[i*3 + j] +=
+				force[j] * cloth.massPerVertInverted * TIMESTEP;
 		}
 
 		// apply gravitic acceleration
-		cloth.worldVels[i*3 + 1] -= GRAVITY_ACCEL;
+		cloth.worldVels[i*3 + 1] -= GRAVITY_ACCEL * TIMESTEP;
 
 		// lock floor as lower bound
 		if (FLOOR_ENABLED) {

@@ -4,7 +4,7 @@ Cloth::Cloth(int xRes, int yRes, double w, double h)
 	: xRes(xRes), yRes(yRes), w(w), h(h) {
 
 	mass = 20;
-	massPerVertI = (xRes * yRes) / mass;
+	massPerVertInverted = (xRes * yRes) / mass;
 
 	initUvPoints();
 	initWorldPoints();
