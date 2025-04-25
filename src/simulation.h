@@ -47,7 +47,6 @@ const Scene SCENES[NUM_SCENES] = {
 };
 
 class Simulation {
-	double maxScale;
 	double scaleU;
 	double scaleV;
 	double cuffScale;

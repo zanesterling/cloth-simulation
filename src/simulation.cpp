@@ -211,7 +211,6 @@ void Simulation::update() {
 void Simulation::reset() {
 	// regenerate cloth
 	cloth = Cloth(cloth.xRes, cloth.yRes);
-	maxScale = MAX_SCALE * 30 * 30 / (cloth.xRes * cloth.yRes);
 
 	switch (scene.id) {
 		case SceneId::Perturb: {
@@ -315,20 +314,11 @@ void Simulation::scaleHelper(int *triPts, bool isBl, double stretchX, double str
 		// account for scaling force
 		Eigen::Matrix<double, 3, 2> partial = scalePartial(cloth, ptI, triPts, isBl, buv);
 		Vector3d force = -SCALE_STIFF * partial * condition;
-		for (int j = 0; j < 3; j++) {
-			if (force[j] >  maxScale) force[j] =  maxScale;
-			if (force[j] < -maxScale) force[j] = -maxScale;
-		}
 		scaleForces(0, ptI) += force;
 
 		// account for damping force
 		Vector3d velI = Vector3d(cloth.getWorldVel(ptI));
 		Vector3d dampForce = -DAMP_STIFF * partial * partial.transpose() * velI;
-		for (int j = 0; j < 3; j++) {
-			if (abs(dampForce[j]) > abs(velI[j] + force[j])) {
-				dampForce[j] = -(velI[j] + force[j]);
-			}
-		}
 		scaleDampForces(0, ptI) += dampForce;
 	}
 }
