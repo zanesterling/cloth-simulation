@@ -46,10 +46,6 @@ Eigen::Matrix<double, 3, 2> dxMatrix(Cloth &cloth, int i, int j, int k) {
 	return dxMatrix;
 }
 
-WuvMatrix wuvMatrix(Cloth &cloth, int i, int j, int k, bool isBl) {
-	return dxMatrix(cloth, i, j, k) * duvMatrixInverse(cloth, i, j, k, isBl);
-}
-
 Vector2d scaleCondition(Cloth &cloth, int *tri, bool isBl, Vector2d buv) {
 	double area = cloth.triUvArea;
 	int i = tri[0], j = tri[1], k = tri[2];
@@ -91,22 +87,15 @@ Eigen::Matrix<double, 3, 2> scalePartial(
 }
 
 double shearCondition(Cloth &cloth, int *tri, bool isBl) {
-	return shearCondition(cloth, tri[0], tri[1], tri[2], isBl);
-}
-
-double shearCondition(Cloth &cloth, int i, int j, int k, bool isBl) {
-	auto wuvm = wuvMatrix(cloth, i, j, k, isBl);
+	int i = tri[0], j = tri[1], k = tri[2];
+	auto wuv = dxMatrix(cloth, i, j, k) * duvMatrixInverse(cloth, i, j, k, isBl);
 	auto area = cloth.triUvArea;
 
-	return area * wuvm.col(0).dot(wuvm.col(1));
+	return area * wuv.col(0).dot(wuv.col(1));
 }
 
 RowVector3d shearPartial(Cloth &cloth, int pt, int *tri, bool isBl) {
-	return shearPartial(cloth, pt, tri[0], tri[1], tri[2], isBl);
-}
-
-RowVector3d shearPartial(Cloth &cloth, int pt, int i, int j, int k,
-                         bool isBl) {
+	int i = tri[0], j = tri[1], k = tri[2];
 	RowVector3d partial;
 
 	double *worldPt = cloth.getWorldPoint(pt);
@@ -115,10 +104,10 @@ RowVector3d shearPartial(Cloth &cloth, int pt, int i, int j, int k,
 	for (int col = 0; col < 3; col++) {
 		// perturb the cloth
 		worldPt[col] = originalPoint[col] + PERTURB_QUANT;
-		double pCond1 = shearCondition(cloth, i, j, k, isBl);
+		double pCond1 = shearCondition(cloth, tri, isBl);
 
 		worldPt[col] = originalPoint[col] - PERTURB_QUANT;
-		double pCond2 = shearCondition(cloth, i, j, k, isBl);
+		double pCond2 = shearCondition(cloth, tri, isBl);
 
 		partial[col] = (pCond1 - pCond2) / (2 * PERTURB_QUANT);
 

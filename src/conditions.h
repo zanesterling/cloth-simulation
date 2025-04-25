@@ -27,9 +27,7 @@ Eigen::Matrix<double, 3, 2> scalePartial(
 );
 
 double shearCondition(Cloth &, int *, bool);
-double shearCondition(Cloth &, int, int, int, bool);
 RowVector3d shearPartial(Cloth &, int, int *, bool);
-RowVector3d shearPartial(Cloth &, int, int, int, int, bool);
 
 double bendCondition(Cloth &, int *);
 double bendCondition(Cloth &, int, int, int, int);
