@@ -340,6 +340,9 @@ void Simulation::shearHelper(int *triPts, bool isBl) {
 		Vector3d force = -SHEAR_STIFF * partial * cond;
 		shearForces(0, pointIndex) += force;
 
+		Vector3d velocity = Vector3d(cloth.getWorldVel(pointIndex));
+		Vector3d dampForce = -DAMP_STIFF * partial * partial.transpose() * velocity;
+		shearDampForces(0, pointIndex) += dampForce;
 	}
 }
 
