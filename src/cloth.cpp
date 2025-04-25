@@ -3,8 +3,11 @@
 Cloth::Cloth(int xRes, int yRes, double w, double h)
 	: xRes(xRes), yRes(yRes), w(w), h(h) {
 	int numPoints = xRes * yRes;
+	int numTriangles = (xRes-1) * (yRes-1) * 2;
 
-	triangleMass = 20.0 / (xRes * yRes * 2);
+	double uvDensity = 15.0;
+	double triangleUvArea = w*h / numTriangles;
+	triangleMass = triangleUvArea * uvDensity;
 	double oneThirdTriangleMass = triangleMass / 3.0;
 	invertedPointMasses = new double[numPoints];
 	double interiorInvertedMass = 1.0 / (oneThirdTriangleMass * 8);
