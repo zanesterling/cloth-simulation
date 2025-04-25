@@ -6,7 +6,7 @@
 #include "simulation.h"
 
 #define FOV_Y 30.
-#define CLICK_RADIUS 3.
+#define COLORS_ENABLED true
 
 struct Color {
 	double red;
