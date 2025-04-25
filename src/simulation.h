@@ -52,14 +52,37 @@ class Simulation {
 	double scaleV;
 	double cuffScale;
 
-	void handleScaleCondition(int offset);
-	void scaleHelper(int *triPts, bool isBl, Vector2d buv);
+	void computeScaleForces(
+		ForceMatrix &scaleForces,
+		ForceMatrix &scaleDampForces,
+		int offset
+	);
+	void scaleHelper(
+		ForceMatrix &scaleForces, ForceMatrix &scaleDampForces,
+		int *triPts,
+		bool isBl,
+		Vector2d buv
+	);
 
-	void handleShearCondition(int offset);
-	void shearHelper(int *triPts, bool isBl);
+	void computeShearForces(
+		ForceMatrix &shearForces,
+		ForceMatrix &shearDampForces,
+		int offset
+	);
+	void shearHelper(
+		ForceMatrix &shearForces,
+		ForceMatrix &shearDampForces,
+		int *triPts,
+		bool isBl
+	);
 
-	void handleBendCondition(int squareX, int squareY);
-	void bendHelper(int *tris);
+	void computeBendForces(
+		ForceMatrix &bendForces,
+		ForceMatrix &bendDampForces,
+		int squareX,
+		int squareY
+	);
+	void bendHelper(ForceMatrix &bendForces, ForceMatrix &bendDampForces, int *tris);
 
 	void computeForces(ForceMatrix &forces);
 

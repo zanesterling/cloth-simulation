@@ -266,9 +266,9 @@ void Simulation::computeForces(ForceMatrix &forces) {
 	for (int i = 0; i < cloth.yRes-1; i++) {
 		for (int j = 0; j < cloth.xRes-1; j++) {
 			int offset = i * cloth.xRes + j;
-			handleScaleCondition(offset);
-			handleShearCondition(offset);
-			handleBendCondition (j, i);
+			computeScaleForces(scaleForces, scaleDampForces, offset);
+			computeShearForces(shearForces, shearDampForces, offset);
+			computeBendForces (bendForces, bendDampForces, j, i);
 		}
 	}
 
@@ -284,7 +284,11 @@ void Simulation::computeForces(ForceMatrix &forces) {
 	forces += bendDampForces;
 }
 
-void Simulation::handleScaleCondition(int offset) {
+void Simulation::computeScaleForces(
+	ForceMatrix &scaleForces,
+	ForceMatrix &scaleDampForces,
+	int offset
+) {
 	int botLeftTri[3]  = {
 		offset,
 		offset + 1,
@@ -310,11 +314,17 @@ void Simulation::handleScaleCondition(int offset) {
 		}
 	}
 
-	scaleHelper(botLeftTri,  true,  stretchUV);
-	scaleHelper(topRightTri, false, stretchUV);
+	scaleHelper(scaleForces, scaleDampForces, botLeftTri,  true,  stretchUV);
+	scaleHelper(scaleForces, scaleDampForces, topRightTri, false, stretchUV);
 }
 
-void Simulation::scaleHelper(int *triPts, bool isBl, Vector2d buv) {
+void Simulation::scaleHelper(
+	ForceMatrix &scaleForces,
+	ForceMatrix &scaleDampForces,
+	int *triPts,
+	bool isBl,
+	Vector2d buv
+) {
 	Vector2d condition = scaleCondition(cloth, triPts, isBl, buv);
 	double condX = condition[0];
 	double condY = condition[1];
@@ -333,16 +343,25 @@ void Simulation::scaleHelper(int *triPts, bool isBl, Vector2d buv) {
 	}
 }
 
-void Simulation::handleShearCondition(int offset) {
+void Simulation::computeShearForces(
+	ForceMatrix &shearForces,
+	ForceMatrix &shearDampForces,
+	int offset
+) {
 	int botLeftTri[3] = {offset, offset + 1, offset + cloth.xRes};
 	int topRightTri[3] = {offset + cloth.xRes, offset + 1,
 			              offset + cloth.xRes + 1};
 
-	shearHelper(botLeftTri, true);
-	shearHelper(topRightTri, false);
+	shearHelper(shearForces, shearDampForces, botLeftTri, true);
+	shearHelper(shearForces, shearDampForces, topRightTri, false);
 }
 
-void Simulation::shearHelper(int *triPts, bool isBl) {
+void Simulation::shearHelper(
+	ForceMatrix &shearForces,
+	ForceMatrix &shearDampForces,
+	int *triPts,
+	bool isBl
+) {
 	double cond = shearCondition(cloth, triPts, isBl);
 
 	for (int i = 0; i < 3; i++) {
@@ -358,7 +377,12 @@ void Simulation::shearHelper(int *triPts, bool isBl) {
 	}
 }
 
-void Simulation::handleBendCondition(int squareX, int squareY) {
+void Simulation::computeBendForces(
+	ForceMatrix &bendForces,
+	ForceMatrix &bendDampForces,
+	int squareX,
+	int squareY
+) {
 	int offset = squareX + squareY * cloth.xRes;
 
 	// diagonal triangle pair
@@ -368,7 +392,7 @@ void Simulation::handleBendCondition(int squareX, int squareY) {
 		offset + cloth.xRes,
 		offset + cloth.xRes + 1
 	};
-	bendHelper(diagPts);
+	bendHelper(bendForces, bendDampForces, diagPts);
 
 	// right-side triangle pair
 	if (squareX < cloth.xRes - 2) {
@@ -378,7 +402,7 @@ void Simulation::handleBendCondition(int squareX, int squareY) {
 			offset + cloth.xRes + 1,
 			offset + 2
 		};
-		bendHelper(rightPts);
+		bendHelper(bendForces, bendDampForces, rightPts);
 	}
 
 	// top-side triangle pair
@@ -389,11 +413,15 @@ void Simulation::handleBendCondition(int squareX, int squareY) {
 			offset + cloth.xRes,
 			offset + 2 * cloth.xRes
 		};
-		bendHelper(topPts);
+		bendHelper(bendForces, bendDampForces, topPts);
 	}
 }
 
-void Simulation::bendHelper(int *tris) {
+void Simulation::bendHelper(
+	ForceMatrix &bendForces,
+	ForceMatrix &bendDampForces,
+	int *tris
+) {
 	auto cond = bendCondition(cloth, tris);
 
 	for (int i = 0; i < 4; i++) {
