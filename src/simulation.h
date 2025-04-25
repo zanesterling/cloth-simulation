@@ -73,7 +73,13 @@ public:
 	// Determines the state of the cloth on reset.
 	Scene scene = SCENES[SceneId::Swing];
 
-	ForceMatrix forces;
+	ForceMatrix totalForces;
+	ForceMatrix scaleForces;
+	ForceMatrix scaleDampForces;
+	ForceMatrix shearForces;
+	ForceMatrix shearDampForces;
+	ForceMatrix bendForces;
+	ForceMatrix bendDampForces;
 
 	Simulation(int, int);
 

@@ -5,7 +5,14 @@ Simulation::Simulation(int clothXRes, int clothYRes)
 	: cloth(Cloth(clothXRes, clothYRes)) {
 	reset();
 
-	forces.resize(1, getNumPoints());
+	int numPoints = getNumPoints();
+	totalForces.resize(1, numPoints);
+	scaleForces.resize(1, numPoints);
+	scaleDampForces.resize(1, numPoints);
+	shearForces.resize(1, numPoints);
+	shearDampForces.resize(1, numPoints);
+	bendForces.resize(1, numPoints);
+	bendDampForces.resize(1, numPoints);
 }
 
 void copyPoint(double *dest, double *src) {
@@ -98,9 +105,15 @@ void Simulation::update() {
 	// if simulation is paused, don't update
 	if (!running) return;
 
-	// zero forces matrix
+	// zero forces matrices
 	for (int pt = 0; pt < cloth.xRes * cloth.yRes; pt++) {
-		forces(0, pt).setZero();
+		totalForces(0, pt).setZero();
+		scaleForces(0, pt).setZero();
+		scaleDampForces(0, pt).setZero();
+		shearForces(0, pt).setZero();
+		shearDampForces(0, pt).setZero();
+		bendForces(0, pt).setZero();
+		bendDampForces(0, pt).setZero();
 	}
 
 	// get condition-forces 
@@ -113,9 +126,17 @@ void Simulation::update() {
 		}
 	}
 
+	// sum up total forces
+	totalForces += scaleForces;
+	totalForces += scaleDampForces;
+	totalForces += shearForces;
+	totalForces += shearDampForces;
+	totalForces += bendForces;
+	totalForces += bendDampForces;
+
 	for (int i = 0; i < cloth.xRes * cloth.yRes; i++) {
 		// update velocities by condition-forces
-		auto force = forces(0, i);
+		auto force = totalForces(0, i);
 		for (int j = 0; j < 3; j++) {
 			auto massInverted = cloth.invertedPointMasses[i];
 			cloth.worldVels[i*3 + j] += force[j] * massInverted * TIMESTEP;
@@ -252,7 +273,7 @@ void Simulation::scaleHelper(int *triPts, bool isBl, int y) {
 			if (force[j] >  maxScale) force[j] =  maxScale;
 			if (force[j] < -maxScale) force[j] = -maxScale;
 		}
-		forces(0, ptI) += force;
+		scaleForces(0, ptI) += force;
 
 		// account for damping force
 		auto velI = Vector3d(cloth.getWorldVel(ptI));
@@ -263,7 +284,7 @@ void Simulation::scaleHelper(int *triPts, bool isBl, int y) {
 			if (abs(dampForce[j]) > abs(velI[j] + force[j]))
 				dampForce[j] = -(velI[j] + force[j]);
 		}
-		forces(0, ptI) += dampForce;
+		scaleDampForces(0, ptI) += dampForce;
 	}
 }
 
@@ -284,7 +305,7 @@ void Simulation::shearHelper(int *triPts, bool isBl) {
 
 		auto partialI = shearPartial(cloth, ptI, triPts, isBl);
 		auto force = -SHEAR_STIFF * partialI.transpose() * cond;
-		forces(0, ptI) += force;
+		shearForces(0, ptI) += force;
 	}
 }
 
@@ -318,11 +339,13 @@ void Simulation::handleBendCondition(int offset) {
 
 	bendHelper(diagPts);
 
-	if (xOff < cloth.xRes - 2)
+	if (xOff < cloth.xRes - 2) {
 		bendHelper(rightPts);
+	}
 
-	if (yOff < cloth.yRes - 2)
+	if (yOff < cloth.yRes - 2) {
 		bendHelper(topPts);
+	}
 }
 
 void Simulation::bendHelper(int *tris) {
@@ -337,6 +360,6 @@ void Simulation::bendHelper(int *tris) {
 			if (force[j] > MAX_BEND) force[j] = MAX_BEND;
 			if (force[j] < -MAX_BEND) force[j] = -MAX_BEND;
 		}
-		forces(0, ptI) += force;
+		bendForces(0, ptI) += force;
 	}
 }
