@@ -102,6 +102,22 @@ void generateClothNormsFromMesh(double* clothNorms, Cloth& cloth) {
 }
 
 void Simulation::update() {
+	if (!running) return;
+
+	double largestDistance = 0;
+	for (int i = 0; i < cloth.numPoints(); i++) {
+		double px = cloth.worldPoints[3*i + 0];
+		double py = cloth.worldPoints[3*i + 1];
+		double pz = cloth.worldPoints[3*i + 2];
+		double magnitude = sqrt(px*px + py+py + pz*pz);
+		largestDistance = max(largestDistance, magnitude);
+	}
+	constexpr double MAX_DIST = 2;
+	if (largestDistance > MAX_DIST) {
+		running = false;
+		printf("point outside MAX_DIST=%f: distance=%f\n", MAX_DIST, largestDistance);
+	}
+
 	// if simulation is paused, don't update
 	if (!running) return;
 
@@ -137,10 +153,10 @@ void Simulation::update() {
 	for (int i = 0; i < cloth.xRes * cloth.yRes; i++) {
 		// update velocities by condition-forces
 		auto force = totalForces(0, i);
-		for (int j = 0; j < 3; j++) {
-			auto massInverted = cloth.invertedPointMasses[i];
-			cloth.worldVels[i*3 + j] += force[j] * massInverted * TIMESTEP;
-		}
+		auto massInverted = cloth.invertedPointMasses[i];
+		cloth.worldVels[i*3 + 0] += force[0] * massInverted * TIMESTEP;
+		cloth.worldVels[i*3 + 1] += force[1] * massInverted * TIMESTEP;
+		cloth.worldVels[i*3 + 2] += force[2] * massInverted * TIMESTEP;
 
 		// apply gravitic acceleration
 		cloth.worldVels[i*3 + 1] -= GRAVITY_ACCEL * TIMESTEP;

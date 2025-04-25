@@ -34,4 +34,6 @@ struct Cloth {
 
 	double getTriUvArea();
 	Vector3d triNormal(int, int, int);
+
+	int numPoints();
 };

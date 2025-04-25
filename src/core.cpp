@@ -50,10 +50,14 @@ void initLights() {
 constexpr long FPS = 60;
 constexpr long N_FRAMES_TO_BLUR = 60;
 static long frameDurMicrosSum = 0;
-void frame(int frameCount) {
+static int frameCount;
+constexpr int BREAKPOINT = -1;
+void frame(int) {
 	struct timespec startTime, endTime;
 	clock_gettime(CLOCK_MONOTONIC, &startTime);
 
+	if (frameCount == BREAKPOINT) sim.running = false;
+	if (sim.running) printf("frame=%04d\n", frameCount);
 	sim.update();
 	ui.update();
 
@@ -64,13 +68,14 @@ void frame(int frameCount) {
 	frameDurMicrosSum += frameDurNanos / 1000L;
 	if (frameCount % N_FRAMES_TO_BLUR == 0) {
 		long micros = frameDurMicrosSum / N_FRAMES_TO_BLUR;
-		printf("frame: %ld.%ldms\n", micros / 1000, micros % 1000);
+		// printf("frame: %ld.%ldms\n", micros / 1000, micros % 1000);
 		frameDurMicrosSum = 0;
 	}
 
 	// mark dirty frame
 	glutPostRedisplay();
-	glutTimerFunc(1000 / FPS, frame, frameCount + 1);
+	frameCount++;
+	glutTimerFunc(1000 / FPS, frame, 0);
 }
 
 void keyboard(unsigned char key, int x, int y) {
@@ -119,9 +124,21 @@ void keyboard(unsigned char key, int x, int y) {
 		case 'p':
 			sim.running = !sim.running;
 			break;
+		case '.': // step frame-by-frame
+			sim.running = true;
+			sim.update();
+			sim.running = false;
+			break;
 		case 'r':
+			frameCount = 0;
 			sim.reset();
 			break;
+		case 'b': // run to breakpoint
+			sim.running = true;
+			for (; frameCount < BREAKPOINT; frameCount++) {
+				sim.update();
+			}
+			sim.running = false;
 			break;
 		case 'o':
 			sim.cuffing = !sim.cuffing;

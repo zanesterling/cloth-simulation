@@ -8,6 +8,7 @@ Cloth::Cloth(int xRes, int yRes, double w, double h)
 	double uvDensity = 15.0;
 	double triangleUvArea = w*h / numTriangles;
 	triangleMass = triangleUvArea * uvDensity;
+
 	double oneThirdTriangleMass = triangleMass / 3.0;
 	invertedPointMasses = new double[numPoints];
 	double interiorInvertedMass = 1.0 / (oneThirdTriangleMass * 8);
@@ -86,4 +87,8 @@ Vector3d Cloth::triNormal(int pi1, int pi2, int pi3) {
 	auto s2 = Vector3d(getWorldPoint(pi3)) - p1;
 
 	return s1.cross(s2).normalized();
+}
+
+int Cloth::numPoints() {
+	return xRes * yRes;
 }
