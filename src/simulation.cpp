@@ -245,10 +245,6 @@ void Simulation::handleScaleCondition(int offset) {
 void Simulation::scaleHelper(int *triPts, bool isBl, int y) {
 	double stretchX = scaleX;
 	double stretchY = scaleY;
-	if (bannerStyle) {
-		stretchX = 0.5;
-		stretchY = 1;
-	}
 	if (y < 5) {
 		stretchX = cuffScale * y / 5. + 1 * (5 - y) / 5.;
 	}

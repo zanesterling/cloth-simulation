@@ -122,8 +122,6 @@ void keyboard(unsigned char key, int x, int y) {
 		case 'r':
 			sim.reset();
 			break;
-		case 'i':
-			sim.bannerStyle = !sim.bannerStyle;
 			break;
 		case 'o':
 			sim.cuffing = !sim.cuffing;

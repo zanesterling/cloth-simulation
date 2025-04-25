@@ -67,7 +67,6 @@ public:
 	double *triVerts;
 	double *triNorms;
 	bool running = true;
-	bool bannerStyle = false;
 	bool cuffing = false;
 
 	// Determines the state of the cloth on reset.
