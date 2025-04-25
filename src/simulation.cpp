@@ -285,26 +285,24 @@ void Simulation::handleScaleCondition(int offset) {
 	};
 
 	int y = offset / cloth.xRes;
-	double stretchX = scaleU;
-	double stretchY = scaleV;
+	Vector2d stretchUV(scaleU, scaleV);
 	if (y < 5) {
 		double t = y / 5.0;
-		stretchX = lerp(cuffScale, scaleU, t);
+		stretchUV[0] = lerp(cuffScale, stretchUV[0], t);
 	}
 	if (cuffing) {
 		if (y == 0) {
-			stretchX = 0.3;
+			stretchUV[0] = 0.3;
 		} else if (y == 1) {
-			stretchX = 0.5;
+			stretchUV[0] = 0.5;
 		}
 	}
 
-	scaleHelper(botLeftTri,  true,  stretchX, stretchY);
-	scaleHelper(topRightTri, false, stretchX, stretchY);
+	scaleHelper(botLeftTri,  true,  stretchUV);
+	scaleHelper(topRightTri, false, stretchUV);
 }
 
-void Simulation::scaleHelper(int *triPts, bool isBl, double stretchX, double stretchY) {
-	Vector2d buv = Vector2d(stretchX, stretchY);
+void Simulation::scaleHelper(int *triPts, bool isBl, Vector2d buv) {
 	Vector2d condition = scaleCondition(cloth, triPts, isBl, buv);
 	double condX = condition[0];
 	double condY = condition[1];

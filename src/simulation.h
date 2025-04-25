@@ -52,7 +52,7 @@ class Simulation {
 	double cuffScale;
 
 	void handleScaleCondition(int offset);
-	void scaleHelper(int *triPts, bool isBl, double stretchX, double sretchY);
+	void scaleHelper(int *triPts, bool isBl, Vector2d buv);
 
 	void handleShearCondition(int offset);
 	void shearHelper(int *triPts, bool isBl);
