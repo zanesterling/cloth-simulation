@@ -53,9 +53,6 @@ void UI::render() {
 	glNormalPointer(GL_FLOAT, 0, normals);
 
 	if (COLORS_ENABLED) {
-		double largestScaleColor = 0.0;
-		double largestShearColor = 0.0;
-		double largestBendColor = 0.0;
 		copyForcesFromMatrix(forces, sim.scaleForces, sim.cloth.xRes, sim.cloth.yRes);
 		for (int pointIndex = 0; pointIndex < numPoints; pointIndex++) {
 			double *force = forces + pointIndex*3;
@@ -65,7 +62,6 @@ void UI::render() {
 			double magnitude = fx*fx + fy*fy + fz*fz;
 			double color = magnitude * 10 * 1000 * 1000 * 1000;
 			colors[pointIndex*3 + 0] = 0.1 + color; // set red
-			if (color > largestScaleColor) largestScaleColor = color;
 		}
 		copyForcesFromMatrix(forces, sim.shearForces, sim.cloth.xRes, sim.cloth.yRes);
 		for (int pointIndex = 0; pointIndex < numPoints; pointIndex++) {
@@ -76,7 +72,6 @@ void UI::render() {
 			double magnitude = fx*fx + fy*fy + fz*fz;
 			double color = magnitude * 10 * 1000 * 1000 * 1000;
 			colors[pointIndex*3 + 1] = 0.1 + color; // set green
-			if (color > largestShearColor) largestShearColor = color;
 		}
 		copyForcesFromMatrix(forces, sim.bendForces, sim.cloth.xRes, sim.cloth.yRes);
 		for (int pointIndex = 0; pointIndex < numPoints; pointIndex++) {
@@ -87,7 +82,6 @@ void UI::render() {
 			double magnitude = fx*fx + fy*fy + fz*fz;
 			double color = magnitude * 10 * 1000 * 1000 * 1000;
 			colors[pointIndex*3 + 2] = 0.1 + color; // set blue
-			if (color > largestBendColor) largestBendColor = color;
 		}
 
 		glColorPointer(3, GL_DOUBLE, 0, colors);
