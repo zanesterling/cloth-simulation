@@ -19,6 +19,12 @@ void copyPoint(double *dest, double *src) {
 	memcpy(dest, src, 3 * sizeof(double));
 }
 
+inline void copyForce(double *dest, Vector3d force) {
+	dest[0] = force[0];
+	dest[1] = force[1];
+	dest[2] = force[2];
+}
+
 // triangles must be a pointer to an array of floats big enough
 // to store 18 floats per cloth square.
 void copyTrianglesFromMesh(double *triangles, Cloth& cloth) {
@@ -32,6 +38,23 @@ void copyTrianglesFromMesh(double *triangles, Cloth& cloth) {
 			copyPoint(triPairStart + 9,  cloth.getWorldPoint(j,   i+1));
 			copyPoint(triPairStart + 12, cloth.getWorldPoint(j+1, i));
 			copyPoint(triPairStart + 15, cloth.getWorldPoint(j+1, i+1));
+		}
+	}
+}
+
+// Matrix is of shape (1, nPoints).
+void copyForcesFromMatrix(double *dest, ForceMatrix &matrix, int xRes, int yRes) {
+	for (int squareY = 0; squareY < xRes - 1; squareY++) {
+		for (int squareX = 0; squareX < yRes - 1; squareX++) {
+			int squareIndex = squareX + squareY * matrix.cols();
+			double *triPairStart = dest + 18 * squareIndex;
+			copyForce(triPairStart,      matrix(0, squareX   + xRes*(squareY)));
+			copyForce(triPairStart + 3,  matrix(0, squareX+1 + xRes*(squareY)));
+			copyForce(triPairStart + 6,  matrix(0, squareX   + xRes*(squareY+1)));
+
+			copyForce(triPairStart + 9,  matrix(0, squareX   + xRes*(squareY+1)));
+			copyForce(triPairStart + 12, matrix(0, squareX   + xRes*(squareY)));
+			copyForce(triPairStart + 15, matrix(0, squareX+1 + xRes*(squareY+1)));
 		}
 	}
 }

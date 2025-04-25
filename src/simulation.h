@@ -102,3 +102,5 @@ public:
 		reset();
 	}
 };
+
+void copyForcesFromMatrix(double *dest, ForceMatrix &matrix, int xRes, int yRes);
