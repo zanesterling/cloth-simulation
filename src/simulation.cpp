@@ -272,6 +272,12 @@ inline double lerp(double a, double b, double t) {
 	return a * (1 - t) + b * t;
 }
 
+inline double clamp(double low, double x, double high) {
+	if (x < low)  return low;
+	if (x > high) return high;
+	return x;
+}
+
 void Simulation::handleScaleCondition(int offset) {
 	int botLeftTri[3]  = {
 		offset,
