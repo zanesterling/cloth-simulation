@@ -118,15 +118,24 @@ Vector3d shearPartial(Cloth &cloth, int pt, int *tri, bool isBl) {
 	return partial;
 }
 
+Vector3d triangleNormal(Vector3d p1, Vector3d p2, Vector3d p3) {
+	Vector3d side1 = p2 - p1;
+	Vector3d side2 = p3 - p1;
+	return side1.cross(side2);
+}
+
 // tris points to an array of four points, p1, p2, p3, and p4.
-// p1,p2,p3 and p4,p3,p2 are counter-clockwise sequences.
+// p1,p2,p3 and p4,p3,p2 are counter-clockwise sequences in uv space.
 // p2 and p3 are shared between the two triangles.
 double bendCondition(Cloth &cloth, int *tris) {
-	int p1 = tris[0], p2 = tris[1], p3 = tris[2], p4 = tris[3];
-	Vector3d n1 = cloth.triNormal(p1, p2, p3);
-	Vector3d n2 = cloth.triNormal(p3, p2, p4);
-	Vector3d e = Vector3d(cloth.getWorldPoint(p2)) -
-	             Vector3d(cloth.getWorldPoint(p3));
+	Vector3d p1 = cloth.getWorldPointVec(tris[0]);
+	Vector3d p2 = cloth.getWorldPointVec(tris[1]);
+	Vector3d p3 = cloth.getWorldPointVec(tris[2]);
+	Vector3d p4 = cloth.getWorldPointVec(tris[3]);
+
+	Vector3d n1 = triangleNormal(p1, p2, p3);
+	Vector3d n2 = triangleNormal(p3, p2, p4);
+	Vector3d e = p2 - p3;
 
 	double st = n1.cross(n2).dot(e);
 	double ct = n1.dot(n2);
