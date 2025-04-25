@@ -65,20 +65,21 @@ RowVector3d scaleXPartial(Cloth &cloth, int pt, int *tri, bool isBl,
                           double b) {
 	RowVector3d partial; // two rows, three columns
 
-	auto localCond = scaleXCondition(cloth, tri, isBl, b);
 	double *worldPt = cloth.getWorldPoint(pt);
+	double originalPoint[3] = {worldPt[0], worldPt[1], worldPt[2]};
 
 	for (int col = 0; col < 3; col++) {
 		// perturb the cloth
-		worldPt[col] += PERTURB_QUANT;
-
+		worldPt[col] = originalPoint[col] + PERTURB_QUANT;
 		auto pCond1 = scaleXCondition(cloth, tri, isBl, b);
-		worldPt[col] -= 2 * PERTURB_QUANT;
+
+		worldPt[col] = originalPoint[col] - PERTURB_QUANT;
 		auto pCond2 = scaleXCondition(cloth, tri, isBl, b);
+
 		partial[col] = (pCond1 - pCond2) / (2 * PERTURB_QUANT);
 
 		// de-perturb cloth
-		worldPt[col] += PERTURB_QUANT;
+		worldPt[col] = originalPoint[col];
 	}
 
 	return partial;
@@ -88,20 +89,21 @@ RowVector3d scaleYPartial(Cloth &cloth, int pt, int *tri, bool isBl,
                           double b) {
 	RowVector3d partial; // two rows, three columns
 
-	auto localCond = scaleYCondition(cloth, tri, isBl, b);
 	double *worldPt = cloth.getWorldPoint(pt);
+	double originalPoint[3] = {worldPt[0], worldPt[1], worldPt[2]};
 
 	for (int col = 0; col < 3; col++) {
 		// perturb the cloth
-		worldPt[col] += PERTURB_QUANT;
-
+		worldPt[col] = originalPoint[col] + PERTURB_QUANT;
 		auto pCond1 = scaleYCondition(cloth, tri, isBl, b);
-		worldPt[col] -= 2 * PERTURB_QUANT;
+
+		worldPt[col] = originalPoint[col] - PERTURB_QUANT;
 		auto pCond2 = scaleYCondition(cloth, tri, isBl, b);
+
 		partial[col] = (pCond1 - pCond2) / (2 * PERTURB_QUANT);
 
 		// de-perturb cloth
-		worldPt[col] += PERTURB_QUANT;
+		worldPt[col] = originalPoint[col];
 	}
 
 	return partial;
@@ -126,20 +128,21 @@ RowVector3d shearPartial(Cloth &cloth, int pt, int i, int j, int k,
                          bool isBl) {
 	RowVector3d partial;
 
-	double localCond = shearCondition(cloth, i, j, k, isBl);
 	double *worldPt = cloth.getWorldPoint(pt);
+	double originalPoint[3] = {worldPt[0], worldPt[1], worldPt[2]};
 
 	for (int col = 0; col < 3; col++) {
 		// perturb the cloth
-		worldPt[col] += PERTURB_QUANT;
-
+		worldPt[col] = originalPoint[col] + PERTURB_QUANT;
 		double pCond1 = shearCondition(cloth, i, j, k, isBl);
-		worldPt[col] -= 2 * PERTURB_QUANT;
+
+		worldPt[col] = originalPoint[col] - PERTURB_QUANT;
 		double pCond2 = shearCondition(cloth, i, j, k, isBl);
+
 		partial[col] = (pCond1 - pCond2) / (2 * PERTURB_QUANT);
 
 		// de-perturb cloth
-		worldPt[col] += PERTURB_QUANT;
+		worldPt[col] = originalPoint[col];
 	}
 
 	return partial;
@@ -171,20 +174,21 @@ RowVector3d bendPartial(Cloth &cloth, int pt,
                         int p1, int p2, int p3, int p4) {
 	RowVector3d partial;
 
-	auto localCond = bendCondition(cloth, p1, p2, p3, p4);
-	double *worldPt = cloth.getWorldPoint(pt);
+	double *worldPoint = cloth.getWorldPoint(pt);
+	double originalPoint[3] = {worldPoint[0], worldPoint[1], worldPoint[2]};
 
 	for (int col = 0; col < 3; col++) {
 		// perturb the cloth
-		worldPt[col] += PERTURB_QUANT;
-
+		worldPoint[col] = originalPoint[col] + PERTURB_QUANT;
 		auto pCond1 = bendCondition(cloth, p1, p2, p3, p4);
-		worldPt[col] -= 2 * PERTURB_QUANT;
+
+		worldPoint[col] = originalPoint[col] - PERTURB_QUANT;
 		auto pCond2 = bendCondition(cloth, p1, p2, p3, p4);
+
 		partial[col] = (pCond1 - pCond2) / (2 * PERTURB_QUANT);
 
 		// de-perturb cloth
-		worldPt[col] += PERTURB_QUANT;
+		worldPoint[col] = originalPoint[col];
 	}
 
 	return partial;
