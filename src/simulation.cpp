@@ -246,31 +246,42 @@ void Simulation::reset() {
 	cuffScale = 1;
 }
 
-void Simulation::handleScaleCondition(int offset) {
-	int botLeftTri[3]  = {offset, offset + 1, offset + cloth.xRes};
-	int topRightTri[3] = {offset + cloth.xRes, offset + 1,
-	                offset + cloth.xRes + 1};
-
-	int x = offset % cloth.xRes;
-	int y = offset / cloth.xRes;
-
-	scaleHelper(botLeftTri, true, y);
-	scaleHelper(topRightTri, false, y);
+inline double lerp(double a, double b, double t) {
+	return a * (1 - t) + b * t;
 }
 
-void Simulation::scaleHelper(int *triPts, bool isBl, int y) {
+void Simulation::handleScaleCondition(int offset) {
+	int botLeftTri[3]  = {
+		offset,
+		offset + 1,
+		offset + cloth.xRes
+	};
+	int topRightTri[3] = {
+		offset + cloth.xRes,
+		offset + 1,
+	    offset + cloth.xRes + 1
+	};
+
+	int y = offset / cloth.xRes;
 	double stretchX = scaleX;
 	double stretchY = scaleY;
 	if (y < 5) {
-		stretchX = cuffScale * y / 5. + 1 * (5 - y) / 5.;
+		double t = y / 5.0;
+		stretchX = lerp(cuffScale, scaleX, t);
 	}
 	if (cuffing) {
-		if (y == 0)
+		if (y == 0) {
 			stretchX = 0.3;
-		else if (y == 1)
+		} else if (y == 1) {
 			stretchX = 0.5;
+		}
 	}
 
+	scaleHelper(botLeftTri,  true,  stretchX, stretchY);
+	scaleHelper(topRightTri, false, stretchX, stretchY);
+}
+
+void Simulation::scaleHelper(int *triPts, bool isBl, double stretchX, double stretchY) {
 	auto condX = scaleXCondition(cloth, triPts, isBl, stretchX);
 	auto condY = scaleYCondition(cloth, triPts, isBl, stretchY);
 	for (int i = 0; i < 3; i++) {
