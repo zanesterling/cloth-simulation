@@ -1,7 +1,5 @@
 PLATFORM = $(shell uname -s)
 OBJS = $(patsubst src/%.cpp,obj/%.o, $(filter-out src/core.cpp,$(wildcard src/*.cpp)))
-# Dependency files, used to automatically recompile a source if a header it depends on changes
-DEPS = $(OBJS:.o=.d)
 
 CXX = clang++
 GLOBAL_LIBS =
