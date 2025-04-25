@@ -391,8 +391,8 @@ void Simulation::bendHelper(int *tris) {
 	for (int i = 0; i < 4; i++) {
 		int ptI = tris[i];
 
-		auto partialI = bendPartial(cloth, ptI, tris);
-		Vector3d force = -BEND_STIFF * partialI.transpose() * cond;
+		auto partial = bendPartial(cloth, ptI, tris);
+		Vector3d force = -BEND_STIFF * partial * cond;
 		for (int j = 0; j < 3; j++) {
 			if (force[j] > MAX_BEND) force[j] = MAX_BEND;
 			if (force[j] < -MAX_BEND) force[j] = -MAX_BEND;

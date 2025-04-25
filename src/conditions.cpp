@@ -118,13 +118,11 @@ Vector3d shearPartial(Cloth &cloth, int pt, int *tri, bool isBl) {
 	return partial;
 }
 
+// tris points to an array of four points, p1, p2, p3, and p4.
+// p1,p2,p3 and p4,p3,p2 are counter-clockwise sequences.
+// p2 and p3 are shared between the two triangles.
 double bendCondition(Cloth &cloth, int *tris) {
-	return bendCondition(cloth, tris[0], tris[1], tris[2], tris[3]);
-}
-
-// p1,p2,p3 and p4,p3,p2 are counter-clockwise
-// p2 and p3 are shared between the two triangles
-double bendCondition(Cloth &cloth, int p1, int p2, int p3, int p4) {
+	int p1 = tris[0], p2 = tris[1], p3 = tris[2], p4 = tris[3];
 	Vector3d n1 = cloth.triNormal(p1, p2, p3);
 	Vector3d n2 = cloth.triNormal(p3, p2, p4);
 	Vector3d e = Vector3d(cloth.getWorldPoint(p2)) -
@@ -136,13 +134,9 @@ double bendCondition(Cloth &cloth, int p1, int p2, int p3, int p4) {
 	return atan2(st, ct);
 }
 
-RowVector3d bendPartial(Cloth &cloth, int pt, int *tris) {
-	return bendPartial(cloth, pt, tris[0], tris[1], tris[2], tris[3]);
-}
-
-RowVector3d bendPartial(Cloth &cloth, int pt,
-                        int p1, int p2, int p3, int p4) {
-	RowVector3d partial;
+Vector3d bendPartial(Cloth &cloth, int pt, int *tris) {
+	int p1 = tris[0], p2 = tris[1], p3 = tris[2], p4 = tris[3];
+	Vector3d partial;
 
 	double *worldPoint = cloth.getWorldPoint(pt);
 	double originalPoint[3] = {worldPoint[0], worldPoint[1], worldPoint[2]};
@@ -150,10 +144,10 @@ RowVector3d bendPartial(Cloth &cloth, int pt,
 	for (int col = 0; col < 3; col++) {
 		// perturb the cloth
 		worldPoint[col] = originalPoint[col] + PERTURB_QUANT;
-		auto pCond1 = bendCondition(cloth, p1, p2, p3, p4);
+		auto pCond1 = bendCondition(cloth, tris);
 
 		worldPoint[col] = originalPoint[col] - PERTURB_QUANT;
-		auto pCond2 = bendCondition(cloth, p1, p2, p3, p4);
+		auto pCond2 = bendCondition(cloth, tris);
 
 		partial[col] = (pCond1 - pCond2) / (2 * PERTURB_QUANT);
 

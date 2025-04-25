@@ -30,6 +30,4 @@ double shearCondition(Cloth &, int *, bool);
 Vector3d shearPartial(Cloth &, int, int *, bool);
 
 double bendCondition(Cloth &, int *);
-double bendCondition(Cloth &, int, int, int, int);
-RowVector3d bendPartial(Cloth &, int, int *);
-RowVector3d bendPartial(Cloth &, int, int, int, int, int);
+Vector3d bendPartial(Cloth &, int, int *);

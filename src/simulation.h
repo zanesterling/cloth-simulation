@@ -24,7 +24,6 @@
 
 #define FLOOR_HEIGHT -1
 
-#define MAX_SCALE 0.001
 #define MAX_BEND 0.000003
 
 typedef Eigen::Matrix<Vector3d, Eigen::Dynamic, Eigen::Dynamic> ForceMatrix;
