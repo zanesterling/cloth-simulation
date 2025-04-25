@@ -28,6 +28,10 @@ struct Cloth {
 	double *getWorldPoint(int x, int y) {
 		return worldPoints + 3 * (y*xRes + x);
 	}
+	Vector3d getWorldPointVec(int i) {
+		double *pt = getWorldPoint(i);
+		return Vector3d(pt[0], pt[1], pt[2]);
+	}
 	double *getWorldVel(int i) { return worldVels + 3 * i; }
 	double *getWorldVel(int x, int y){return worldVels + 3 * (y*xRes + x);}
 	void setWorldPoint(int, int, double, double, double);
@@ -36,4 +40,5 @@ struct Cloth {
 	Vector3d triNormal(int, int, int);
 
 	int numPoints();
+	int numTriangles();
 };

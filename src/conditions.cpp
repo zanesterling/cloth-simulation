@@ -6,20 +6,11 @@ Matrix2d blUvMatrixI;
 bool setTrUvMatrix = false;
 Matrix2d trUvMatrixI;
 
-WuvMatrix wuvMatrix(Cloth &cloth, int i, int j, int k, bool isBl) {
-	// get delta x_1, x_2
-	Eigen::Matrix<double, 3, 2> dxMatrix;
-	auto wpI = cloth.getWorldPoint(i);
-	auto wpJ = cloth.getWorldPoint(j);
-	auto wpK = cloth.getWorldPoint(k);
-	for (int elem = 0; elem < 3; elem++) {
-		dxMatrix(elem, 0) = wpJ[elem] - wpI[elem];
-		dxMatrix(elem, 1) = wpK[elem] - wpI[elem];
-	}
-
+Matrix2d duvMatrixInverse(Cloth &cloth, int i, int j, int k, bool isBl) {
 	auto uvI = cloth.getUvPoint(i);
 	auto uvJ = cloth.getUvPoint(j);
 	auto uvK = cloth.getUvPoint(k);
+
 	if (isBl) {
 		if (!setBlUvMatrix) {
 			setBlUvMatrix = true;
@@ -30,7 +21,7 @@ WuvMatrix wuvMatrix(Cloth &cloth, int i, int j, int k, bool isBl) {
 			blUvMatrixI(1, 1) = uvK[1] - uvI[1];
 			blUvMatrixI = blUvMatrixI.inverse().eval();
 		}
-		return dxMatrix * blUvMatrixI;
+		return blUvMatrixI;
 	} else {
 		if (!setTrUvMatrix) {
 			setTrUvMatrix = true;
@@ -41,27 +32,43 @@ WuvMatrix wuvMatrix(Cloth &cloth, int i, int j, int k, bool isBl) {
 			trUvMatrixI(1, 1) = uvK[1] - uvI[1];
 			trUvMatrixI = trUvMatrixI.inverse().eval();
 		}
-		return dxMatrix * trUvMatrixI;
+		return trUvMatrixI;
 	}
 }
 
-double scaleXCondition(Cloth &cloth, int *tri, bool isBl, double b) {
-	double area = cloth.triUvArea;
-	auto wm = wuvMatrix(cloth, tri[0], tri[1], tri[2], isBl);
-
-	// get final condition value
-	return area * (wm.col(0).norm() - b);
+Eigen::Matrix<double, 3, 2> dxMatrix(Cloth &cloth, int i, int j, int k) {
+	Eigen::Matrix<double, 3, 2> dxMatrix;
+	auto wpI = cloth.getWorldPointVec(i);
+	auto wpJ = cloth.getWorldPointVec(j);
+	auto wpK = cloth.getWorldPointVec(k);
+	dxMatrix.col(0) = wpJ - wpI;
+	dxMatrix.col(1) = wpK - wpI;
+	return dxMatrix;
 }
 
-double scaleYCondition(Cloth &cloth, int *tri, bool isBl, double b) {
-	double area = cloth.triUvArea;
-	auto wm = wuvMatrix(cloth, tri[0], tri[1], tri[2], isBl);
-
-	// get final condition value
-	return area * (wm.col(1).norm() - b);
+WuvMatrix wuvMatrix(Cloth &cloth, int i, int j, int k, bool isBl) {
+	return dxMatrix(cloth, i, j, k) * duvMatrixInverse(cloth, i, j, k, isBl);
 }
 
-RowVector3d scaleXPartial(Cloth &cloth, int pt, int *tri, bool isBl,
+double scaleUCondition(Cloth &cloth, int *tri, bool isBl, double b_u) {
+	double area = cloth.triUvArea;
+	int i = tri[0], j = tri[1], k = tri[2];
+	Vector3d wu = dxMatrix(cloth, i, j, k) * duvMatrixInverse(cloth, i, j, k, isBl).col(0);
+
+	// get final condition value
+	return area * (wu.norm() - b_u);
+}
+
+double scaleVCondition(Cloth &cloth, int *tri, bool isBl, double b_v) {
+	double area = cloth.triUvArea;
+	int i = tri[0], j = tri[1], k = tri[2];
+	Vector3d wv = dxMatrix(cloth, i, j, k) * duvMatrixInverse(cloth, i, j, k, isBl).col(1);
+
+	// get final condition value
+	return area * (wv.norm() - b_v);
+}
+
+RowVector3d scaleUPartial(Cloth &cloth, int pt, int *tri, bool isBl,
                           double b) {
 	RowVector3d partial; // two rows, three columns
 
@@ -71,10 +78,10 @@ RowVector3d scaleXPartial(Cloth &cloth, int pt, int *tri, bool isBl,
 	for (int col = 0; col < 3; col++) {
 		// perturb the cloth
 		worldPt[col] = originalPoint[col] + PERTURB_QUANT;
-		auto pCond1 = scaleXCondition(cloth, tri, isBl, b);
+		auto pCond1 = scaleUCondition(cloth, tri, isBl, b);
 
 		worldPt[col] = originalPoint[col] - PERTURB_QUANT;
-		auto pCond2 = scaleXCondition(cloth, tri, isBl, b);
+		auto pCond2 = scaleUCondition(cloth, tri, isBl, b);
 
 		partial[col] = (pCond1 - pCond2) / (2 * PERTURB_QUANT);
 
@@ -85,7 +92,7 @@ RowVector3d scaleXPartial(Cloth &cloth, int pt, int *tri, bool isBl,
 	return partial;
 }
 
-RowVector3d scaleYPartial(Cloth &cloth, int pt, int *tri, bool isBl,
+RowVector3d scaleVPartial(Cloth &cloth, int pt, int *tri, bool isBl,
                           double b) {
 	RowVector3d partial; // two rows, three columns
 
@@ -95,10 +102,10 @@ RowVector3d scaleYPartial(Cloth &cloth, int pt, int *tri, bool isBl,
 	for (int col = 0; col < 3; col++) {
 		// perturb the cloth
 		worldPt[col] = originalPoint[col] + PERTURB_QUANT;
-		auto pCond1 = scaleYCondition(cloth, tri, isBl, b);
+		auto pCond1 = scaleVCondition(cloth, tri, isBl, b);
 
 		worldPt[col] = originalPoint[col] - PERTURB_QUANT;
-		auto pCond2 = scaleYCondition(cloth, tri, isBl, b);
+		auto pCond2 = scaleVCondition(cloth, tri, isBl, b);
 
 		partial[col] = (pCond1 - pCond2) / (2 * PERTURB_QUANT);
 

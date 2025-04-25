@@ -48,8 +48,8 @@ const Scene SCENES[NUM_SCENES] = {
 
 class Simulation {
 	double maxScale;
-	double scaleX;
-	double scaleY;
+	double scaleU;
+	double scaleV;
 	double cuffScale;
 
 	void handleScaleCondition(int offset);
@@ -87,8 +87,8 @@ public:
 	int getNumTris() { return 2 * (cloth.xRes - 1) * (cloth.yRes - 1); }
 	int getNumPoints() { return cloth.xRes * cloth.yRes; }
 
-	void changeScaleX(double d) { scaleX += d; }
-	void changeScaleY(double d) { scaleY += d; }
+	void changeScaleX(double d) { scaleU += d; }
+	void changeScaleY(double d) { scaleV += d; }
 	void changeCuff(double d)   { cuffScale += d; }
 
 	void prevScene() {

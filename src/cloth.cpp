@@ -76,7 +76,7 @@ void Cloth::setWorldPoint(int xCor, int yCor, double xPos, double yPos,
 }
 
 double Cloth::getTriUvArea() {
-	return w * h / (2 * (xRes - 1) * (yRes - 1));
+	return w * h / numTriangles();
 }
 
 Vector3d Cloth::triNormal(int pi1, int pi2, int pi3) {
@@ -91,4 +91,8 @@ Vector3d Cloth::triNormal(int pi1, int pi2, int pi3) {
 
 int Cloth::numPoints() {
 	return xRes * yRes;
+}
+
+int Cloth::numTriangles() {
+	return 2 * (xRes - 1) * (yRes - 1);
 }

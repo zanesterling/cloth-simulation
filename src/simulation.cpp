@@ -264,8 +264,8 @@ void Simulation::reset() {
 	generateClothNormsFromMesh(clothNorms, cloth);
 	copyTriangleNormsFromClothNorms(triNorms, clothNorms, cloth);
 
-	scaleX = 1;
-	scaleY = 1;
+	scaleU = 1;
+	scaleV = 1;
 	cuffScale = 1;
 }
 
@@ -286,11 +286,11 @@ void Simulation::handleScaleCondition(int offset) {
 	};
 
 	int y = offset / cloth.xRes;
-	double stretchX = scaleX;
-	double stretchY = scaleY;
+	double stretchX = scaleU;
+	double stretchY = scaleV;
 	if (y < 5) {
 		double t = y / 5.0;
-		stretchX = lerp(cuffScale, scaleX, t);
+		stretchX = lerp(cuffScale, scaleU, t);
 	}
 	if (cuffing) {
 		if (y == 0) {
@@ -305,14 +305,14 @@ void Simulation::handleScaleCondition(int offset) {
 }
 
 void Simulation::scaleHelper(int *triPts, bool isBl, double stretchX, double stretchY) {
-	auto condX = scaleXCondition(cloth, triPts, isBl, stretchX);
-	auto condY = scaleYCondition(cloth, triPts, isBl, stretchY);
+	auto condX = scaleUCondition(cloth, triPts, isBl, stretchX);
+	auto condY = scaleVCondition(cloth, triPts, isBl, stretchY);
 	for (int i = 0; i < 3; i++) {
 		int ptI = triPts[i];
 
 		// acount for scaling force
-		auto partialIX = scaleXPartial(cloth, ptI, triPts, isBl, stretchX);
-		auto partialIY = scaleYPartial(cloth, ptI, triPts, isBl, stretchY);
+		auto partialIX = scaleUPartial(cloth, ptI, triPts, isBl, stretchX);
+		auto partialIY = scaleVPartial(cloth, ptI, triPts, isBl, stretchY);
 		Vector3d force = -SCALE_STIFF * (partialIX.transpose() * condX +
 		                                 partialIY.transpose() * condY);
 		for (int j; j < 3; j++) {
