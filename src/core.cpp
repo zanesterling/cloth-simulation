@@ -48,8 +48,15 @@ void initLights() {
 }
 
 void idle() {
+	struct timespec startTime, endTime;
+	clock_gettime(CLOCK_MONOTONIC, &startTime);
+
 	sim.update();
 	ui.update();
+
+	clock_gettime(CLOCK_MONOTONIC, &endTime);
+	long frameMicros = (endTime.tv_nsec - startTime.tv_nsec) / 1000;
+	printf("frame: %ld.%ldms\n", frameMicros / 1000, frameMicros % 1000);
 
 	// mark dirty frame
 	glutPostRedisplay();
