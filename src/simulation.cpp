@@ -305,30 +305,33 @@ void Simulation::handleScaleCondition(int offset) {
 }
 
 void Simulation::scaleHelper(int *triPts, bool isBl, double stretchX, double stretchY) {
-	auto condX = scaleUCondition(cloth, triPts, isBl, stretchX);
-	auto condY = scaleVCondition(cloth, triPts, isBl, stretchY);
+	Vector2d buv = Vector2d(stretchX, stretchY);
+	Vector2d condition = scaleCondition(cloth, triPts, isBl, buv);
+	double condX = condition[0];
+	double condY = condition[1];
 	for (int i = 0; i < 3; i++) {
 		int ptI = triPts[i];
 
-		// acount for scaling force
-		auto partialIX = scaleUPartial(cloth, ptI, triPts, isBl, stretchX);
-		auto partialIY = scaleVPartial(cloth, ptI, triPts, isBl, stretchY);
-		Vector3d force = -SCALE_STIFF * (partialIX.transpose() * condX +
-		                                 partialIY.transpose() * condY);
-		for (int j; j < 3; j++) {
+		// account for scaling force
+		Eigen::Matrix<double, 3, 2> partial = scalePartial(cloth, ptI, triPts, isBl, buv);
+		Vector3d force = -SCALE_STIFF * partial * condition;
+		for (int j = 0; j < 3; j++) {
 			if (force[j] >  maxScale) force[j] =  maxScale;
 			if (force[j] < -maxScale) force[j] = -maxScale;
 		}
 		scaleForces(0, ptI) += force;
 
 		// account for damping force
-		auto velI = Vector3d(cloth.getWorldVel(ptI));
+		RowVector3d partialIU = scaleUPartial(cloth, ptI, triPts, isBl, stretchX);
+		RowVector3d partialIV = scaleVPartial(cloth, ptI, triPts, isBl, stretchY);
+		Vector3d velI = Vector3d(cloth.getWorldVel(ptI));
 		Vector3d dampForce = -DAMP_STIFF *
-		                 (partialIX.transpose() * partialIX +
-		                  partialIY.transpose() * partialIY) * velI;
-		for (int j; j < 3; j++) {
-			if (abs(dampForce[j]) > abs(velI[j] + force[j]))
+		                 (partialIU.transpose() * partialIU +
+		                  partialIV.transpose() * partialIV) * velI;
+		for (int j = 0; j < 3; j++) {
+			if (abs(dampForce[j]) > abs(velI[j] + force[j])) {
 				dampForce[j] = -(velI[j] + force[j]);
+			}
 		}
 		scaleDampForces(0, ptI) += dampForce;
 	}

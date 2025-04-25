@@ -50,22 +50,52 @@ WuvMatrix wuvMatrix(Cloth &cloth, int i, int j, int k, bool isBl) {
 	return dxMatrix(cloth, i, j, k) * duvMatrixInverse(cloth, i, j, k, isBl);
 }
 
-double scaleUCondition(Cloth &cloth, int *tri, bool isBl, double b_u) {
+Vector2d scaleCondition(Cloth &cloth, int *tri, bool isBl, Vector2d buv) {
 	double area = cloth.triUvArea;
 	int i = tri[0], j = tri[1], k = tri[2];
-	Vector3d wu = dxMatrix(cloth, i, j, k) * duvMatrixInverse(cloth, i, j, k, isBl).col(0);
+	Eigen::Matrix<double, 3, 2> wuv =
+		dxMatrix(cloth, i, j, k) * duvMatrixInverse(cloth, i, j, k, isBl);
+	Vector2d wnorms = wuv.colwise().norm();
 
 	// get final condition value
-	return area * (wu.norm() - b_u);
+	return area * (wnorms - buv);
+}
+
+double scaleUCondition(Cloth &cloth, int *tri, bool isBl, double b_u) {
+	return scaleCondition(cloth, tri, isBl, Vector2d(b_u, 0))[0];
 }
 
 double scaleVCondition(Cloth &cloth, int *tri, bool isBl, double b_v) {
-	double area = cloth.triUvArea;
-	int i = tri[0], j = tri[1], k = tri[2];
-	Vector3d wv = dxMatrix(cloth, i, j, k) * duvMatrixInverse(cloth, i, j, k, isBl).col(1);
+	return scaleCondition(cloth, tri, isBl, Vector2d(0, b_v))[1];
+}
 
-	// get final condition value
-	return area * (wv.norm() - b_v);
+Eigen::Matrix<double, 3, 2> scalePartial(
+	Cloth &cloth,
+	int pt,
+	int *tri,
+	bool isBl,
+	Vector2d buv
+) {
+	Eigen::Matrix<double, 3, 2> partial;
+
+	double *worldPt = cloth.getWorldPoint(pt);
+	double originalPoint[3] = {worldPt[0], worldPt[1], worldPt[2]};
+
+	for (int col = 0; col < 3; col++) {
+		// perturb the cloth
+		worldPt[col] = originalPoint[col] + PERTURB_QUANT;
+		Vector2d pCond1 = scaleCondition(cloth, tri, isBl, buv);
+
+		worldPt[col] = originalPoint[col] - PERTURB_QUANT;
+		Vector2d pCond2 = scaleCondition(cloth, tri, isBl, buv);
+
+		partial.row(col) = (pCond1 - pCond2) / (2 * PERTURB_QUANT);
+
+		// de-perturb cloth
+		worldPt[col] = originalPoint[col];
+	}
+
+	return partial;
 }
 
 RowVector3d scaleUPartial(Cloth &cloth, int pt, int *tri, bool isBl,

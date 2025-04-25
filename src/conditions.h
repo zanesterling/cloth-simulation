@@ -13,8 +13,18 @@ typedef Eigen::Matrix<double, 3, 2> WuvMatrix;
 typedef Eigen::Matrix2d Matrix2d;
 typedef Eigen::RowVector3d RowVector3d;
 typedef Eigen::Vector3d Vector3d;
+typedef Eigen::Vector2d Vector2d;
 
 WuvMatrix wuvMatrix(Cloth &, int, int, int);
+
+Vector2d scaleCondition(Cloth &, int *, bool, Vector2d);
+Eigen::Matrix<double, 3, 2> scalePartial(
+	Cloth &cloth,
+	int pt,
+	int *tri,
+	bool isBl,
+	Vector2d buv
+);
 
 double scaleUCondition(Cloth &, int *, bool, double);
 double scaleUCondition(Cloth &, int, int, int, bool, double);
